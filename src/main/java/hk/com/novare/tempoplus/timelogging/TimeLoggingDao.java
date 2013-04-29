@@ -197,7 +197,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
-					.prepareStatement("SELECT count(timelog.id) FROM timelog inner join users on timelog.usersid_FK = users.id WHERE timelog.date = ? and users.employeeId_FK = ?");
+					.prepareStatement("SELECT count(employeeId_FK) FROM timelogs WHERE date = ? and employeeId_FK = ?");
 			ps.setString(1, d);
 			ps.setInt(2, uid);
 			final ResultSet resultSet = ps.executeQuery();
@@ -228,7 +228,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		try {
 			connection = dataSource.getConnection();
 			/*final PreparedStatement ps = connection
-					.prepareStatement("INSERT into timelog(userid,date,name,timein,timeout,total_hours,flag) VALUES(?,?,?,?,?,?,?)");*/
+					.prepareStatement("INSERT into timelog(userid,date,name,timein,timeout,total_hours,flag) VALUES(?,?,?,?,?,?,?)");
 			final PreparedStatement ps1 = connection
 					.prepareStatement("SELECT id from users where employeeId_FK = ?");
 			ps1.setInt(1, uid);
@@ -236,12 +236,12 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			while (resultSet.next()) {
 				uid = resultSet.getInt(1);
 			}
-			resultSet.close();
+			resultSet.close();*/
 			
 			
 			//tinanggal ko ung timeIn at timeOut na field - ginawa ko kasing default to null sa db
 			final PreparedStatement ps = connection
-					.prepareStatement("INSERT into timelog(usersId_FK,date,duration,flag) VALUES(?,?,?,?)");
+					.prepareStatement("INSERT into timelogs(employeeId_FK,date,duration,flag) VALUES(?,?,?,?)");
 			ps.setInt(1, uid);
 			ps.setString(2, d);
 			ps.setString(3, "00:00:00");
@@ -270,7 +270,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
-					.prepareStatement("UPDATE timelog inner join users on timelog.usersId_FK = users.id set timelog.flag = ? where users.employeeId_FK = ? and timelog.date = ? ");
+					.prepareStatement("UPDATE timelogs set flag = ? where employeeId_FK = ? and date = ? ");
 			ps.setInt(1, fid);
 			ps.setInt(2,uid);
 			ps.setString(3,d);
@@ -331,7 +331,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
-					.prepareStatement("SELECT timelog.timeIn FROM timelog inner join users on timelog.usersId_FK = users.id WHERE timelog.date = ? and users.employeeId_FK = ?");
+					.prepareStatement("SELECT timeIn FROM timelogs WHERE date = ? and employeeId_FK = ?");
 			ps.setString(1, d);
 			ps.setInt(2, uid);
 			final ResultSet resultSet = ps.executeQuery();
@@ -366,7 +366,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
-					.prepareStatement("SELECT timelog.timeIn FROM timelog inner join users on timelog.usersId_FK = users.id WHERE timelog.date = ? and users.employeeId_FK = ?");
+					.prepareStatement("SELECT timeIn FROM timelogs WHERE date = ? and employeeId_FK = ?");
 			ps.setString(1, d);
 			ps.setInt(2, uid);
 			final ResultSet resultSet = ps.executeQuery();
@@ -399,7 +399,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		try {
 				connection = dataSource.getConnection();
 				final PreparedStatement ps = connection
-						.prepareStatement("SELECT timelog.timeOut FROM timelog inner join users on timelog.usersId_FK = users.id WHERE timelog.date = ? and users.employeeId_FK = ?");
+						.prepareStatement("SELECT timeOut FROM timelogs WHERE date = ? and employeeId_FK = ?");
 				ps.setString(1, d);
 				ps.setInt(2, uid);
 				final ResultSet resultSet = ps.executeQuery();
@@ -432,7 +432,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
-					.prepareStatement("SELECT timelog.timeOut FROM timelog inner join users on timelog.usersId_FK = users.id WHERE timelog.date = ? and users.employeeId_FK = ?");
+					.prepareStatement("SELECT timeOut FROM timelogs WHERE date = ? and employeeId_FK = ?");
 			ps.setString(1, d);
 			ps.setInt(2, uid);
 			final ResultSet resultSet = ps.executeQuery();
@@ -498,7 +498,7 @@ Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
-					.prepareStatement("SELECT timelog.date,timelog.timeIn,timelog.timeOut,timelog.duration FROM timelog INNER JOIN users on timelog.usersId_FK = users.id  WHERE users.employeeId_FK = ? AND timelog.date between ? AND ?");
+					.prepareStatement("SELECT date,timeIn,timeOut,duration FROM timelogs WHERE employeeId_FK = ? AND date between ? AND ?");
 			ps.setInt(1, id);
 			ps.setString(2, from);
 			ps.setString(3, to);
@@ -547,7 +547,7 @@ Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
-					.prepareStatement("SELECT timelog.date,timelog.timeIn,timelog.timeOut,timelog.duration FROM timelog INNER JOIN users on timelog.usersId_FK = users.id  WHERE users.employeeId_FK = ? AND timelog.date between ? AND ?");
+					.prepareStatement("SELECT date,timeIn,timeOut,duration FROM timelogs WHERE employeeId_FK = ? AND date between ? AND ?");
 			ps.setInt(1, id);
 			ps.setString(2, from);
 			ps.setString(3, to);
@@ -677,7 +677,7 @@ Connection connection = null;
 		
 		}
 
-		@Override
+		/*@Override
 		public int getLevelId(int id) throws DataAccessException {
 			
 			
@@ -709,8 +709,40 @@ Connection connection = null;
 			}
 			return levelID;
 		}
-
+*/
+		
 		@Override
+		public boolean isSupervisor(int id) throws DataAccessException {
+			boolean userType=false;
+			Connection connection = null;
+			try {
+				connection = dataSource.getConnection();
+				final PreparedStatement ps = connection
+						.prepareStatement("SELECT isSupervisor FROM employees where employeeId = ?");
+				ps.setInt(1, id);
+				final ResultSet resultSet = ps.executeQuery();
+				while(resultSet.next())
+				{
+					userType = resultSet.getBoolean(1);
+				}
+				
+			} catch (SQLException e) {
+		
+				e.printStackTrace();
+			}finally {
+				// Always close the connection. Error or not.
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (SQLException e) {
+						throw new DataAccessException("cannot close", e);
+					}
+				}
+			}
+			return userType;
+		}
+		
+		/*@Override
 		public String getPosition(int id) throws DataAccessException {
 			
 			String position = "";
@@ -740,8 +772,39 @@ Connection connection = null;
 				}
 			}
 			return position;
+		}*/
+		
+		@Override
+		public String isHR(int id) throws DataAccessException {
+			String position = "";
+			Connection connection = null;
+			try {
+				connection = dataSource.getConnection();
+				final PreparedStatement ps = connection
+				.prepareStatement("SELECT departments.name FROM departments inner join employees on departments.id = employees.departmentId where employees.employeeId = ?");
+				ps.setInt(1, id);
+				final ResultSet resultSet = ps.executeQuery();
+				while(resultSet.next())
+				{
+					position = resultSet.getString(1);
+				}
+				
+			} catch (SQLException e) {
+			
+				e.printStackTrace();
+			}finally {
+				// Always close the connection. Error or not.
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (SQLException e) {
+						throw new DataAccessException("cannot close", e);
+					}
+				}
+			}
+			return position;
 		}
-
+		
 		@Override
 		public void insertTimeIn(int id, TimeLogging time)
 				throws DataAccessException {
@@ -757,7 +820,7 @@ Connection connection = null;
 				connection = dataSource.getConnection();
 
 				final PreparedStatement pstate = connection
-						.prepareStatement("INSERT INTO timelog (usersId_FK, date, timeIn, duration) values ( ?, ?, ?, ?)");
+						.prepareStatement("INSERT INTO timelogs (employeeId_FK, date, timeIn, duration) values ( ?, ?, ?, ?)");
 
 				// Save in db
 				pstate.setInt(1, id);
@@ -810,7 +873,7 @@ Connection connection = null;
 			try {
 				connection = dataSource.getConnection();
 				
-				final PreparedStatement ps = connection.prepareStatement("SELECT timeIn FROM timelog WHERE usersId_FK = ? and date=? ");
+				final PreparedStatement ps = connection.prepareStatement("SELECT timeIn FROM timelogs WHERE employeeId_FK = ? and date=? ");
 				ps.setInt(1, id);
 				ps.setString(2, datestring);
 				
@@ -834,7 +897,7 @@ Connection connection = null;
 				}
 	
 				final PreparedStatement pstate = connection
-						.prepareStatement("UPDATE timelog set timeOut = ?, duration = ? where usersId_FK = ? and date = ? ");
+						.prepareStatement("UPDATE timelogs set timeOut = ?, duration = ? where employeeId_FK = ? and date = ? ");
 				pstate.setString(1, timestring);
 							
 				//compute for total hours
@@ -878,7 +941,7 @@ Connection connection = null;
 			try {
 				connection = dataSource.getConnection();
 				final PreparedStatement ps = connection
-						.prepareStatement("SELECT usersId_FK, date, timeIn, timeOut FROM timelog WHERE usersId_FK = ? and date = ?" );
+						.prepareStatement("SELECT employeeId_FK, date, timeIn, timeOut FROM timelogs WHERE employeeId_FK = ? and date = ?" );
 				
 					ps.setInt(1, id);
 					ps.setString(2, datestring);
@@ -1016,5 +1079,10 @@ Connection connection = null;
 		    return final_total_hours;	
 
 		}
+
+		
+
+		
+
 	
 }
