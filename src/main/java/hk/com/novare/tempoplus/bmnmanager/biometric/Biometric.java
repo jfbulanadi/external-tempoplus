@@ -3,22 +3,31 @@ package hk.com.novare.tempoplus.bmnmanager.biometric;
 /**
  * 
  * @author Jeffrey
- *
+ * 
  */
 public class Biometric {
 
-	private int biometricsId;
+	private int id;
+	private int biometricId;
 	private String date;
 	private String time;
 	private int log;
 	private int unknown;
 
-	public int getBiometricsId() {
-		return biometricsId;
+	public int getId() {
+		return id;
 	}
 
-	public void setBiometricsId(int biometricsId) {
-		this.biometricsId = biometricsId;
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getBiometricId() {
+		return biometricId;
+	}
+
+	public void setBiometricId(int biometricId) {
+		this.biometricId = biometricId;
 	}
 
 	public String getDate() {
