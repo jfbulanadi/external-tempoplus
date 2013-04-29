@@ -38,11 +38,10 @@ public class TimeLoggingService implements TimelogServiceInt{
 		for(i = 0; i<cUser; i++)
 		{
 			id = timelogDAOInt.getUserID(i);
-			System.out.println("id: " +id);
 			desc = timelogDAOInt.getShiftDesc(id);
 			sInF = timelogDAOInt.getShiftInReal(desc);
 			sIn = getShiftIn(id,desc,sInF); 
-			sOut = timelogDAOInt.getShiftOut(id); 
+			sOut = timelogDAOInt.getShiftOut(id);
 			if(timelogDAOInt.checkTime(yDate,id)==0)
 			{
 				cTime = false;
@@ -51,7 +50,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 			{
 				cTime = true;
 			}
-			if(timelogDAOInt.checkTimeIn(yDate,id).equals(null))
+			if(timelogDAOInt.checkTimeIn(yDate,id)==null)
 			{
 				cIn = false;
 			}
@@ -59,7 +58,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 			{
 				cIn = true;
 			}
-			if(timelogDAOInt.checkTimeOut(yDate,id).equals(null))
+			if(timelogDAOInt.checkTimeOut(yDate,id)==null)
 			{
 				cOut = false;
 			}
@@ -78,14 +77,23 @@ public class TimeLoggingService implements TimelogServiceInt{
 			{
 				//Insert flag
 				if(cIn == true)
-				{
+				{	
 					//check first if late
 					tIn = timelogDAOInt.getTimeIn(yDate,id);
+					
+					SimpleDateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
+					SimpleDateFormat printFormat = new SimpleDateFormat("HH:mm:ss");
+					java.util.Date dateIn = parseFormat.parse(tIn);
+					
+					tIn=printFormat.format(dateIn);
 					cLate = checkLate(yDate,id,sIn,tIn);
 					if(cOut==true)
 					{
 						tOut = timelogDAOInt.getTimeOut(yDate,id);
 						try {
+							java.util.Date dateOut = parseFormat.parse(tOut);
+							tOut = printFormat.format(dateOut);
+							
 							flagUndertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
 							flagOvertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
 						} catch (ParseException e) {
@@ -164,6 +172,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 				}
 				
 				comp = ntime.compareTo(tout);
+				
 			}
 			else
 			{
@@ -176,10 +185,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 					ntime = addHour(sinf,9);
 				}
 				//shift out for shifting
-				System.out.println("tout: " + tout);
-				System.out.println("ntime: " + ntime);
 				comp = ntime.compareTo(tout);
-				System.out.println("comp: " + comp);
 			}
 			if(comp > 0)
 			{
@@ -225,10 +231,6 @@ public class TimeLoggingService implements TimelogServiceInt{
 				}
 				
 			}
-			
-			
-			
-		
 			comp = tout.compareTo(ntime);
 			if(comp >= 0)
 			{
@@ -351,7 +353,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 			int levelID;
 			//manager
 
-			levelID = timelogDAOInt.getLevelId(id);
+			/*levelID = timelogDAOInt.getLevelId(id);
 	
 			if(levelID >= 5)
 			{
@@ -360,11 +362,35 @@ public class TimeLoggingService implements TimelogServiceInt{
 			else
 			{
 				user = "";
+			}*/
+			if(timelogDAOInt.isSupervisor(id))
+			{
+				user = "manager";
 			}
+			else
+			{
+				user = "";
+			}
+		
 			
 			//hr
-			position = timelogDAOInt.getPosition(id);
+			/*position = timelogDAOInt.getPosition(id);
 			if(position.equals("HR Officer"))
+			{
+				user = "hr";
+			}
+			else
+			{
+				if(user.equals("manager"))
+				{
+					user = "manager";
+				}
+				else
+				{
+					user = "";
+				}
+			}*/
+			if(timelogDAOInt.isHR(id).equals("Human Resources Department"))
 			{
 				user = "hr";
 			}

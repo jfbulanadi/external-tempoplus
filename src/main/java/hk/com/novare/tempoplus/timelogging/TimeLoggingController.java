@@ -36,7 +36,7 @@ public class TimeLoggingController {
 		
 		@RequestMapping(value = "/UserLog", method = RequestMethod.GET)
 		public String sayUserLog(ModelMap modelMap) {
-			
+		
 			modelMap.addAttribute("id", timelogServiceInt.getEmployeeId());
 			return "ViewTimelog"; // view
 		}
@@ -74,10 +74,8 @@ public class TimeLoggingController {
 		public @ResponseBody List<TimeLogging> retrieveMylog(@RequestParam(value = "id") int id,
 				@RequestParam(value = "from") String from,
 				@RequestParam(value = "to") String to) throws ParseException, DataAccessException {
-			System.out.println(id);
 			return timelogServiceInt.retrieveMylog(id,from,to);
 		}
-		
 		//Hr Search
 			@RequestMapping(value = "/searchEmployee", method= RequestMethod.POST)
 			public @ResponseBody String employeeSearch(@RequestParam(value = "empName") String empName) throws DataAccessException{
@@ -85,7 +83,6 @@ public class TimeLoggingController {
 				return timelogServiceInt.checkName(empName);
 				
 			}
-			
 			//Hr Retrieve result
 			@RequestMapping(value = "/retrieveEmployee", method= RequestMethod.POST)
 			public @ResponseBody List<Employee> retriveEmployee(@RequestParam(value = "empName") String empName) throws DataAccessException{
