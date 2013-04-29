@@ -2,14 +2,8 @@ package hk.com.novare.tempoplus.accountsystem;
 
 import org.springframework.stereotype.Service;
 
-
-/*
- * 
- * Julius v1
- */
-
 @Service
-public class Employee {
+public class HumanResource {
 	
 	private String firstName;
 	private String middleName;
@@ -29,7 +23,21 @@ public class Employee {
 	private String payrollName;
 	private String employeeEmail;
 	private String active;
+	private int departmentId;
+	private int positionId;
 	
+	public int getDepartmentId() {
+		return departmentId;
+	}
+	public void setDepartmentId(int departmentId) {
+		this.departmentId = departmentId;
+	}
+	public int getPositionId() {
+		return positionId;
+	}
+	public void setPositionId(int positionId) {
+		this.positionId = positionId;
+	}
 	public String getFirstName() {
 		return firstName;
 	}
