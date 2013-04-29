@@ -12,33 +12,35 @@
 	}  */
 	</script>         
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>User Profile</title>
+<title>TempoPlus Login</title>
 </head>
 <body>
 
-<table>
+<div align ="center">
 
- <form name="login" method="POST" action="<c:url value='/user/login'/>">
-		<tr>
-			<td>Log In</td>
-		</tr>
-		<tr>
-			<td>Email Address:</td>
-			<td><input type = "text" name ="userName" /></td> 
-		</tr>
-		
-		<tr>
-			<td>Password:</td> 
-			<td><input type="password" name = "password" /></td>
-		</tr>
-		
-		<tr>
-			<td><input type="submit" value ="Log in" /></td>
-		
-		</tr>
-</form>
-</table>
+	 <form name="login" method="POST" action="<c:url value='/user/login'/>">
+		 <table>
+				<tr>
+					<td>Log In</td>
+				</tr>
+				<tr>
+					<td>Email Address:</td>
+					<td><input type = "text" name ="userName" /></td> 
+				</tr>
+				
+				<tr>
+					<td>Password:</td> 
+					<td><input type="password" name = "password" /></td>
+				</tr>
+				
+				<tr>
+					<td><input type="submit" value ="Log in" /></td>
+				
+				</tr>
+		</table>
+	</form>
+
 ${outputMsg} 
-	
+	</div>
 </body>
 </html>

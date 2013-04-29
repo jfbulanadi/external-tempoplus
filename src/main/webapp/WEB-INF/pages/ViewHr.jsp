@@ -29,7 +29,7 @@
 
 </head>
 <body>
-<<<<<<< HEAD
+
 	<!-- Table viewer -->
 	<br>
 	<br>
