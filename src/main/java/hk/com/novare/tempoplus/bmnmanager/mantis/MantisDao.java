@@ -104,29 +104,4 @@ public class MantisDao {
 		return list;
 	}
 
-	public void splitMantisData(ArrayList<Mantis> list) {
-
-		try {
-			connection = dataSource.getConnection();
-
-			PreparedStatement officialBusinessPreparedStatement = connection
-					.prepareStatement("INSERT INTO officialBusinesses (usersId_FK, ticketId, description, timeIn, timeOut) VALUES"
-							+ " (?, ?, ?, ?, ?)");
-
-			PreparedStatement deductionsPreparedStatement = connection
-					.prepareStatement("INSERT INTO deductions (usersId_FK, tardiness, undertime, leaveWithoutPay) VALUES"
-							+ " (?, ?, ?, ?)");
-
-		} catch (SQLException e) {
-
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-
-				}
-			}
-		}
-	}
 }

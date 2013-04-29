@@ -2,7 +2,7 @@ package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
 
 import hk.com.novare.tempoplus.employee.Employee;
-
+import hk.com.novare.tempoplus.timelogging.TimeLogging;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -292,6 +292,102 @@ public class ConsolidationDao {
 		
 	}
 
+	public void consolidateTimeSheetPhase1() {
+
+		try {
+			connection = dataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("INSERT INTO CONSOLIDATIONS (employeeId_FK, timelogId_FK, date) SELECT employeeId_FK, id, dateIn FROM timelogs");
+
+			preparedStatement.executeUpdate();
+			preparedStatement.close();
+
+		} catch (SQLException e) {
+			// TODO Create Custom Exception
+			System.out.println("Error in Consolidation Phase1");
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					
+				}
+			}
+		}
+
+	}
+
+	public void consolidateTimeSheetPhase2(ArrayList<TimeLogging> list) {
+		
+		try {
+			connection = dataSource.getConnection();
+			System.out.println("Phase 2");
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("UPDATE consolidations SET mantisId_FK = " +
+							"(SELECT id FROM mantises WHERE employeeId = ? AND startDate = ?) WHERE" +
+							" employeeId_FK = ? AND date = ?");
+
+			for (TimeLogging timeLog: list) {
+//				System.out.println("empID:["+timeLog.getEmployeeId()+"] date:["+timeLog.getDate()+"]");
+				preparedStatement.setInt(1, timeLog.getEmployeeId());
+				preparedStatement.setString(2, timeLog.getDate());
+				preparedStatement.setInt(3, timeLog.getEmployeeId());
+				preparedStatement.setString(4, timeLog.getDate());
+				preparedStatement.addBatch();
+			}
+			preparedStatement.executeBatch();
+			preparedStatement.close();
+
+		} catch (SQLException e) {
+			System.out.println("Error in Consolidation Phase2");
+
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					
+				}
+			}
+		}
+
+	}
+	
+	public void consolidateTimeSheetPhase3(ArrayList<TimeLogging> list) {
+		
+		try {
+			connection = dataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("UPDATE consolidations SET nt3Id_FK = " +
+							"(SELECT id FROM nt3s WHERE employeeId = ? AND startDate = ?) WHERE" +
+							" employeeId_FK = ? AND date = ?");
+
+			for (TimeLogging timeLog: list) {
+				preparedStatement.setInt(1, timeLog.getEmployeeId());
+				preparedStatement.setString(2, timeLog.getDate());
+				preparedStatement.setInt(3, timeLog.getEmployeeId());
+				preparedStatement.setString(4, timeLog.getDate());
+				preparedStatement.addBatch();
+			}
+			preparedStatement.executeBatch();
+			preparedStatement.close();
+
+		} catch (SQLException e) {
+			System.out.println("Error in Consolidation Phase3");
+
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					
+				}
+			}
+		}
+
+	}
 	
 	
 }
