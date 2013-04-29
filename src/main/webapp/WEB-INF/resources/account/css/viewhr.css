@@ -1,0 +1,19 @@
+@CHARSET "ISO-8859-1";
+
+#dialog-form {
+	display: none;
+}
+
+#dialog-formFullInformatiion {
+	display: none;
+}
+
+body {
+	font-size: 11px;
+}
+
+.button_n {
+	float: right;
+	height: 100px;
+	margin: 10px;
+}

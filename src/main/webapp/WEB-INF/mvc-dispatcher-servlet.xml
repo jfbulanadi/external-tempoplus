@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:component-scan base-package="hk.com.novare.tempoplus" />
+	<context:annotation-config />
+	<mvc:resources mapping="/resources/**" location="/WEB-INF/resources/" />
+	<!-- Required for body marshalling -->
+	<mvc:annotation-driven />
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/pages/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
+	<!-- Bean for Data Source with Connection Pool -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/tempoplus"/>
+		<property name="username" value="root"/>
+		<property name="password" value="dreamer"/>
+	</bean>
+	
+	<!-- Other Beans -->
+	<!-- Biometrics Beans -->
+	<bean id="biometricDao" class="hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDao"/>
+	<bean id="biometricController" class="hk.com.novare.tempoplus.bmnmanager.biometric.BiometricController"/>
+	<bean id="biometricService" class="hk.com.novare.tempoplus.bmnmanager.biometric.BiometricService"/>
+	
+	<!-- Mantis Beans -->
+	<bean id="mantisDao" class="hk.com.novare.tempoplus.bmnmanager.mantis.MantisDao"/>
+	<bean id="mantisController" class="hk.com.novare.tempoplus.bmnmanager.mantis.MantisController"/>
+	<bean id="mantisService" class="hk.com.novare.tempoplus.bmnmanager.mantis.MantisService"/>
+	
+	<!-- Nt3 Beans -->
+	<bean id="nt3Dao" class="hk.com.novare.tempoplus.bmnmanager.nt3.Nt3Dao"/>
+	<bean id="nt3Controller" class="hk.com.novare.tempoplus.bmnmanager.nt3.Nt3Controller"/>
+	<bean id="nt3Service" class="hk.com.novare.tempoplus.bmnmanager.nt3.Nt3Service"/>
+	
+	<!-- FileUpload Beans -->
+	<bean id="fileUploadController" class="hk.com.novare.tempoplus.fileupload.FileUploadController"/>
+	<bean id="fileUploadDao" class="hk.com.novare.tempoplus.fileupload.FileUploadDao"/>
+	<bean id="fileUploadService" class="hk.com.novare.tempoplus.fileupload.FileUploadService"/>
+	
+	<!-- Consolidation Beans -->
+	<bean id="consolidationController" class="hk.com.novare.tempoplus.bmnmanager.consolidation.ConsolidationController"/>
+	<bean id="consolidationDao" class="hk.com.novare.tempoplus.bmnmanager.consolidation.ConsolidationDao"/>
+	<bean id="consolidationService" class="hk.com.novare.tempoplus.bmnmanager.consolidation.ConsolidationService"/>
+	
+	<!-- Employee Beans -->
+
+	<bean id="employee" class="hk.com.novare.tempoplus.employee.Employee"/>
+	<bean id="employeeDao" class="hk.com.novare.tempoplus.employee.EmployeeDao"/>
+	<bean id="employeeService" class="hk.com.novare.tempoplus.employee.EmployeeService"/>
+
+	
+	<!-- User Beans -->
+	<bean id="user" class="hk.com.novare.tempoplus.useraccount.user.User"/>
+	<bean id="userDao" class="hk.com.novare.tempoplus.useraccount.user.UserDao"/>
+	<bean id="userService" class="hk.com.novare.tempoplus.useraccount.user.UserService"/>
+	
+	<!-- Utility Beans -->
+	<bean id="excelWorkbookUtility" class="hk.com.novare.tempoplus.utilities.ExcelWorkbookUtility"/>
+	
+	<!-- View Time Logging Beans -->
+	<bean id="timelogService" class="hk.com.novare.tempoplus.timelogging.TimeLoggingService"/>
+	<bean id="timelogDAO" class="hk.com.novare.tempoplus.timelogging.TimeLoggingDao"/>
+	
+</beans>
