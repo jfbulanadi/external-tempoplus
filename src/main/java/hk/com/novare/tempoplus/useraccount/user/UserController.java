@@ -2,11 +2,9 @@ package hk.com.novare.tempoplus.useraccount.user;
 
 import hk.com.novare.tempoplus.employee.Employee;
 
-
-import hk.com.novare.tempoplus.timelogging.DataAccessException;
+import java.sql.SQLException;
 
 import java.util.List;
-
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingService;
 
@@ -35,8 +33,11 @@ public class UserController {
 	@Inject User user;
 
 	
+	private String accessLevel = "";
+	
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index(){
+	
 		return "index";
 	}
 	
@@ -47,46 +48,55 @@ public class UserController {
 			@RequestParam(value = "userName")String userEmail,
 			@RequestParam(value = "password") String password) {
 		
-		boolean isValid = userService.validateLogInAccess(userEmail, password);
-		
-		if(isValid){
-
-			timelogService.logTimeIn(timelogs);
-
-			return "redirect:home";
-
-		}else{
-			modelMap.addAttribute("outputMsg", "Invalid e-mail address/password.");
-			return "ViewLogin";
-		}
-	}
-	
-	@RequestMapping(value = "/login	",  method = RequestMethod.GET)
-	public String accessLogin(
-			ModelMap modelMap,HttpServletRequest httpServletRequest){
-		
-		if(modelMap.get("userEmployeeId").equals(null)){
-			return "redirect:index";
+		String redirect = "";
+		if(userEmail.equals("") || password.equals("")){
+			modelMap.addAttribute("outputMsg", "Input username/pasword.");
+			redirect = "index";
 		}
 		else{
-			return "redirect:home";
+			boolean isValid = userService.validateLogInAccess(userEmail, password);
+			
+			if(isValid){
+				
+				timelogService.logTimeIn(timelogs);
+				
+				redirect = "redirect:identifyHome";
+	
+			}else{
+				modelMap.addAttribute("outputMsg", "Invalid e-mail address/password.");
+			redirect = "index";
+			}
 		}
+		return redirect;
 	}
 	
-	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	@RequestMapping(value = "/identifyHome", method = RequestMethod.GET)
 	public String home(ModelMap modelMap){
+		
 		modelMap.addAttribute("employeeDetailsList", userService.retrieveUserInformation(user.getEmail()));
 		modelMap.addAttribute("supervisorDetails", userService.retrieveSupervisorInformation(user.getSupervisorId()));
 		
+		//set to session attributes
 		modelMap.addAttribute("userEmployeeId", user.getEmployeeId());
 		modelMap.addAttribute("userEmail",user.getEmail());
 		
-		modelMap.addAttribute("userId", modelMap.get("userEmployeeId"));
-		
-		return "home";
+		modelMap.addAttribute("userFirstName", user.getFirstname().toLowerCase());
+		modelMap.addAttribute("userEmail", modelMap.get("userEmail"));
+		if(user.getDepartmentId() == 11){
+			//for HR access
+			 accessLevel ="homeHR";
+		}
+		else if(user.getIsSupervisor() == 1){
+			//for Supervisor access
+			accessLevel = "homeSupervisor";
+		}else {
+			//for for all access
+			accessLevel = "homeUser";
+		}		
+	return accessLevel;
+					
 	}
-	
-	
+	/*change password for user*/
 	@RequestMapping("/changePassword")
 	public String changePasswordProcess(ModelMap modelMap,
 			@RequestParam("currentPassword") String currentPassword,
@@ -104,29 +114,25 @@ public class UserController {
 			modelMap.addAttribute("passwordMsg", "New password is saved.");
 			
 		}else{
-			
 			modelMap.addAttribute("passwordMsg", "Check your input.");
 		}
-		
-		return "home";
+		return accessLevel;
 	}
-	
 	
 	@RequestMapping("/logout")
-	public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest,@ModelAttribute(value="timelogs") TimeLogging timelogs){
+	public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest) throws SQLException{
+		
 		httpServletRequest.getSession().invalidate();
 		modelMap.clear();
-		try {
-			timelogService.logTimeOut(timelogs);
-		} catch (DataAccessException e) {
-			e.printStackTrace();
-		}
-		List<User> userList = userService.retrieveUserInformation(user.getEmail());
-		List<Employee> supervisorList = userService.retrieveSupervisorInformation(user.getSupervisorId());
+		
+		//clear all objects in memory
+		List<User> userList = userService.clearUserInformation(user.getEmail());
+		List<Employee> supervisorList = userService.clearSupervisorInformation(user.getSupervisorId());
+
 		userList.clear();
 		supervisorList.clear();
+		
 		return "redirect:index";
-
 	}
+	
 }
-
