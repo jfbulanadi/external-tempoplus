@@ -7,7 +7,6 @@ package hk.com.novare.tempoplus.timelogging;
  */
 public class TimeLogging {
 	
-
 	private String date,timeIn,timeOut,duration;
 	private int userId;
 

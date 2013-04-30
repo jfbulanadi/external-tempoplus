@@ -36,7 +36,7 @@ public class TimeLoggingController {
 		
 		@RequestMapping(value = "/UserLog", method = RequestMethod.GET)
 		public String sayUserLog(ModelMap modelMap) {
-			
+		
 			modelMap.addAttribute("id", timelogServiceInt.getEmployeeId());
 			System.out.println(timelogServiceInt.getEmployeeId());
 			return "ViewTimelog"; // view

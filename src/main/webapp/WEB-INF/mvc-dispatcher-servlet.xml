@@ -34,7 +34,7 @@
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 		<property name="url" value="jdbc:mysql://localhost:3307/tempoplus"/>
 		<property name="username" value="root"/>
-		<property name="password" value="dreamer"/>
+		<property name="password" value="password"/>
 	</bean>
 	
 	<!-- Other Beans -->

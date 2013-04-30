@@ -42,7 +42,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 			sInF = timelogDAOInt.getShiftInReal(desc);
 			sIn = getShiftIn(id,desc,sInF); 
 			sOut = timelogDAOInt.getShiftOut(id);
-			
+
 			if(timelogDAOInt.checkTime(yDate,id)==0)
 			{
 				cTime = false;
@@ -81,14 +81,13 @@ public class TimeLoggingService implements TimelogServiceInt{
 				{	
 					//check first if late
 					tIn = timelogDAOInt.getTimeIn(yDate,id);
-					System.out.println(tIn);
-					
+
 					SimpleDateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
 					SimpleDateFormat printFormat = new SimpleDateFormat("HH:mm:ss");
 					java.util.Date dateIn = parseFormat.parse(tIn);
 					
 					tIn=printFormat.format(dateIn);
-					System.out.println(tIn);
+
 					cLate = checkLate(yDate,id,sIn,tIn);
 					
 					if(cOut==true)
@@ -176,6 +175,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 				}
 				
 				comp = ntime.compareTo(tout);
+				
 			}
 			else
 			{
@@ -188,10 +188,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 					ntime = addHour(sinf,9);
 				}
 				//shift out for shifting
-				System.out.println("tout: " + tout);
-				System.out.println("ntime: " + ntime);
 				comp = ntime.compareTo(tout);
-				System.out.println("comp: " + comp);
 			}
 			if(comp > 0)
 			{
@@ -237,10 +234,6 @@ public class TimeLoggingService implements TimelogServiceInt{
 				}
 				
 			}
-			
-			
-			
-		
 			comp = tout.compareTo(ntime);
 			if(comp >= 0)
 			{
@@ -377,11 +370,13 @@ public class TimeLoggingService implements TimelogServiceInt{
 			if(timelogDAOInt.isSupervisor(id))
 			{
 				user = "manager";
+
 			}
 			else
 			{
 				user = "";
 			}
+
 		
 			
 			//hr
