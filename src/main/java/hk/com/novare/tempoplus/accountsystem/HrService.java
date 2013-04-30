@@ -1,6 +1,7 @@
 package hk.com.novare.tempoplus.accountsystem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -113,7 +114,8 @@ public class HrService {
 		System.out.println("service"+humanResource.getDepartmentId());
 		System.out.println("service"+humanResource.getPositionId());
 		hrDAO.addEmployee(humanResource);
-
+		int employeeId = Integer.parseInt(humanResource.getEmployeeId());
+		hrDAO.createAccount(employeeId);
 	}
 
 	public Map<Integer, String> retrieveDepartment() {
@@ -123,5 +125,10 @@ public class HrService {
 	public Map<Integer, String> retievePosition(int departmentId) {
 		return hrDAO.retrievePosition(departmentId);
 	}
-
+	
+	public Map<Integer, String> retieveSupervisor(int departmentId) {
+		return hrDAO.retrieveSupervisor(departmentId);
+	}
+	
+	
 }

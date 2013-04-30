@@ -12,6 +12,7 @@ $(document).ready(function() {
 
 		$("#create-user").click(function() {
 			$('#selectPosition option').remove();
+			$('#selectSupervisorName option').remove();
 
 			$("#dialog-form").dialog({
 
@@ -393,6 +394,7 @@ $(function() {
 $(function() {
 	$("#selectDepartment").click(function() {
 		$('#selectPosition option').remove();
+		$('#selectSupervisorName option').remove();
 		var data = {department: $("#selectDepartment").val()};
 		
 		var json = JSON.stringify(data);
@@ -406,6 +408,19 @@ $(function() {
 				position +='<option value=' + key +'> ' + value + '</option>';
 			});
 			$('#selectPosition').append(position);
+		}
+	})
+	
+	var supervisor = '';
+	
+	$.ajax({
+		url:"../hr/retrieveSupervisorJSON",
+		data:data,
+		success: function(response) {
+			$.each(response, function(key, value) {
+				supervisor +='<option value=' + key +'> ' + value + '</option>';
+			});
+			$('#selectSupervisorName').append(supervisor);
 		}
 	})
 	});

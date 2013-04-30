@@ -59,7 +59,7 @@
 		</thead>
 		<tbody>
 			<c:forEach items="${employeeList}" var="employee">
-				<tr id="${employee.employeeId}" onClick=showToForm(this)>
+				<tr id="${employee.employeeId} " onClick=showToForm(this)>
 					<td>${employee.biometrics }</td>
 					<td>${employee.employeeId }</td>
 					<td>${employee.firstName }</td>
@@ -71,6 +71,20 @@
 			</c:forEach>
 		</tbody>
 	</table>
+	<div class="pager" align="right">
+	
+		<img src="../resources/bmn/css/images/first.png" class="first" /> <img
+			src="../resources/bmn/css/images/prev.png" class="prev" /> <span
+			class="pagedisplay"></span>
+		<!-- this can be any element, including an input -->
+		<img src="../resources/bmn/css/images/next.png" class="next" /> <img
+			src="../resources/bmn/css/images/last.png" class="last" /> <select
+			class="pagesize">
+			<option value="2">2</option>
+			<option value="5">5</option>
+			<option value="10" selected="selected">10</option>
+		</select>
+	</div>
 	<br>
 	<br>
 
@@ -149,7 +163,9 @@
 				</tr>
 				<tr>
 					<td>Supervisor Name :</td>
-					<td><input size="50" id="supervisorName" /></td>
+					<td><select id ="selectSupervisorName">
+
+					</select></td>
 				</tr>
 				<tr>
 					<td>Supervisor Email :</td>

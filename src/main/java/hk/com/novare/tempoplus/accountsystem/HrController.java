@@ -139,6 +139,12 @@ public class HrController {
 		return hrService.retievePosition(departmentId);
 	}
 	
+	@RequestMapping(value = "/retrieveSupervisorJSON")
+	public @ResponseBody
+	Map<Integer, String> retrieveSupervisor(
+			@RequestParam(value = "department") int departmentId) {		
+		return hrService.retieveSupervisor(departmentId);
+	}
 	
 	@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
 	public String getFileUpload(
@@ -154,7 +160,6 @@ public class HrController {
 		List<EmployeeFullInfoDTO> pList = tf.toExcel(files);
 
 		// pass to add_profile.jsp
-		//map.addAttribute("personList", pList);
 		modelMap.addAttribute("employeeList", hrService.retieveAllEmployee());
 		return "ViewHr";
 

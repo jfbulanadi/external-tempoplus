@@ -33,7 +33,7 @@ public class HrDAO implements HrModel {
 							+ "employees.biometricId, employees.employeeId, employees.email, "
 							+ "employees.hireDate, employees.regularizationDate, "
 							+ "employees.resignationDate, "
-							+ "departments.name, positions.level, positions.description "
+							+ "departments.name, employees.level, positions.description "
 							+ "FROM tempoplus.employees, departments, positions "
 							+ "WHERE employees.departmentId = departments.id "
 							+ "and positions.id = employees.positionId ");
@@ -60,7 +60,7 @@ public class HrDAO implements HrModel {
 						.getString("employees.resignationDate");
 				final String departmentName = resultSet
 						.getString("departments.name");
-				final String level = resultSet.getString("positions.level");
+				final String level = resultSet.getString("employees.level");
 				final String position = resultSet
 						.getString("positions.description");
 				
@@ -144,11 +144,6 @@ public class HrDAO implements HrModel {
 			ps.setInt(10, 1);
 			ps.setString(11, employee.getLevel());
 			
-			System.out.println("DAO " + employee.getFirstName());
-			System.out.println("DAO " + employee.getHiredDate());
-			System.out.println("DAO " + employee.getDepartmentId());
-			System.out.println("DAO " + employee.getPositionId());
-			
 			ps.executeUpdate();
 			
 		} catch (SQLException e) {
@@ -171,8 +166,6 @@ public class HrDAO implements HrModel {
 
 		Connection connection = null;
 		final HumanResource employee = new HumanResource();
-		
-		System.out.println("dao " + searchString + category);
 
 		try {
 			connection = dataSource.getConnection();
@@ -198,7 +191,7 @@ public class HrDAO implements HrModel {
 						.getString("employees.resignationDate");
 				final String departmentName = resultSet
 						.getString("departments.name");
-				final String level = resultSet.getString("positions.level");
+				final String level = resultSet.getString("employees.level");
 				final String position = resultSet
 						.getString("positions.description");
 				/*
@@ -352,7 +345,6 @@ public class HrDAO implements HrModel {
 		return map;
 	}
 	
-	
 	public int retrievePositionId(String position) {
 		Connection connection = null;
 		int positionId = 0;
@@ -387,6 +379,49 @@ public class HrDAO implements HrModel {
 		}
 		return positionId;
 	}
+	
+	public Map<Integer, String> retrieveSupervisor(int departmentId) {
+		Connection connection = null;
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st
+					.executeQuery("SELECT firstname, lastname, employees.employeeId FROM tempoplus.employees, " +
+							"departments, positions WHERE isSupervisor like 'true' " +
+							"AND employees.departmentId = departments.id AND employees.positionId = positions.id " +
+							"AND departments.id = " + departmentId);
+			
+			while (resultSet.next()) {
+
+				int employeeId = resultSet.getInt("employees.employeeId");
+				String firstName = resultSet.getString("firstname");
+				String lastName = resultSet.getString("lastname");
+				String name = firstName + " " + lastName;
+				
+				// Store in an object
+				map.put(employeeId, name);
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return map;
+	}
+	
 
 	public void save(HumanResource employee) {
 		Connection connection = null;
@@ -426,5 +461,30 @@ public class HrDAO implements HrModel {
 		}
 
 	}
+	
+	public void createAccount(int employeeId){
+        Connection connection = null;
+       
+        try {
+            connection = dataSource.getConnection();
+            final PreparedStatement createUserStatement =
+                    connection.prepareStatement("INSERT INTO users (employeeId_FK, password) " +
+                            "values (?,?)");
+            createUserStatement.setInt(1, employeeId);
+            createUserStatement.setString(2, "MD5(default)");
+            createUserStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+       
+       
+    }
 
 }
