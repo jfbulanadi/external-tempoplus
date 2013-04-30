@@ -28,15 +28,15 @@ public class HrController {
 	
 	
 	@RequestMapping(value = "/employeemanager")
-	public String subPage(ModelMap modelMap) {
-		modelMap.addAttribute("employeeList", hrService.retieveAllEmployee());
+	public String subPage(ModelMap modelMap) {		
+		modelMap.addAttribute("employeeList", hrService.retrieveAllEmployee());
 		return "ViewHr";
 	}
 
 	@RequestMapping(value = "/selectAllJSON")
 	public @ResponseBody
 	List<EmployeePartialInfoDTO> subPage() {
-		return hrService.retieveAllEmployee();
+		return hrService.retrieveAllEmployee();
 
 	}
 	
@@ -160,7 +160,7 @@ public class HrController {
 		List<EmployeeFullInfoDTO> pList = tf.toExcel(files);
 
 		// pass to add_profile.jsp
-		modelMap.addAttribute("employeeList", hrService.retieveAllEmployee());
+		//modelMap.addAttribute("employeeList", hrService.retieveAllEmployee());
 		return "ViewHr";
 
 	}

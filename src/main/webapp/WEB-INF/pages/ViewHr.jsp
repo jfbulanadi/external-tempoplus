@@ -40,7 +40,6 @@
 			<h1>Employee List</h1>
 		</div>
 		<div align="right">
-
 			<button id="create-user">Create new user</button>
 		</div>
 	</div>
@@ -92,7 +91,7 @@
 	<br>
 	<br>
 
-	<!-- this one use Excel Controller -->
+	<!-- this one uses Excel Controller -->
 	<div id="accordion">
 		<h2>Select files to upload.</h2>
 		<div>

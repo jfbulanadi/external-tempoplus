@@ -73,16 +73,34 @@ public class UserService {
 		
 			
 		//----------------retrieve user information for profile viewing----------------
-		public List<User> retrieveUserInformation(String userEmail) {
+		public User retrieveUserInformation(String userEmail) {
 
-			return userDao.retrieveUserDetails(userEmail);
+			return userDao.retrieveUserDetails(userEmail).get(0);
 			
 		}
-		//----------------retrieve supervisor details---------------------------
-		public List<Employee> retrieveSupervisorInformation(int supervisorId) {
+				
+		//----------------retrieve supervisor details for profile viewing---------------------------
+		public Employee retrieveSupervisorInformation(int supervisorId) {
 
-			return userDao.findSupervisor(supervisorId);
+			return userDao.findSupervisor(supervisorId).get(0);
 		}
+		
+		
+		//----------------clear user information from object----------------
+				public List<User> clearUserInformation(String userEmail) {
+
+					return userDao.retrieveUserDetails(userEmail);
+					
+				}
+						
+		//---------------clear supervisor details from object---------------------------
+				public List<Employee> clearSupervisorInformation(int supervisorId) {
+
+					return userDao.findSupervisor(supervisorId);
+				}
+				
+		
+		
 		
 
 		//-----------------check id password input matches password from database------------
