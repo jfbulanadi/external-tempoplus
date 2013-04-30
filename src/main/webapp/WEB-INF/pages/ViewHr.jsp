@@ -82,7 +82,7 @@
 	<div id="accordion">
 		<h2>Select files to upload.</h2>
 		<div>
-			<form:form method="post" action="view_profile"
+			<form:form method="post" action="uploadUserDB"
 				modelAttribute="uploadForm" enctype="multipart/form-data">
 
 				<input name="file" type="file" />
