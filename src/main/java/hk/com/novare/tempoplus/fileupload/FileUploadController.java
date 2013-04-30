@@ -4,6 +4,7 @@ import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricService;
 import hk.com.novare.tempoplus.bmnmanager.consolidation.ConsolidationService;
 import hk.com.novare.tempoplus.bmnmanager.mantis.MantisService;
 import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3Service;
+import hk.com.novare.tempoplus.bmnmanager.timesheet.TimesheetService;
 import hk.com.novare.tempoplus.employee.EmployeeService;
 
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ public class FileUploadController {
 	@Inject MantisService mantisService;
 	@Inject EmployeeService employeeService;
 	@Inject Nt3Service nt3Service;
+	@Inject TimesheetService timesheetService;
 
 	@Inject ConsolidationService consolidationService;
 	
@@ -35,13 +37,14 @@ public class FileUploadController {
 	}
 
 	@RequestMapping(value = "/uploadfile", method = RequestMethod.POST)
-	public String handleFileUpload(@RequestParam CommonsMultipartFile[] file) throws Exception {
+	public String handleFileUpload(@RequestParam CommonsMultipartFile[] file, @RequestParam(value="category") int category) throws Exception {
 		//TODO Add Parameter Category
 		//This is not yet finished
-			int category = 5;
+			
 			
 			switch (category) {
 			case 1: biometricService.readData(file);
+			biometricService.updateTimelog();
 				break;
 			case 2: mantisService.readData(file);	
 //				mantisService.splitMantisData();
@@ -51,6 +54,7 @@ public class FileUploadController {
 			case 4: employeeService.readData(file);
 				break;
 			case 5: consolidationService.consolidateTimesheet();
+				timesheetService.createTimesheetSummary();
 			break;
 			}
 			

@@ -81,7 +81,7 @@ public class ConsolidationDao {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("UPDATE consolidations (userId_FK, biometricId_FK, mantisId_FK, nt3Id_FK, name, " +
+					.prepareStatement("UPDATE consolidations (userId, biometricId, mantisId, nt3Id, name, " +
 							" periodStart, periodEnd) VALUES (?, ?, ?, ?, ?, ?, ?, ?) WHERE id = ?");
 			
 			preparedStatement.setInt(1, consolidation.getUserId());
@@ -117,7 +117,7 @@ public class ConsolidationDao {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("SELECT userId_FK, biometricId_FK, mantisId_FK, nt3Id_FK, name, " +
+					.prepareStatement("SELECT userId, biometricId, mantisId, nt3Id, name, " +
 							" periodStart, periodEnd FROM consolidations WHERE id=?");
 			
 			preparedStatement.setInt(1, id);
@@ -158,7 +158,7 @@ public class ConsolidationDao {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("INSERT INTO consolidations (employeeId_FK, timelogId_FK, date) SELECT employeeId_FK, id, date FROM timelog WHERE employeeId_FK = ?");
+					.prepareStatement("INSERT INTO consolidations (employeeId, timelogId, date) SELECT employeeId, id, date FROM timelog WHERE employeeId = ?");
 
 			for(int id:idList) {
 				System.out.println(id);
@@ -192,7 +192,7 @@ public class ConsolidationDao {
 		sql = connection.prepareStatement("SELECT * FROM employees");
 	
 		
-		//ps = connection.prepareStatement("SELECT * FROM consolidations WHERE usersId_FK=?, biometrics_FK=?, mantises_FK=?, mantisesId_FK=?, nt3sId_FK=?, overtimesId_FK=?, officialBusinessesId_FK=?, deductionsId_FK=?, timelogAdjustmentsId_FK=?, consolidationName=?, periodStart=?, periodEnd=?, timestamp=?");
+		//ps = connection.prepareStatement("SELECT * FROM consolidations WHERE usersId=?, biometrics=?, mantises=?, mantisesId=?, nt3sId=?, overtimesId=?, officialBusinessesId=?, deductionsId=?, timelogAdjustmentsId=?, consolidationName=?, periodStart=?, periodEnd=?, timestamp=?");
 		ResultSet resultSet = sql.executeQuery();
 		
 		final ArrayList<Employee> bmn = new ArrayList<Employee>();
@@ -298,7 +298,7 @@ public class ConsolidationDao {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("INSERT INTO CONSOLIDATIONS (employeeId_FK, timelogId_FK, date) SELECT employeeId_FK, id, dateIn FROM timelogs");
+					.prepareStatement("INSERT INTO consolidations (employeeId, timelogId, date) SELECT employeeId, id, date FROM timelogs");
 
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
@@ -306,6 +306,7 @@ public class ConsolidationDao {
 		} catch (SQLException e) {
 			// TODO Create Custom Exception
 			System.out.println("Error in Consolidation Phase1");
+			e.printStackTrace();
 		} finally {
 			if (connection != null) {
 				try {
@@ -324,12 +325,12 @@ public class ConsolidationDao {
 			connection = dataSource.getConnection();
 			System.out.println("Phase 2");
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("UPDATE consolidations SET mantisId_FK = " +
+					.prepareStatement("UPDATE consolidations SET mantisId = " +
 							"(SELECT id FROM mantises WHERE employeeId = ? AND startDate = ?) WHERE" +
-							" employeeId_FK = ? AND date = ?");
+							" employeeId = ? AND date = ?");
 
 			for (TimeLogging timeLog: list) {
-//				System.out.println("empID:["+timeLog.getEmployeeId()+"] date:["+timeLog.getDate()+"]");
+
 				preparedStatement.setInt(1, timeLog.getEmployeeId());
 				preparedStatement.setString(2, timeLog.getDate());
 				preparedStatement.setInt(3, timeLog.getEmployeeId());
@@ -360,9 +361,9 @@ public class ConsolidationDao {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("UPDATE consolidations SET nt3Id_FK = " +
+					.prepareStatement("UPDATE consolidations SET nt3Id = " +
 							"(SELECT id FROM nt3s WHERE employeeId = ? AND startDate = ?) WHERE" +
-							" employeeId_FK = ? AND date = ?");
+							" employeeId = ? AND date = ?");
 
 			for (TimeLogging timeLog: list) {
 				preparedStatement.setInt(1, timeLog.getEmployeeId());

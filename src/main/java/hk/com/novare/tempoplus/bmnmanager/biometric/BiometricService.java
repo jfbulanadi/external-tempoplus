@@ -70,6 +70,15 @@ public class BiometricService {
 
 	}
 	
+	public ArrayList<DailyBiometric> retrieveBiometricRecordsPerDay() {
+		
+		ArrayList<DailyBiometric> list = new ArrayList<DailyBiometric>();
+		
+		
+		
+		return list;
+	}
+	
 	public void updateTimelog() {		
 		timelogDAO.updateTimeLoggingDataPhase1(biometricDao.retrieveTimeInData());
 		timelogDAO.updateTimeLoggingDataPhase2(biometricDao.retrieveTimeOutData());		

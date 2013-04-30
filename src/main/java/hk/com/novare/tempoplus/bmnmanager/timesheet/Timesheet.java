@@ -1,5 +1,6 @@
 package hk.com.novare.tempoplus.bmnmanager.timesheet;
 
+import hk.com.novare.tempoplus.bmnmanager.biometric.DailyBiometric;
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
 import hk.com.novare.tempoplus.employee.Employee;
@@ -12,7 +13,8 @@ public class Timesheet {
 	private TimeLogging timelog;
 	private Mantis mantis;
 	private Nt3 nt3;
-
+	private DailyBiometric dailyBiometric;
+	
 	public TimeLogging getTimelog() {
 		return timelog;
 	}
@@ -57,4 +59,13 @@ public class Timesheet {
 		this.nt3 = nt3;
 	}
 
+	public DailyBiometric getDailyBiometric() {
+		return dailyBiometric;
+	}
+
+	public void setDailyBiometric(DailyBiometric dailyBiometric) {
+		this.dailyBiometric = dailyBiometric;
+	}
+
+	
 }
