@@ -33,7 +33,6 @@ public class TimeLogging {
 	public void setEmployeeId(int employeeId) {
 		this.employeeId = employeeId;
 	}
-
 	public String getDate() {
 		return date;
 	}

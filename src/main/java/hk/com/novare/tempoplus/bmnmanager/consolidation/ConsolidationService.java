@@ -1,6 +1,7 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
 import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDao;
+import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.employee.EmployeeDao;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingDao;
@@ -36,7 +37,7 @@ public class ConsolidationService {
 	}
 
 
-	public ArrayList<Employee> viewConsolidated() throws SQLException {
+	public ArrayList<Timesheet> viewConsolidated() throws SQLException {
 		return consolidationDao.viewConsolidated();
 	}
 
