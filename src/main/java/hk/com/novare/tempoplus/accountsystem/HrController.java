@@ -25,7 +25,7 @@ public class HrController {
 	@RequestMapping(value = "/employeemanager")
 	public String subPage(ModelMap modelMap) {
 		
-		modelMap.addAttribute("employeeList", hrService.retieveAllEmployee());
+		modelMap.addAttribute("employeeList", hrService.retrieveAllEmployee());
 		
 		return "ViewHr";
 	}
@@ -33,7 +33,7 @@ public class HrController {
 	@RequestMapping(value = "/selectAllJSON")
 	public @ResponseBody
 	List<EmployeePartialInfoDTO> subPage() {
-		return hrService.retieveAllEmployee();
+		return hrService.retrieveAllEmployee();
 
 	}
 	

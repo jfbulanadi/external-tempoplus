@@ -13,7 +13,7 @@ public class HrService {
 	@Autowired
 	HrDAO hrDAO;
 
-	public List<EmployeePartialInfoDTO> retieveAllEmployee() {
+	public List<EmployeePartialInfoDTO> retrieveAllEmployee() {
 		List<HumanResource> selectAllEmployee = hrDAO.selectAll();
 		List<EmployeePartialInfoDTO> employeePartialInfoDTOs = new ArrayList<EmployeePartialInfoDTO>();
 

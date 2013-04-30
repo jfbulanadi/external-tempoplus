@@ -5,11 +5,10 @@
 <html lang = "en">
 <head>
 <meta charset ="utf-8"/>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 
-<title>HR</title>
+<title>Tempoplus HR</title>
 
 <script>
 $(function() {
@@ -27,7 +26,9 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 	<div align = "right"> 
 		<table>
 			<tr>
-			<td>Hi ${userId}!</td>
+			<td>Hi ${userFirstName}!</td>
+			</tr>
+			<tr>
 			<td><a href = "logout">Logout</a></td>
 			</tr>
 		</table>
@@ -50,18 +51,22 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 					<td>  </td>
 					<td>  </td>
 				</tr>
-						
-					<c:forEach items="${employeeDetailsList}" var="employeeDetailsList">
-						<tr>
-							<th>${employeeDetailsList.firstname} ${employeeDetailsList.middlename} ${employeeDetailsList.lastname} </th>
+						<<tr align = "center">
+							<th><b>
+							${employeeDetailsList.firstname} ${employeeDetailsList.middlename} ${employeeDetailsList.lastname} 
+							</b></th>
 							
+							<tr align = "center">
+								<td><b>${employeeDetailsList.email}</b></td>
+								<td></td>
+							</tr>
 						</tr>
-						
+					
 						<tr>
-							<td><b>${employeeDetailsList.email}</b></td>
+							<td>  </td>
 							<td>  </td>
 						</tr>
-						<tr>
+							<tr>
 							<td>  </td>
 							<td>  </td>
 						</tr>
@@ -94,16 +99,12 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 							<td>Hire Date:  ${employeeDetailsList.hireDate} </td>
 							<td>Regularization Date: ${employeeDetailsList.regularizationDate} </td>
 						</tr>
-						<c:forEach items="${supervisorDetails}" var="supervisorDetails">
-							<tr>
-									<td>Supervisor: ${supervisorDetails.firstname} ${supervisorDetails.lastname}</td>
-									<td>Supervisor's Email: ${supervisorDetails.email}</td>
-							</tr>
-						</c:forEach>
-					
-				
-					</c:forEach>
-			
+						
+						<tr>
+							<td>Supervisor: ${supervisorDetails.firstname} ${supervisorDetails.lastname}</td>
+							<td>Supervisor's Email: ${supervisorDetails.email}</td>
+						</tr>
+									
 				</tbody>	
 		
 			</table>
