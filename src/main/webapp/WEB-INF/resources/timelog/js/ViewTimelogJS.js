@@ -217,6 +217,7 @@ function SearchTimeLog()
 			{
 			idd = Employee_Id;
 //			Employee_Id = 0;
+
 			name = id;
 			}
 		$.ajaxSetup({async:false});
