@@ -58,6 +58,9 @@ public class TimeLoggingService implements TimelogServiceInt{
 				sOut = yDate + " " + sOut;
 			}
 			
+
+			sOut = yDate + " " + sOut;
+
 			if(timelogDAOInt.checkTime(yDate,id)==0)
 			{
 				cTime = false;
@@ -96,17 +99,15 @@ public class TimeLoggingService implements TimelogServiceInt{
 				{	
 					//check first if late
 					tIn = timelogDAOInt.getTimeIn(yDate,id);
-					
+
 					SimpleDateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
 					SimpleDateFormat printFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					java.util.Date dateIn = parseFormat.parse(tIn);
 					
 					tIn=printFormat.format(dateIn);
+
 					cLate = checkLate(yDate,id,sIn,tIn);
 					
-					System.out.println("sIn: " + sIn);
-					System.out.println("tIn: " + tIn);
-					System.out.println("cLate: "+ cLate);
 					
 					if(cOut)
 					{
@@ -114,9 +115,6 @@ public class TimeLoggingService implements TimelogServiceInt{
 						try {
 							java.util.Date dateOut = parseFormat.parse(tOut);
 							tOut = printFormat.format(dateOut);
-							
-							System.out.println("sOut: " + sOut);
-							System.out.println("tOut: " + tOut);
 							
 							flagUndertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
 							flagOvertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
@@ -293,6 +291,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 			ntime = "";
 			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Calendar c = Calendar.getInstance();
+			System.out.println(tin);
 			c.setTime(time.parse(tin));
 			c.add(Calendar.MINUTE,n);
 			ntime = time.format(c.getTime());
@@ -397,11 +396,13 @@ public class TimeLoggingService implements TimelogServiceInt{
 			if(timelogDAOInt.isSupervisor(id))
 			{
 				user = "manager";
+
 			}
 			else
 			{
 				user = "";
 			}
+
 		
 			
 			//hr

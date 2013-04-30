@@ -80,7 +80,9 @@ function fetch(d){
 	
 	document.getElementById('result').style.visibility = 'visible';
 	
+	
 	$('#employee').val(lastname +", " +firstname);
+	
 	
 	var rows = $('#tblSearch tr');
 	var length = $('#tblSearch tr').length;
@@ -216,7 +218,8 @@ function SearchTimeLog()
 		else if(view =="hr")
 			{
 			idd = Employee_Id;
-			//Employee_Id = 0;
+//			Employee_Id = 0;
+
 			name = id;
 			}
 		$.ajaxSetup({async:false});
@@ -250,8 +253,14 @@ function SearchTimeLog()
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
+										if(item.timeOut == null){
+											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="</tr>";
+										}else{
+										
 										tableStr +="<td>"+item.timeOut+"</td><td>"+item.duration+"</td>";
 										tableStr +="</tr>";
+										}
 									}); 
 								 	tableStr +="</tbody>";
 								 	$('#tblTimeLog').append(tableStr);
@@ -282,8 +291,14 @@ function SearchTimeLog()
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
+										if(item.timeOut == null){
+											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="</tr>";
+										}else{
+										
 										tableStr +="<td>"+item.timeOut+"</td><td>"+item.duration+"</td>";
 										tableStr +="</tr>";
+										}
 									}); 
 								 	tableStr +="</tbody>";
 								 	$('#tblTimeLog').append(tableStr);
@@ -313,8 +328,14 @@ function SearchTimeLog()
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
+										if(item.timeOut == null){
+											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="</tr>";
+										}else{
+										
 										tableStr +="<td>"+item.timeOut+"</td><td>"+item.duration+"</td>";
 										tableStr +="</tr>";
+										}
 									}); 
 								 	tableStr +="</tbody>";
 								 	$('#tblTimeLog').append(tableStr);
