@@ -35,6 +35,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 		cLate = false;
 		final String yDate = getDate();
 		final int cUser = timelogDAOInt.countUser();
+		int c;
 		for(i = 0; i<cUser; i++)
 		{
 			id = timelogDAOInt.getUserID(i);
@@ -43,12 +44,24 @@ public class TimeLoggingService implements TimelogServiceInt{
 			sInF = timelogDAOInt.getShiftInReal(desc);
 			sInF =  yDate + " " + sInF;
 			
+			
 			sIn = getShiftIn(id,desc,sInF);
-			sIn = yDate + " " + sIn;
 			
 			sOut = timelogDAOInt.getShiftOut(id);
 
+
 			sOut = yDate + " " + sOut;
+
+			c = sIn.compareTo(yDate + " " +"22:00:00");
+			if(c>=0)
+			{
+				sOut = nowDate() + " " + sOut;
+			}
+			else
+			{
+				sOut = yDate + " " + sOut;
+			}
+			
 
 			if(timelogDAOInt.checkTime(yDate,id)==0)
 			{
@@ -84,7 +97,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 			else
 			{
 				//Insert flag
-				if(cIn == true)
+				if(cIn)
 				{	
 					//check first if late
 					tIn = timelogDAOInt.getTimeIn(yDate,id);
@@ -97,12 +110,17 @@ public class TimeLoggingService implements TimelogServiceInt{
 
 					cLate = checkLate(yDate,id,sIn,tIn);
 					
-					if(cOut==true)
+			
+					if(cOut)
+
 					{
 						tOut = timelogDAOInt.getTimeOut(yDate,id);
 						try {
 							java.util.Date dateOut = parseFormat.parse(tOut);
 							tOut = printFormat.format(dateOut);
+							
+							System.out.println("sOut: " + sOut);
+							System.out.println("tOut: " + tOut);
 							
 							flagUndertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
 							flagOvertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
@@ -131,6 +149,13 @@ public class TimeLoggingService implements TimelogServiceInt{
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DATE, -1);
+			return dateFormat.format(cal.getTime());
+		}
+		private String nowDate()
+		{
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar cal = Calendar.getInstance();
+			//cal.add(Calendar.DATE);
 			return dateFormat.format(cal.getTime());
 		}
 		//Get Shift In
