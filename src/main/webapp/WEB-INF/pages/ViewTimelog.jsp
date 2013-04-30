@@ -61,7 +61,7 @@ Employee Lastname/Firstname: <input type="text" id="empName" /> <input type="but
 		<tr>
 		<td>
 		<div id = "result">
-		Employee Name:<input type = "text" id ="employee" readonly="readonly"/>		
+		Employee Name: <input type = "text" id ="employee" readonly="readonly" style="border:solid 0px;height:20px;width:160px;"/>		
 		</div>
 		</td>
 		</tr>
