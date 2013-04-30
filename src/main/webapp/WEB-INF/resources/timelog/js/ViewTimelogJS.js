@@ -216,7 +216,7 @@ function SearchTimeLog()
 		else if(view =="hr")
 			{
 			idd = Employee_Id;
-			Employee_Id = 0;
+			//Employee_Id = 0;
 			name = id;
 			}
 		$.ajaxSetup({async:false});

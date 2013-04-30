@@ -39,9 +39,16 @@ public class TimeLoggingService implements TimelogServiceInt{
 		{
 			id = timelogDAOInt.getUserID(i);
 			desc = timelogDAOInt.getShiftDesc(id);
+			
 			sInF = timelogDAOInt.getShiftInReal(desc);
-			sIn = getShiftIn(id,desc,sInF); 
+			sInF =  yDate + " " + sInF;
+			
+			sIn = getShiftIn(id,desc,sInF);
+			sIn = yDate + " " + sIn;
+			
 			sOut = timelogDAOInt.getShiftOut(id);
+			sOut = yDate + " " + sOut;
+			
 			if(timelogDAOInt.checkTime(yDate,id)==0)
 			{
 				cTime = false;
@@ -82,7 +89,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 					tIn = timelogDAOInt.getTimeIn(yDate,id);
 					
 					SimpleDateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
-					SimpleDateFormat printFormat = new SimpleDateFormat("HH:mm:ss");
+					SimpleDateFormat printFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					java.util.Date dateIn = parseFormat.parse(tIn);
 					
 					tIn=printFormat.format(dateIn);
@@ -249,7 +256,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 		{
 			String ntime;
 			ntime = "";
-			SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
+			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Calendar c = Calendar.getInstance();
 			c.setTime(time.parse(tin));
 			c.add(Calendar.HOUR,n);
@@ -260,7 +267,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 		{
 			String ntime;
 			ntime = "";
-			SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
+			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Calendar c = Calendar.getInstance();
 			c.setTime(time.parse(tin));
 			c.add(Calendar.MINUTE,n);
