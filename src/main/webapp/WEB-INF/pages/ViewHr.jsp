@@ -13,8 +13,10 @@
 	href="../resources/account/css/viewhr.css"></link>
 
 <link rel="stylesheet"
-	href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+	href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
+
 <script src="../resources/account/js/jquery-1.9.1.js"></script>
+<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.min.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.widgets.min.js"></script>
 <script src="../resources/account/js/jquery-ui.js"></script>
@@ -77,18 +79,19 @@
 	<br>
 
 	<!-- this one use Excel Controller -->
-	<div>
+	<div id="accordion">
+		<h2>Select files to upload.</h2>
+		<div>
+			<form:form method="post" action="view_profile"
+				modelAttribute="uploadForm" enctype="multipart/form-data">
 
-		<form:form method="post" action="view_profile"
-			modelAttribute="uploadForm" enctype="multipart/form-data">
+				<input name="file" type="file" />
+				<br />
+				<input type="submit" value="Upload" id="uploadStatus"
+					onclick="uploadStatus()" />
 
-			<h2>Select files to upload.</h2>
-
-			<input name="file" type="file" />
-			<br />
-			<input type="submit" value="Upload" id="uploadStatus"
-				onclick="uploadStatus()" />
-		</form:form>
+			</form:form>
+		</div>
 	</div>
 
 	<!-- popup registration -->
@@ -110,7 +113,9 @@
 				</tr>
 				<tr>
 					<td>Department :</td>
-					<td><input size="50" id="department" /></td>
+					<td><select class="department" id=selectDepartment>
+						
+					</select>
 				</tr>
 				<tr>
 					<td>Biometrics :</td>
@@ -126,7 +131,9 @@
 				</tr>
 				<tr>
 					<td>Position :</td>
-					<td><input size="50" id="position" /></td>
+					<td><select id ="selectPosition">
+
+					</select></td>
 				</tr>
 				<tr>
 					<td>Level :</td>
@@ -138,11 +145,11 @@
 				</tr>
 				<tr>
 					<td>Hired Date :</td>
-					<td><input size="50" id="hiredDate" /></td>
+					<td><input class = "datepicker" size="50" id="hiredDate" /></td>
 				</tr>
 				<tr>
 					<td>Supervisor Name :</td>
-					<td><input size="50" id="supervisorid" /></td>
+					<td><input size="50" id="supervisorName" /></td>
 				</tr>
 				<tr>
 					<td>Supervisor Email :</td>
@@ -153,12 +160,8 @@
 					<td><input size="50" id="locAssign" /></td>
 				</tr>
 			</table>
-			<div id="buttons">
-						<div class="button_n"><input type="button" id = "cancelBtn" value="Exit"/></div>
-						<div class="button_n"><input type="button" id = "createBtn" value="Create Employee"/></div>
-					</div>
 		</form>
-	</div>	
+	</div>
 
 	<!-- popup view -->
 	<div id="dialog-formFullInformation" title="Employee Full Information"
@@ -166,19 +169,20 @@
 		<table>
 			<tr>
 				<td>First Name :</td>
-				<td><input size="50" id="editfirstName" name = "firstname" disabled /></td>
+				<td><input size="50" id="editfirstName" name="firstname"
+					disabled /></td>
 			</tr>
 			<tr>
 				<td>Middle Name :</td>
-				<td><input size="50" id="editMiddleName" disabled  /></td>
+				<td><input size="50" id="editMiddleName" disabled /></td>
 			</tr>
 			<tr>
 				<td>Last Name :</td>
-				<td><input size="50" id="editLastName" disabled  /></td>
+				<td><input size="50" id="editLastName" disabled /></td>
 			</tr>
 			<tr>
 				<td>Department :</td>
-				<td><input size="50" id="editDepartment" disabled  /></td>
+				<td><input size="50" id="editDepartment" disabled /></td>
 			</tr>
 			<tr>
 				<td>Biometrics :</td>
@@ -186,19 +190,19 @@
 			</tr>
 			<tr>
 				<td>Shift :</td>
-				<td><input size="20" id="editShift" disabled  /></td>
+				<td><input size="20" id="editShift" disabled /></td>
 			</tr>
 			<tr>
 				<td>Employee ID :</td>
-				<td><input size="10" id="editEmployeeId" disabled  /></td>
+				<td><input size="10" id="editEmployeeId" disabled /></td>
 			</tr>
 			<tr>
 				<td>Position :</td>
-				<td><input size="50" id="editPosition" disabled  /></td>
+				<td><input size="50" id="editPosition" disabled /></td>
 			</tr>
 			<tr>
 				<td>Level :</td>
-				<td><input size="2" id="editLevel" disabled  /></td>
+				<td><input size="2" id="editLevel" disabled /></td>
 			</tr>
 			<tr>
 				<td>Employee Email :</td>
@@ -210,7 +214,7 @@
 			</tr>
 			<tr>
 				<td>Regularization Date :</td>
-				<td><input size="50" id="editRegularizationDate" disabled/></td>
+				<td><input size="50" id="editRegularizationDate" disabled /></td>
 			</tr>
 			<tr>
 				<td>Resignation Date :</td>
@@ -230,10 +234,28 @@
 			</tr>
 		</table>
 		<div id="buttons">
-			<div class="button_n"><input type="button" id = "exitBtn" value="Exit"/></div>
-			<div class="button_n"><input type="button" id = "editBtn" value="Edit"/></div>
-			
-		</div>
+				<div class="button_n">
+					<input type="button" id="editBtn" value="Edit" />
+				</div>
+				<div class="button_n">
+					<input type="button" id="exitBtn" value="Exit" />
+				</div>
+			</div>
+
+	</div>
+
+	<div id="dialog-confirm" title="Do you want to save the profile?" style="display: none">
+		<p>
+			<span class="ui-icon ui-icon-alert"
+				style="float: left; margin: 0 7px 20px 0;"></span> Are you sure?
+		</p>
+	</div>
+	
+	<div id="dialog-confirm-create" title="Do you want to create this profile?" style="display: none">
+		<p>
+			<span class="ui-icon ui-icon-alert"
+				style="float: left; margin: 0 7px 20px 0;"></span> Are you sure?
+		</p>
 	</div>
 </body>
 </html>
