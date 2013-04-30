@@ -118,10 +118,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 						try {
 							java.util.Date dateOut = parseFormat.parse(tOut);
 							tOut = printFormat.format(dateOut);
-							
-							System.out.println("sOut: " + sOut);
-							System.out.println("tOut: " + tOut);
-							
+
 							flagUndertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
 							flagOvertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
 						} catch (ParseException e) {
@@ -297,7 +294,6 @@ public class TimeLoggingService implements TimelogServiceInt{
 			ntime = "";
 			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Calendar c = Calendar.getInstance();
-			System.out.println(tin);
 			c.setTime(time.parse(tin));
 			c.add(Calendar.MINUTE,n);
 			ntime = time.format(c.getTime());

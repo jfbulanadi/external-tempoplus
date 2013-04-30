@@ -6,72 +6,84 @@ $(document).ready(function() {
 		$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
 		$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
 		$( "#SearchTimeLog" ).click(SearchTimeLog); 
-		$( "#SearchName" ).click(SearchName); 
 	
 		id = $("#empId").val(); //empid
 		document.getElementById('empId').style.visibility = 'hidden';
 	//	var id = 123;
+		
+	$("#SearchButton").click(function() {
+		var newresponse;
+		var empname = $('#empName').val();
+							
+				$.ajax({
+					type: "POST",
+			        url: "/tempoplus/timelog/searchEmployee",
+			    	data: {'empName': empname},
+			    	success: function(response){
+			    		newresponse = response;
+			    		if(newresponse =="OK"){
+//			    			document.getElementById('HrSearch').style.visibility = 'visible';
+			    			$("#HrSearch").dialog({
+			    				
+								maxWidth : 550,
+								maxHeight : 600,
+								width : 550,
+								height : 600,
+								modal : true
+								
+							});
+			    			
+			    			$('#tblSearch tbody').remove();
+			    			$('#tblSearch thead').remove();
+			    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
+			    			$.ajax({		
+			    				
+			    			 	type: "POST",
+			    		        url: "/tempoplus/timelog/retrieveEmployee",
+			    		       	data: {'empName': empname},
+			    		    
+			    		       	success: function(response) {
+			    		       		
+			    		        	$.each(response,function(keys, values){
+
+			    		        		tblList += "<tr ondblclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
+			    						tblList +="<td>"+values.employeeId+"</td><td>"+values.lastname+"</td>";
+			    						tblList +="<td>"+values.firstname+"</td><td>"+values.middlename+"</td>";
+			    						tblList +="</tr>";	
+
+			    		        	});
+			    		        	tblList += "</tbody>";
+			    		        	$('#tblSearch').append(tblList);
+			    		        	
+			    		        	
+			    		        },
+			    		        error: function(e) {
+			    		            alert("Error: " + e);
+			    		            
+			    		        }
+	    			
+			    			}).done(
+						    		
+							    	function(){
+							    		my_jQuery3("#tblSearch")
+							    		 .tablesorter({widthFixed: false, widgets: ['zebra']});
+									});
+			    			
+			    		}else{
+			    	
+			    			alert("No Employee Found");
+			    		}
+			    		
+			    	},
+					
+				});
+	});
 
 });
 
-function SearchName()
-{
-	var newresponse;
-	var empname = $('#empName').val();
-	
-	$.ajax({
-		type: "POST",
-        url: "/tempoplus/timelog/searchEmployee",
-    	data: {'empName': empname},
-    	success: function(response){
-    		newresponse = response;
-    		if(newresponse =="OK"){
-    			document.getElementById('HrSearch').style.visibility = 'visible';
-    			
-    			$('#tblSearch tbody').remove();
-    			var tblList = "<tbody>";
-    			$.ajax({		
-    				
-    			 	type: "POST",
-    		        url: "/tempoplus/timelog/retrieveEmployee",
-    		       	data: {'empName': empname},
-    		       
-    		       	success: function(response) {
-    		    
-    		        	$.each(response,function(keys, values){
-
-    		        		tblList += "<tr onclick='fetch(this)' id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
-    						tblList +="<td>"+values.employeeId+"</td><td>"+values.lastname+"</td>";
-    						tblList +="<td>"+values.firstname+"</td><td>"+values.middlename+"</td>";
-    						tblList +="</tr>";	
-
-    		        	});
-    		        	tblList += "</tbody>";
-    		        	$('#tblSearch').append(tblList);
-    		        	
-    		        	
-    		        },
-    		        error: function(e) {
-    		            alert("Error: " + e);
-    		            
-    		        }
-    			
-    			
-    			});
-    			
-    			
-    		}else{
-    	
-    			alert("No Employee Found");
-    		}
-    		
-    	},
-		
-	});
-
-}
 
 function fetch(d){
+	$("#HrSearch").dialog('close');
 	var rowid = d.id;
 	var delimited = rowid.split(",");
 	Employee_Id = delimited[0];
@@ -83,9 +95,8 @@ function fetch(d){
 	
 	$('#employee').val(lastname +", " +firstname);
 	
-	
-	var rows = $('#tblSearch tr');
-	var length = $('#tblSearch tr').length;
+	var rows = $('#tblSearch tbody tr');
+	var length = $('#tblSearch tbody tr').length;
 	for(var i= 0; i< length; i++){
 		rows[i].style.background = "";
 	}

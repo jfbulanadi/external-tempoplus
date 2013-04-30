@@ -36,7 +36,7 @@
 </table>
 <input type ="text" value = "${id}" id = "empId"/>
 
-<br><br><br><br>
+<br>
 <table id ="tblAll">
 <tr>
 <td>
@@ -44,17 +44,17 @@
 Subordinates: <select id ="sub"> </select>
 </div>
 <div id="SearchBox">
-Employee Lastname/Firstname: <input type="text" id="empName" /> <input type="button" id="SearchName" value="Search">
+Employee Lastname/Firstname: <input type="text" id="empName" /> <button id="SearchButton">Search</button>
 </div>
 </td>
 </tr>
-
-
 		<tr>
-		<td>
-		<div id ="HrSearch">
-			<table id ="tblSearch">
-			</table>
+		<td  id ="tdTimeLogAll">
+		<div id ="HrSearch" title="List of Employees">
+			<center>
+				<table id ="tblSearch" class="tablesorter" style="cursor:pointer">
+				</table>
+			</center>
 		</div>
 		</td>
 		</tr>
