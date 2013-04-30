@@ -29,7 +29,10 @@ $(document).ready(function() {
 		cssGoto:   '.gotoPage',		
 	};
 	$("table").tablesorter({
-		widgets: ['zebra', 'filter']
+		widgets: ['zebra', 'filter'],
+		headers: {
+			0 : { width: "10px" }
+		}
 	}).
 	tablesorterPager(pagerOptions);	
 	
@@ -68,6 +71,8 @@ $(document).ready(function() {
 function showToForm(myId) {
 	var trId = myId.id;
 	var firstname = null;
+	var middlename = null;
+	var lastname = null;
 	var timein = null;
 	var timeout = null;
 	console.log(trId);
@@ -75,15 +80,17 @@ function showToForm(myId) {
 	  var delimited = trId.split(",");
 	  trId = delimited[0];
 	  firstname = delimited[1];
-	  timein = delimited[2];
-	  timeout = delimited[3];
+	  middlename = delimited[2];
+	  lastname = delimited[3];
+	  timein = delimited[4];
+	  timeout = delimited[5];
 	  
 		
-	console.log(trId);
-	console.log(firstname);
+	//console.log(trId);
+	//console.log(firstname);
 	
 	 $("#txtemployeeid").val(trId);
-	 $("#txtfirstname").val(firstname);
+	 $("#txtfirstname").val(firstname + " " + middlename + " " + lastname);
 	 $("#txttimein").val(timein);
 	 $("#txttimeout").val(timeout);
 }
@@ -98,12 +105,12 @@ function showToForm(myId) {
 
 		<div>Employee ID</div>
 		<div>
-			<input type="text" id="txtemployeeid" />
+			<input type="text" id="txtemployeeid" size="8" disabled />
 		</div>
 
-		<div>First name:</div>
+		<div>Full name:</div>
 		<div>
-			<input type="text" id="txtfirstname" />
+			<input type="text" id="txtfirstname" size="45" disabled />
 		</div>
 
 		<div>Time in</div>
@@ -139,38 +146,35 @@ function showToForm(myId) {
 	<table class="tablesorter">
 		<thead>
 			<tr>
-				<th>Employee ID</th>
-				<th>Biometric ID</th>
+				<th>Emp ID</th>
+				<th>Bio ID</th>
 				<th>First name</th>
 				<th>Middle name</th>
 				<th>Last name</th>
-				<th>Level</th>
-				<th>Position</th>
-				<th>Department</th>
 				<th>Email</th>
+				<th>Date</th>
 				<th>Time in</th>
 				<th>Time out</th>
+				<th>Duration</th>
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${content}" var="tableConsolidated_contents">
-				<tr
-					id="${tableConsolidated_contents.employeeId},${tableConsolidated_contents.firstname},7:00,10:00"
-					onClick=showToForm(this)>
-					<td>${tableConsolidated_contents.employeeId}</td>
-					<td>100</td>
-					<td>${tableConsolidated_contents.firstname}</td>
-					<td>${tableConsolidated_contents.middlename}</td>
-					<td>${tableConsolidated_contents.lastname}</td>
-					<td>1</td>
-					<td>SE1</td>
-					<td>SEG</td>
-					<td>${tableConsolidated_contents.firstname}@novare.com.hk</td>
-					<td>7:00</td>
-					<td>10:00</td>
+		
+			<c:forEach items="${content}" var="timesheet">
+				<tr id="${timesheet.employee.employeeId},${timesheet.employee.firstname},${timesheet.employee.middlename},${timesheet.employee.lastname},${timesheet.timelog.timeIn},${timesheet.timelog.timeOut}" onclick=showToForm(this)>
+					<td>${timesheet.employee.employeeId}</td>
+					<td>${timesheet.employee.biometricId}</td>
+					<td>${timesheet.employee.firstname}</td>
+					<td>${timesheet.employee.middlename}</td>
+					<td>${timesheet.employee.lastname}</td>
+					<td>${timesheet.employee.email}</td>
+					<td>${timesheet.timelog.date}</td>
+					<td>${timesheet.timelog.timeIn}</td>
+					<td>${timesheet.timelog.timeOut}</td>
+					<td>${timesheet.timelog.duration}</td>
 				</tr>
 			</c:forEach>
-
+		
 
 		</tbody>
 	</table>
