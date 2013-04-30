@@ -238,7 +238,6 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			}
 			resultSet.close();*/
 			
-			
 			//tinanggal ko ung timeIn at timeOut na field - ginawa ko kasing default to null sa db
 			final PreparedStatement ps = connection
 					.prepareStatement("INSERT into timelogs(employeeId,date,duration,flag) VALUES(?,?,?,?)");
@@ -677,39 +676,6 @@ Connection connection = null;
 		
 		}
 
-		/*@Override
-		public int getLevelId(int id) throws DataAccessException {
-			
-			
-			int levelID=0;
-			Connection connection = null;
-			try {
-				connection = dataSource.getConnection();
-				final PreparedStatement ps = connection
-						.prepareStatement("SELECT positions.level FROM positions inner join employees on employees.positionId = positions.id where employees.employeeId = ?");
-				ps.setInt(1, id);
-				final ResultSet resultSet = ps.executeQuery();
-				while(resultSet.next())
-				{
-					levelID = resultSet.getInt(1);
-				}
-				
-			} catch (SQLException e) {
-		
-				e.printStackTrace();
-			}finally {
-				// Always close the connection. Error or not.
-				if (connection != null) {
-					try {
-						connection.close();
-					} catch (SQLException e) {
-						throw new DataAccessException("cannot close", e);
-					}
-				}
-			}
-			return levelID;
-		}
-*/
 		
 		@Override
 		public boolean isSupervisor(int id) throws DataAccessException {
@@ -742,38 +708,6 @@ Connection connection = null;
 			return userType;
 		}
 		
-		/*@Override
-		public String getPosition(int id) throws DataAccessException {
-			
-			String position = "";
-			Connection connection = null;
-			try {
-				connection = dataSource.getConnection();
-				final PreparedStatement ps = connection
-						.prepareStatement("SELECT positions.description FROM positions inner join employees on positions.id = employees.positionId where employees.employeeId = ?");
-				ps.setInt(1, id);
-				final ResultSet resultSet = ps.executeQuery();
-				while(resultSet.next())
-				{
-					position = resultSet.getString(1);
-				}
-				
-			} catch (SQLException e) {
-			
-				e.printStackTrace();
-			}finally {
-				// Always close the connection. Error or not.
-				if (connection != null) {
-					try {
-						connection.close();
-					} catch (SQLException e) {
-						throw new DataAccessException("cannot close", e);
-					}
-				}
-			}
-			return position;
-		}*/
-		
 		@Override
 		public String isHR(int id) throws DataAccessException {
 			String position = "";
@@ -803,6 +737,39 @@ Connection connection = null;
 				}
 			}
 			return position;
+		}
+		
+		@Override
+		public int checkData(int id, String from, String to) throws DataAccessException
+		{
+		int cData;
+		cData=0;
+		Connection connection = null;
+		try {
+			connection = dataSource.getConnection();
+			final PreparedStatement ps = connection
+					.prepareStatement("SELECT count(*) FROM timelogs WHERE employeeId = ? AND date between ? AND ?");
+			ps.setInt(1, id);
+			ps.setString(2, from);
+			ps.setString(3, to);
+			final ResultSet resultSet = ps.executeQuery();
+			while (resultSet.next()) {
+				cData = resultSet.getInt(1);
+			}
+			resultSet.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally
+		{
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					throw new DataAccessException("cannot close", e);
+				}
+			}
+		}
+		return cData;
 		}
 		
 		@Override
@@ -1079,6 +1046,8 @@ Connection connection = null;
 		    return final_total_hours;	
 
 		}
+
+		
 
 		
 

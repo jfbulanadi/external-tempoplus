@@ -13,7 +13,7 @@ public interface TimelogServiceInt {
 	 * @throws ParseException
 	 */
 	void flaggingProcess() throws DataAccessException, ParseException;
-	String ValidateInput(int id,String name,String from , String to) throws ParseException;
+	String ValidateInput(int id,String name,String from , String to) throws ParseException, DataAccessException;
 	
 	List retrieveSubordinates(int id) throws DataAccessException;
 	List<TimeLogging> retrieveTimelog(String name, String from, String to) throws DataAccessException;

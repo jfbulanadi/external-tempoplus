@@ -28,7 +28,6 @@ public class TimeLoggingService implements TimelogServiceInt{
 	
 	@Override
 	public void flaggingProcess() throws DataAccessException, ParseException {
-		// TODO Auto-generated method stub
 		int id;
 		String desc,tIn,tOut,sIn,sInF,sOut;
 		boolean cTime,cIn,cOut,cLate;
@@ -49,9 +48,6 @@ public class TimeLoggingService implements TimelogServiceInt{
 			
 			sOut = timelogDAOInt.getShiftOut(id);
 
-
-			sOut = yDate + " " + sOut;
-
 			c = sIn.compareTo(yDate + " " +"22:00:00");
 			if(c>=0)
 			{
@@ -62,6 +58,11 @@ public class TimeLoggingService implements TimelogServiceInt{
 				sOut = yDate + " " + sOut;
 			}
 			
+
+
+
+			sOut = yDate + " " + sOut;
+
 
 			if(timelogDAOInt.checkTime(yDate,id)==0)
 			{
@@ -99,6 +100,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 				//Insert flag
 				if(cIn)
 				{	
+					
 					//check first if late
 					tIn = timelogDAOInt.getTimeIn(yDate,id);
 
@@ -110,7 +112,8 @@ public class TimeLoggingService implements TimelogServiceInt{
 
 					cLate = checkLate(yDate,id,sIn,tIn);
 					
-			
+
+					
 					if(cOut)
 
 					{
@@ -127,13 +130,13 @@ public class TimeLoggingService implements TimelogServiceInt{
 					}
 					else
 					{
-						timelogDAOInt.updateFlag(yDate,id,timelogDAOInt.getFlagId("No TimeOut"));
+						timelogDAOInt.updateFlag(yDate,id,timelogDAOInt.getFlagId("No Time Out"));
 					}
 					
 				}
 				else if(cIn == false)
 				{
-					timelogDAOInt.updateFlag(yDate,id,timelogDAOInt.getFlagId("No TimeIn")); 
+					timelogDAOInt.updateFlag(yDate,id,timelogDAOInt.getFlagId("No Time In")); 
 				}
 			}
 			
@@ -228,7 +231,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 				}
 				else
 				{
-					timelogDAOInt.updateFlag(d,uid,timelogDAOInt.getFlagId("Late/Undertime"));
+					timelogDAOInt.updateFlag(d,uid,timelogDAOInt.getFlagId("Late / Undertime"));
 				}
 			}
 		}
@@ -273,7 +276,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 				}
 				else
 				{
-					timelogDAOInt.updateFlag(d,uid,timelogDAOInt.getFlagId("Late/Overtime"));
+					timelogDAOInt.updateFlag(d,uid,timelogDAOInt.getFlagId("Late / Overtime"));
 				}
 			}
 		}
@@ -301,7 +304,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 		}
 		
 		@Override
-		public String ValidateInput(int id,String name,String from, String to) throws ParseException {
+		public String ValidateInput(int id,String name,String from, String to) throws ParseException, DataAccessException {
 			String nwrponse;
 			nwrponse = "";
 			if(id == 0 || name.equals(""))
@@ -322,7 +325,15 @@ public class TimeLoggingService implements TimelogServiceInt{
 				
 					if(dfrom.before(dto) || dfrom.equals(dto))
 					{
-						nwrponse = "OK";
+						if(timelogDAOInt.checkData(id, from, to)>0)
+						{
+							nwrponse = "OK";
+						}
+						else
+						{
+							nwrponse = "No Data";
+						}
+						
 					}
 					else
 					{
@@ -490,7 +501,6 @@ public class TimeLoggingService implements TimelogServiceInt{
 			return empID;
 			
 		}
-		
 		
 		@Override
 		public void logTimeOut(TimeLogging timeLogging) throws DataAccessException{

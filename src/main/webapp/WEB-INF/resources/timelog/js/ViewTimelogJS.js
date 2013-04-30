@@ -3,13 +3,12 @@ var Employee_Id = 0; //for hr
 var view =""
 var id;
 $(document).ready(function() {
+		
 		$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
 		$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
 		$( "#SearchTimeLog" ).click(SearchTimeLog); 
-	
-		id = $("#empId").val(); //empid
-		document.getElementById('empId').style.visibility = 'hidden';
-	//	var id = 123;
+		id = idExternal;
+		
 		
 	$("#SearchButton").click(function() {
 		var newresponse;
@@ -49,7 +48,8 @@ $(document).ready(function() {
 			    		        		tblList += "<tr ondblclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
 			    						tblList +="<td>"+values.employeeId+"</td><td>"+values.lastname+"</td>";
 			    						tblList +="<td>"+values.firstname+"</td><td>"+values.middlename+"</td>";
-			    						tblList +="</tr>";	
+			    						tblList +="</tr>";		
+		
 
 			    		        	});
 			    		        	tblList += "</tbody>";
@@ -105,6 +105,7 @@ function fetch(d){
 }
 function mylog()
 {	
+	document.getElementById('data').style.visibility = 'hidden';
 	document.getElementById('SearchBox').style.visibility = 'hidden'; 
 	document.getElementById('SearchSub').style.visibility = 'hidden'; 
 	//hr search textbox and label
@@ -158,6 +159,7 @@ function mylog()
 
 function others()
 {
+	document.getElementById('data').style.visibility = 'hidden';
 	document.getElementById('from').value = ""; 
 	document.getElementById('to').value = ""; 
 	$('#tblTimeLog tbody').remove();
@@ -230,7 +232,6 @@ function SearchTimeLog()
 			{
 			idd = Employee_Id;
 //			Employee_Id = 0;
-
 			name = id;
 			}
 		$.ajaxSetup({async:false});
@@ -250,6 +251,7 @@ function SearchTimeLog()
 		    });
 		if(rponse == "OK")
 			{
+			document.getElementById('data').style.visibility = 'hidden';
 				if(view == "mylog")
 					{
 					$('#tblTimeLog tbody').remove();
@@ -289,7 +291,7 @@ function SearchTimeLog()
 					}
 				else if(view == "manager")
 					{
-				
+					
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
 						 $.ajax(
@@ -364,7 +366,16 @@ function SearchTimeLog()
 			}
 		else
 			{
-			$('#tblTimeLog tbody').remove();
+			if(rponse=="No Data")
+				{
+				$('#tblTimeLog tbody').remove();
+				document.getElementById('data').style.visibility = 'visible';
+				}
+			else
+				{
+				$('#tblTimeLog tbody').remove();
 				alert(rponse);
+				}
+			
 			}
 	}
