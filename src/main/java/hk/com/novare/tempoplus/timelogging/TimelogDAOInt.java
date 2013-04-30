@@ -34,8 +34,10 @@ public interface TimelogDAOInt {
 	List<TimeLogging> retrieveMylog(int id, String from, String to) throws DataAccessException;
 	Map retrieveSubordinatesMap(int id) throws DataAccessException;
 	
-	int getLevelId(int id) throws DataAccessException;
-	String getPosition(int id) throws DataAccessException;
+	/*int getLevelId(int id) throws DataAccessException;*/
+	boolean isSupervisor(int id) throws DataAccessException;
+	/*String getPosition(int id) throws DataAccessException;*/
+	String isHR(int id) throws DataAccessException;
 	
 	//Hr view
 		List<Employee> searchEmployees(String name) throws DataAccessException;

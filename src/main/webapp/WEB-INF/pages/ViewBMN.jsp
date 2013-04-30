@@ -29,10 +29,7 @@ $(document).ready(function() {
 		cssGoto:   '.gotoPage',		
 	};
 	$("table").tablesorter({
-		widgets: ['zebra', 'filter'],
-		headers: {
-			0 : { width: "10px" }
-		}
+		widgets: ['zebra', 'filter']
 	}).
 	tablesorterPager(pagerOptions);	
 	
@@ -83,16 +80,18 @@ function showToForm(myId) {
 	  middlename = delimited[2];
 	  lastname = delimited[3];
 	  timein = delimited[4];
+	  	console.log(timein);
+	  	var delimitTimein = timein.split(" ");
 	  timeout = delimited[5];
-	  
+	  	var delimitTimeout = timeout.split(" ");
 		
 	//console.log(trId);
 	//console.log(firstname);
 	
 	 $("#txtemployeeid").val(trId);
 	 $("#txtfirstname").val(firstname + " " + middlename + " " + lastname);
-	 $("#txttimein").val(timein);
-	 $("#txttimeout").val(timeout);
+	 $("#txttimein").val(delimitTimein[1]);
+	 $("#txttimeout").val(delimitTimeout[1]);
 }
 </script>
 
