@@ -51,7 +51,6 @@ public class TimeLoggingController {
 		
 		@RequestMapping(value = "/checkUser", method=RequestMethod.POST)
 		public @ResponseBody String checkUser(@RequestParam(value = "id") int id) throws ParseException, DataAccessException {
-		
 			return timelogServiceInt.checkUser(id);
 		}
 		

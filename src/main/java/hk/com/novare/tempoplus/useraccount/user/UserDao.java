@@ -293,7 +293,7 @@ public class UserDao {
 			final PreparedStatement updateNewPasswordStatement = 
 					connection.prepareStatement("update users " +
 							"set password = MD5(?)" +
-									" where employeeId_FK = ?");
+									" where employeeId = ?");
 			updateNewPasswordStatement.setString(1, newPassword);
 			updateNewPasswordStatement.setInt(2, employeeId);
 			updateNewPasswordStatement.executeUpdate();

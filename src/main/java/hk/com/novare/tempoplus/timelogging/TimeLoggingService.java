@@ -47,6 +47,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 			sIn = getShiftIn(id,desc,sInF);
 			
 			sOut = timelogDAOInt.getShiftOut(id);
+
 			c = sIn.compareTo(yDate + " " +"22:00:00");
 			if(c>=0)
 			{
@@ -57,7 +58,6 @@ public class TimeLoggingService implements TimelogServiceInt{
 				sOut = yDate + " " + sOut;
 			}
 			
-
 			sOut = yDate + " " + sOut;
 
 			if(timelogDAOInt.checkTime(yDate,id)==0)
@@ -108,14 +108,14 @@ public class TimeLoggingService implements TimelogServiceInt{
 
 					cLate = checkLate(yDate,id,sIn,tIn);
 					
-					
+			
 					if(cOut)
+
 					{
 						tOut = timelogDAOInt.getTimeOut(yDate,id);
 						try {
 							java.util.Date dateOut = parseFormat.parse(tOut);
 							tOut = printFormat.format(dateOut);
-							
 							flagUndertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
 							flagOvertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
 						} catch (ParseException e) {

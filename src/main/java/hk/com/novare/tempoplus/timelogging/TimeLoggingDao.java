@@ -81,7 +81,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		
 			id = (Integer) getID.get(i);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} finally
 		{
@@ -230,7 +230,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			/*final PreparedStatement ps = connection
 					.prepareStatement("INSERT into timelog(userid,date,name,timein,timeout,total_hours,flag) VALUES(?,?,?,?,?,?,?)");
 			final PreparedStatement ps1 = connection
-					.prepareStatement("SELECT id from users where employeeId_FK = ?");
+					.prepareStatement("SELECT id from users where employeeId = ?");
 			ps1.setInt(1, uid);
 			final ResultSet resultSet = ps1.executeQuery();
 			while (resultSet.next()) {
@@ -247,7 +247,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			ps.setInt(4, getFlagId("No Log"));
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} finally
 		{
