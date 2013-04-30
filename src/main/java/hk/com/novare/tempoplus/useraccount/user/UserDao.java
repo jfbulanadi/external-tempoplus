@@ -72,7 +72,7 @@ public class UserDao {
 				 connection = dataSource.getConnection();
 				 final PreparedStatement searchPasswordStatement =
 						 connection.prepareStatement("select password from " +
-						 		"users where employeeId_FK = ?");
+						 		"users where employeeId = ?");
 				 searchPasswordStatement.setInt(1, employeeId);
 				 ResultSet resultSet = searchPasswordStatement.executeQuery();
 

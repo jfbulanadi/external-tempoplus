@@ -38,7 +38,6 @@ public class TimeLoggingController {
 		public String sayUserLog(ModelMap modelMap) {
 		
 			modelMap.addAttribute("id", timelogServiceInt.getEmployeeId());
-			System.out.println(timelogServiceInt.getEmployeeId());
 			return "ViewTimelog"; // view
 		}
 		
@@ -46,13 +45,12 @@ public class TimeLoggingController {
 		public @ResponseBody String SearchTimeLog(@RequestParam(value = "id") int id,
 				@RequestParam(value = "name") String name,
 				@RequestParam(value = "from") String from,
-				@RequestParam(value = "to") String to) throws ParseException {
+				@RequestParam(value = "to") String to) throws ParseException, DataAccessException {
 				return timelogServiceInt.ValidateInput(id,name,from,to);
 		}
 		
 		@RequestMapping(value = "/checkUser", method=RequestMethod.POST)
 		public @ResponseBody String checkUser(@RequestParam(value = "id") int id) throws ParseException, DataAccessException {
-//			System.out.println("pumasok");
 		
 			return timelogServiceInt.checkUser(id);
 		}

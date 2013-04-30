@@ -23,6 +23,7 @@
 	<script type="text/javascript" src="../resources/timelog/js/jquery.tablesorter.js"></script>
 	<script type="text/javascript" src="../resources/timelog/js/jquery.tablesorter.pager.js"></script>
 	<script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
+	<script type="text/javascript">var idExternal =${id}</script>
 </head>
 <body onload = "mylog()">
 
@@ -34,7 +35,7 @@
 </td>
 </tr>
 </table>
-<input type ="text" value = "${id}" id = "empId"/>
+
 
 <br><br><br><br>
 <table id ="tblAll">
@@ -83,7 +84,7 @@ Employee Lastname/Firstname: <input type="text" id="empName" /> <input type="but
 
 <tr>
 <td id ="tdTimeLogAll">
-	<table id="tblTimeLog"  class="tablesorter">
+	<table  id="tblTimeLog" class="tablesorter">
 	<thead>
 	<th>Date</th>
 	<th>Time IN</th>
@@ -93,6 +94,27 @@ Employee Lastname/Firstname: <input type="text" id="empName" /> <input type="but
 	</table>
 </td>
 </tr>
+
+<tr>
+<td>
+
+<table id ="tblID"">
+
+	<tbody>
+	<tr>
+	<td>
+	<center>
+<input type = "text" id ="data" value = "No Data" readonly="readonly" style="border:solid 0px;height:20px;width:160px;"/>
+	</center>
+	</td>
+	</tr>
+	</tbody>
+	
+</table>
+
+</td>
+</tr>
+
 <tr>
 <td>
 <div id="pager" class="pager">
