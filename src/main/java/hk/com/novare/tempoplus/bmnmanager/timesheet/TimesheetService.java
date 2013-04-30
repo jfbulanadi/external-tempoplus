@@ -1,5 +1,7 @@
 package hk.com.novare.tempoplus.bmnmanager.timesheet;
 
+import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDao;
+import hk.com.novare.tempoplus.bmnmanager.biometric.DailyBiometric;
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
 import hk.com.novare.tempoplus.employee.Employee;
@@ -9,6 +11,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -24,6 +29,8 @@ public class TimesheetService {
 
 	@Inject
 	TimesheetDao timesheetDao;
+	@Inject
+	BiometricDao biometricDao;
 
 	public void createTimesheetSummary() {
 
@@ -34,6 +41,7 @@ public class TimesheetService {
 		Employee employee;
 		Nt3 nt3;
 		Mantis mantis;
+		DailyBiometric dailyBiometric;
 
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet("Sample sheet");
@@ -44,13 +52,13 @@ public class TimesheetService {
 			timelog = timesheet.getTimelog();
 			nt3 = timesheet.getNt3();
 			mantis = timesheet.getMantis();
+			dailyBiometric = timesheet.getDailyBiometric();
 
-			int cellCounter = 0;
 			Row row = sheet.createRow(rowCounter);
 
 			Cell cell;
 			if (rowCounter == 0) {
-				System.out.println("In");
+				
 				for (int counter = 0; counter < 61; counter++) {
 					cell = row.createCell(counter);
 					switch (counter) {
@@ -285,7 +293,20 @@ public class TimesheetService {
 						cell.setCellValue(timelog.getDate());
 						break;
 					case 12:
-						cell.setCellValue("Day");
+						String dateFormat = null;
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+						
+						Date date = null;
+						try {
+							date = sdf.parse(timelog.getDate());
+							sdf = new SimpleDateFormat("EEE");
+							dateFormat = sdf.format(date);
+							cell.setCellValue(dateFormat);
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
 						break;
 					case 13:
 						cell.setCellValue("Holiday");
@@ -303,14 +324,17 @@ public class TimesheetService {
 						break;
 					case 17:
 						// TODO
+						// Need shift
 						cell.setCellValue("Tardiness");
 						break;
 					case 18:
 						// TODO
+						// Need shift
 						cell.setCellValue("Undertime");
 						break;
 					case 19:
 						// TODO
+						// Need shift
 						cell.setCellValue("HalfDay Undertime");
 						break;
 					case 20:
@@ -346,7 +370,7 @@ public class TimesheetService {
 					case 25:
 						if (null != mantis.getCategory()
 								&& "Night Shift".equals(mantis.getCategory())) {
-							cell.setCellValue("Night Shift Schedule");
+							cell.setCellValue(mantis.getDuration());
 						}
 						break;
 					case 26:
@@ -360,7 +384,7 @@ public class TimesheetService {
 						if (null != mantis.getCategory()
 								&& "Official Business".equals(mantis
 										.getCategory())) {
-							cell.setCellValue("Official Business");
+							cell.setCellValue(mantis.getDuration());
 						}
 						break;
 					case 28:
@@ -374,7 +398,7 @@ public class TimesheetService {
 						if (null != mantis.getCategory()
 								&& "Change Schedule".equals(mantis
 										.getCategory())) {
-							cell.setCellValue("Change Schedule");
+							cell.setCellValue(mantis.getDuration());
 						}
 						break;
 					case 30:
@@ -386,7 +410,7 @@ public class TimesheetService {
 					case 31:
 						if (null != mantis.getCategory()
 								&& "Undertime".equals(mantis.getCategory())) {
-							cell.setCellValue("Undetime");
+							cell.setCellValue(mantis.getDuration());
 						}
 						break;
 					case 32:
@@ -398,7 +422,7 @@ public class TimesheetService {
 					case 33:
 						if (null != mantis.getCategory()
 								&& "Offset".equals(mantis.getCategory())) {
-							cell.setCellValue("Offset");
+							cell.setCellValue(mantis.getDuration());
 						}
 						break;
 					case 34:
@@ -412,7 +436,7 @@ public class TimesheetService {
 						if (null != mantis.getCategory()
 								&& "Time Log Adjustments".equals(mantis
 										.getCategory())) {
-							cell.setCellValue("Time Log Adjustments");
+							cell.setCellValue(mantis.getDuration());
 						}
 						break;
 					case 36:
@@ -426,96 +450,117 @@ public class TimesheetService {
 						if (null != mantis.getCategory()
 								&& "Other HR Related Issue/Request"
 										.equals(mantis.getCategory())) {
-							cell.setCellValue("Other HR Related Issue/Request");
+							// Unknown Values to insert here
+							// cell.setCellValue("Other HR Related Issue/Request");
 						}
 						break;
 					case 38:
 						if (null != nt3.getAbsenceType()
 								&& "Sick Leave".equals(nt3.getAbsenceType())) {
-							cell.setCellValue("Sick Leave");
+							cell.setCellValue(nt3.getDuration() + " D "
+									+ nt3.getStartDate() + " - "
+									+ nt3.getEndDate());
 						}
 						break;
 					case 39:
 						if (null != nt3.getAbsenceType()
 								&& "Vacation Leave"
 										.equals(nt3.getAbsenceType())) {
-							cell.setCellValue("Vacation Leave");
+							cell.setCellValue(nt3.getDuration() + " D "
+									+ nt3.getStartDate() + " - "
+									+ nt3.getEndDate());
 						}
 						break;
 					case 40:
 						if (null != nt3.getAbsenceType()
 								&& "Emergency Leave".equals(nt3
 										.getAbsenceType())) {
-							cell.setCellValue("Emergency Leave");
+							cell.setCellValue(nt3.getDuration() + " D "
+									+ nt3.getStartDate() + " - "
+									+ nt3.getEndDate());
 						}
 						break;
 					case 41:
 						if (null != nt3.getAbsenceType()
 								&& "Leave w/o Pay".equals(nt3.getAbsenceType())) {
-							cell.setCellValue("Leave w/o Pay");
+							cell.setCellValue(nt3.getDuration() + " D "
+									+ nt3.getStartDate() + " - "
+									+ nt3.getEndDate());
 						}
 						break;
 					case 42:
 						if (null != nt3.getAbsenceType()
 								&& "Solo Parent Leave".equals(nt3
 										.getAbsenceType())) {
-							cell.setCellValue("Solo Parent Leave");
+							cell.setCellValue(nt3.getDuration() + " D "
+									+ nt3.getStartDate() + " - "
+									+ nt3.getEndDate());
 						}
 						break;
 					case 43:
 						if (null != nt3.getAbsenceType()
 								&& "Maternity Leave".equals(nt3
 										.getAbsenceType())) {
-							cell.setCellValue("Maternity Leave");
+							cell.setCellValue(nt3.getDuration() + " D "
+									+ nt3.getStartDate() + " - "
+									+ nt3.getEndDate());
 						}
 						break;
 					case 44:
 						if (null != nt3.getAbsenceType()
 								&& "Paternity Leave".equals(nt3
 										.getAbsenceType())) {
-							cell.setCellValue("Paternity Leave");
+							cell.setCellValue(nt3.getDuration() + " D "
+									+ nt3.getStartDate() + " - "
+									+ nt3.getEndDate());
 						}
 						break;
 					case 45:
 						if (null != nt3.getAbsenceType()
 								&& "Travel".equals(nt3.getAbsenceType())) {
-							cell.setCellValue("Travel");
+							cell.setCellValue(nt3.getDuration() + " D "
+									+ nt3.getStartDate() + " - "
+									+ nt3.getEndDate());
 						}
 						break;
 					case 46:
 						if (null != nt3.getAbsenceType()
 								&& "Training".equals(nt3.getAbsenceType())) {
-							cell.setCellValue("Training");
+							cell.setCellValue(nt3.getDuration() + " D "
+									+ nt3.getStartDate() + " - "
+									+ nt3.getEndDate());
 						}
 						break;
 					case 47:
 						if (null != nt3.getAbsenceType()
 								&& "Woman's Special Leave".equals(nt3
 										.getAbsenceType())) {
-							cell.setCellValue("Woman's Special Leave");
+							cell.setCellValue(nt3.getDuration() + " D "
+									+ nt3.getStartDate() + " - "
+									+ nt3.getEndDate());
 						}
 						break;
 					case 48:
 						if (null != nt3.getAbsenceType()
 								&& "Bank Holiday".equals(nt3.getAbsenceType())) {
-							cell.setCellValue("Bank Holiday");
+							// cell.setCellValue("Bank Holiday");
 						}
 						break;
 					case 49:
 						// What's This?
-						cell.setCellValue("HR/Admin Remark");
+						// cell.setCellValue("HR/Admin Remark");
 						break;
 					case 50:
 						// What's This?
-						cell.setCellValue("Employee Remark");
+						// cell.setCellValue("Employee Remark");
 						break;
 					case 51:
 						// TODO
-						cell.setCellValue("Biometric Time In");
+						cell.setCellValue(dailyBiometric.getTimeIn());
 						break;
 					case 52:
 						// TODO
-						cell.setCellValue("Biometric Time Out");
+						cell.setCellValue(dailyBiometric.getTimeOut());
 						break;
 					case 53:
 						if (null != mantis.getCategory()
@@ -553,8 +598,11 @@ public class TimesheetService {
 						}
 						break;
 					case 58:
-						// TODO
-						cell.setCellValue("Time Log Adjustments");
+						if (null != mantis.getCategory()
+								&& "Time Log Adjustments".equals(mantis
+										.getCategory())) {
+							cell.setCellValue(mantis.getDuration());
+						}
 						break;
 					case 59:
 						// TODO

@@ -191,6 +191,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
 					.prepareStatement("SELECT count(employeeId) FROM timelogs WHERE date = ? and employeeId = ?");
+
 			ps.setString(1, d);
 			ps.setInt(2, uid);
 			final ResultSet resultSet = ps.executeQuery();
@@ -700,7 +701,6 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			}
 			return userType;
 		}
-		
 
 		
 		@Override
@@ -774,7 +774,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 
 				}
 			}
-		}
+}
 
 	
 
@@ -1018,7 +1018,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("INSERT INTO timelogs (employeeId, dateIn, timeIn)"
+					.prepareStatement("INSERT INTO timelogs (employeeId, date, timeIn)"
 							+ " values ((SELECT employeeId FROM employees WHERE biometricId = ?), ?, ?)");
 
 			for (Biometric biometric : list) {
@@ -1053,13 +1053,9 @@ public class TimeLoggingDao implements TimelogDAOInt {
 
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("UPDATE timelogs SET timeOut=?, duration = (SELECT TIMEDIFF(timeOut,timeIn)) WHERE employeeId = "
-							+ "(SELECT employeeId FROM employees WHERE biometricId = ?) AND dateIn=?");
+							+ "(SELECT employeeId FROM employees WHERE biometricId = ?) AND date=?");
 
 			for (Biometric biometric : list) {
-				System.out.println("Biometric ID: ["
-						+ biometric.getBiometricId() + "] Time: ["
-						+ biometric.getTime() + "] Date: ["
-						+ biometric.getDate() + "]");
 				preparedStatement.setString(1, biometric.getTime());
 				// preparedStatement.setString(2, biometric.getDate());
 				preparedStatement.setInt(2, biometric.getBiometricId());
@@ -1103,8 +1099,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 
 				timelogging.setId(resultSet.getInt("id"));
 				timelogging.setEmployeeId(resultSet.getInt("employeeId"));
-				timelogging.setDate(resultSet.getString("dateIn"));
-				// timelogging.
+				timelogging.setDate(resultSet.getString("date"));
 
 				list.add(timelogging);
 			}
@@ -1125,4 +1120,6 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		return list;
 
 	}
+	
+	
 }

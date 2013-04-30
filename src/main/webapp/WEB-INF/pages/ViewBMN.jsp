@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -177,7 +178,32 @@ function showToForm(myId) {
 
 		</tbody>
 	</table>
+	
+	<div>
+	<form:form method="post" action="uploadfile"
+		modelAttribute="uploadForm" enctype="multipart/form-data">
 
+		<p>Select File to Upload</p>
+
+		<input id="addFile" type="button" value="Add File" />
+		<table id="fileTable">
+		<tr>
+			<td><select name = "category">
+			<option value=1>Biometric</option>
+			<option value=2>Mantis</option>
+			<option value=3>Nt3</option>
+			<option value=4>Employees</option>
+			<option value=5>Consolidate Timesheet</option>
+			</select></td>
+		</tr>
+			<tr>
+				<td><input name="file" type="file" /></td>
+			</tr>
+		</table>
+		<br />
+		<input type="submit" value="Upload" />
+	</form:form>
+	</div>
 	
 
 

@@ -57,7 +57,9 @@ public class ConsolidationService {
 
 	}
 	
-	public void consolidateTimesheet() {		
+	public void consolidateTimesheet() {	
+		timelogDao.updateTimeLoggingDataPhase1(biometricDao.retrieveTimeInData());
+		timelogDao.updateTimeLoggingDataPhase2(biometricDao.retrieveTimeOutData());
 		consolidationDao.consolidateTimeSheetPhase1();
 		consolidationDao.consolidateTimeSheetPhase2(timelogDao.retrieveTimeLogs());
 		consolidationDao.consolidateTimeSheetPhase3(timelogDao.retrieveTimeLogs());
