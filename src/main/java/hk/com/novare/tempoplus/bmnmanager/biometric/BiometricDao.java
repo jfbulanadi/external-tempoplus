@@ -165,9 +165,9 @@ public class BiometricDao {
 		return list;
 	}
 
-	public ArrayList<DailyBiometric> retrieveDailyBiometric() {
+	public ArrayList<BiometricDetails> retrieveDailyBiometric() {
 
-		ArrayList<DailyBiometric> list = new ArrayList<DailyBiometric>();
+		ArrayList<BiometricDetails> list = new ArrayList<BiometricDetails>();
 
 		try {
 			connection = dataSource.getConnection();
@@ -182,7 +182,7 @@ public class BiometricDao {
 			final ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
-				final DailyBiometric bio = new DailyBiometric();
+				final BiometricDetails bio = new BiometricDetails();
 
 				bio.setBiometricId(resultSet.getInt("biometricId"));
 				bio.setDate(resultSet.getString("logDate"));

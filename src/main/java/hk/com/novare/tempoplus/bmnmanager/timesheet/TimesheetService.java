@@ -1,20 +1,20 @@
 package hk.com.novare.tempoplus.bmnmanager.timesheet;
 
 import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDao;
-import hk.com.novare.tempoplus.bmnmanager.biometric.DailyBiometric;
+import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDetails;
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
-import hk.com.novare.tempoplus.employee.Employee;
+import hk.com.novare.tempoplus.employee.EmployeeDetails;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -38,17 +38,17 @@ public class TimesheetService {
 				.retrieveTimesheetData();
 
 		TimeLogging timelog;
-		Employee employee;
+		EmployeeDetails employeeDetails;
 		Nt3 nt3;
 		Mantis mantis;
-		DailyBiometric dailyBiometric;
+		BiometricDetails dailyBiometric;
 
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet("Sample sheet");
 		int rowCounter = 0;
 
 		for (Timesheet timesheet : timesheetList) {
-			employee = timesheet.getEmployee();
+			employeeDetails = timesheet.getEmployeeDetails();
 			timelog = timesheet.getTimelog();
 			nt3 = timesheet.getNt3();
 			mantis = timesheet.getMantis();
@@ -256,35 +256,34 @@ public class TimesheetService {
 					cell = row.createCell(counter);
 					switch (counter) {
 					case 0:
-						cell.setCellValue(employee.getEmployeeId());
+						cell.setCellValue(employeeDetails.getEmployeeId());
 						break;
 					case 1:
-						cell.setCellValue(employee.getId());
+						cell.setCellValue(employeeDetails.getId());
 						break;
 					case 2:
-						cell.setCellValue(employee.getBiometricId());
+						cell.setCellValue(employeeDetails.getBiometricId());
 						break;
 					case 3:
-						cell.setCellValue(employee.getLastname() + ", "
-								+ employee.getFirstname());
+						cell.setCellValue(employeeDetails.getFullName());
 						break;
 					case 4:
-						cell.setCellValue("Department");
+						cell.setCellValue(employeeDetails.getDepartment());
 						break;
 					case 5:
-						cell.setCellValue("Level");
+						cell.setCellValue(employeeDetails.getLevel());
 						break;
 					case 6:
-						cell.setCellValue(employee.getHireDate());
+						cell.setCellValue(employeeDetails.getHireDate());
 						break;
 					case 7:
-						cell.setCellValue(employee.getRegularizationDate());
+						cell.setCellValue(employeeDetails.getRegularizationDate());
 						break;
 					case 8:
-						cell.setCellValue("Shift");
+						cell.setCellValue(employeeDetails.getShift());
 						break;
 					case 9:
-						cell.setCellValue(employee.getEmail());
+						cell.setCellValue(employeeDetails.getEmail());
 						break;
 					case 10:
 						cell.setCellValue("Supervisor's Email");

@@ -1,9 +1,10 @@
 package hk.com.novare.tempoplus.bmnmanager.timesheet;
 
-import hk.com.novare.tempoplus.bmnmanager.biometric.DailyBiometric;
+import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDetails;
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
 import hk.com.novare.tempoplus.employee.Employee;
+import hk.com.novare.tempoplus.employee.EmployeeDetails;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 
 import java.sql.Connection;
@@ -30,16 +31,17 @@ public class TimesheetDao {
 
 		Timesheet timesheet = null;
 		TimeLogging timelog;
-		Employee employee;
+		EmployeeDetails employeeDetails;
 		Nt3 nt3;
 		Mantis mantis;
-		DailyBiometric dailyBiometric;
+		BiometricDetails biometricDetails;
 
 		try {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("SELECT e.employeeId, e.id, e.biometricId, e.lastname, e.firstname, e.hiredate, e.regularizationdate, "
+					.prepareStatement("SELECT e.employeeId, e.id, e.biometricId, CONCAT_WS(', ' , e.lastname, e.firstname) AS fullName, e.hiredate, e.regularizationdate, "
+							+ "(SELECT CONCAT_WS(', ' , e.lastname, e.firstname) AS fullName FROM employees WHERE employeeId = e.supervisorId) AS supervisorName"
 							+ "t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, "
 							+ "m.category, m.status, n.startDate, n.endDate, n.duration, n.absenceType, n.absenceStatus, "
 							+ "(SELECT MIN(bIn.logTime) FROM biometrics AS bIn WHERE log = 0 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeIn, "
@@ -53,24 +55,24 @@ public class TimesheetDao {
 
 			while (resultSet.next()) {
 				timesheet = new Timesheet();
-				employee = new Employee();
+				employeeDetails = new EmployeeDetails();
 				timelog = new TimeLogging();
 				nt3 = new Nt3();
 				mantis = new Mantis();
-				dailyBiometric = new DailyBiometric();
+				biometricDetails = new BiometricDetails();
 
 
-				employee.setId(resultSet.getInt("e.id"));
-				employee.setEmployeeId(resultSet.getInt("e.employeeId"));
-				employee.setBiometricId(resultSet.getInt("e.biometricId"));
-				employee.setLastname(resultSet.getString("e.lastname"));
-				employee.setFirstname(resultSet.getString("e.firstname"));
-				employee.setHireDate(resultSet.getString("e.hiredate"));
-				employee.setRegularizationDate(resultSet
+//				employeeDetails.setId(resultSet.getInt("e.id"));
+				employeeDetails.setEmployeeId(resultSet.getInt("e.employeeId"));
+				employeeDetails.setBiometricId(resultSet.getInt("e.biometricId"));
+				employeeDetails.setFullName(resultSet.getString("fullName"));
+				employeeDetails.setHireDate(resultSet.getString("e.hiredate"));
+				employeeDetails.setRegularizationDate(resultSet
 						.getString("e.regularizationdate"));
+				employeeDetails.setSupervisor(resultSet.getString("supervisorName"));
 	
-				dailyBiometric.setTimeIn(resultSet.getString("bioTimeIn"));
-				dailyBiometric.setTimeOut(resultSet.getString("bioTimeOut"));
+				biometricDetails.setTimeIn(resultSet.getString("bioTimeIn"));
+				biometricDetails.setTimeOut(resultSet.getString("bioTimeOut"));
 				
 				timelog.setDate(resultSet.getString("t.date"));
 				timelog.setTimeIn(resultSet.getString("t.timeIn"));
@@ -89,11 +91,11 @@ public class TimesheetDao {
 				nt3.setAbsenceType(resultSet.getString("n.absenceType"));
 				nt3.setAbsenceStatus(resultSet.getString("n.absenceStatus"));
 
-				timesheet.setEmployee(employee);
+				timesheet.setEmployeeDetails(employeeDetails);
 				timesheet.setTimelog(timelog);
 				timesheet.setMantis(mantis);
 				timesheet.setNt3(nt3);
-				timesheet.setDailyBiometric(dailyBiometric);
+				timesheet.setDailyBiometric(biometricDetails);
 				list.add(timesheet);
 			}
 

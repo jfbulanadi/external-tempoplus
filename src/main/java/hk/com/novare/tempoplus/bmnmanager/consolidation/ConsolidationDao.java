@@ -5,11 +5,9 @@ import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -234,7 +232,7 @@ public class ConsolidationDao {
 			timelog.setTimeOut(timeOut);
 			timelog.setDuration(duration);
 
-			timesheet.setEmployee(employee);
+//			timesheet.setEmployee(employee);
 			timesheet.setTimelog(timelog);
 
 			list.add(timesheet);

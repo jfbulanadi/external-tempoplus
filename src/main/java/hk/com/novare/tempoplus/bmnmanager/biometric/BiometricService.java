@@ -70,9 +70,9 @@ public class BiometricService {
 
 	}
 	
-	public ArrayList<DailyBiometric> retrieveBiometricRecordsPerDay() {
+	public ArrayList<BiometricDetails> retrieveBiometricRecordsPerDay() {
 		
-		ArrayList<DailyBiometric> list = new ArrayList<DailyBiometric>();
+		ArrayList<BiometricDetails> list = new ArrayList<BiometricDetails>();
 		
 		
 		

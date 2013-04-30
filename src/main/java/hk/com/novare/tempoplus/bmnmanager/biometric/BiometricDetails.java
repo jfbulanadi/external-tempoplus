@@ -1,6 +1,6 @@
 package hk.com.novare.tempoplus.bmnmanager.biometric;
 
-public class DailyBiometric {
+public class BiometricDetails {
 	
 	private int biometricId;
 	private String date;
