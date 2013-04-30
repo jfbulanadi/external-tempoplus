@@ -216,7 +216,7 @@ function SearchTimeLog()
 		else if(view =="hr")
 			{
 			idd = Employee_Id;
-			Employee_Id = 0;
+//			Employee_Id = 0;
 			name = id;
 			}
 		$.ajaxSetup({async:false});
@@ -250,8 +250,13 @@ function SearchTimeLog()
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
+										if(item.timeOut == null){
+											tableStr +="<td></td><td>"+item.duration+"</td>";	
+										}else{
+										
 										tableStr +="<td>"+item.timeOut+"</td><td>"+item.duration+"</td>";
 										tableStr +="</tr>";
+										}
 									}); 
 								 	tableStr +="</tbody>";
 								 	$('#tblTimeLog').append(tableStr);
