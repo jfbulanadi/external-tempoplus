@@ -43,8 +43,8 @@ public class TimeLoggingService implements TimelogServiceInt{
 			sInF = timelogDAOInt.getShiftInReal(desc);
 			sInF =  yDate + " " + sInF;
 			
+			
 			sIn = getShiftIn(id,desc,sInF);
-			sIn = yDate + " " + sIn;
 			
 			sOut = timelogDAOInt.getShiftOut(id);
 			sOut = yDate + " " + sOut;
@@ -94,12 +94,20 @@ public class TimeLoggingService implements TimelogServiceInt{
 					
 					tIn=printFormat.format(dateIn);
 					cLate = checkLate(yDate,id,sIn,tIn);
+					
+					System.out.println("sIn: " + sIn);
+					System.out.println("tIn: " + tIn);
+					System.out.println("cLate: "+ cLate);
+					
 					if(cOut==true)
 					{
 						tOut = timelogDAOInt.getTimeOut(yDate,id);
 						try {
 							java.util.Date dateOut = parseFormat.parse(tOut);
 							tOut = printFormat.format(dateOut);
+							
+							System.out.println("sOut: " + sOut);
+							System.out.println("tOut: " + tOut);
 							
 							flagUndertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
 							flagOvertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
