@@ -5,6 +5,7 @@ import hk.com.novare.tempoplus.employee.Employee;
 
 import hk.com.novare.tempoplus.timelogging.DataAccessException;
 
+import java.text.ParseException;
 import java.util.List;
 
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
@@ -45,7 +46,7 @@ public class UserController {
 			HttpSession session,
 			ModelMap modelMap,
 			@RequestParam(value = "userName")String userEmail,
-			@RequestParam(value = "password") String password) {
+			@RequestParam(value = "password") String password) throws DataAccessException {
 		
 		boolean isValid = userService.validateLogInAccess(userEmail, password);
 		
@@ -113,7 +114,7 @@ public class UserController {
 	
 	
 	@RequestMapping("/logout")
-	public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest,@ModelAttribute(value="timelogs") TimeLogging timelogs){
+	public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest,@ModelAttribute(value="timelogs") TimeLogging timelogs) throws ParseException{
 		httpServletRequest.getSession().invalidate();
 		modelMap.clear();
 		try {

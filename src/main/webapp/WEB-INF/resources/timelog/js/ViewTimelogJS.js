@@ -9,73 +9,76 @@ $(document).ready(function() {
 		$( "#SearchTimeLog" ).click(SearchTimeLog); 
 		id = idExternal;
 		
-		$("#SearchButton").click(function() {
-			var newresponse;
-			var empname = $('#empName').val();
-								
-					$.ajax({
-						type: "POST",
-				        url: "/tempoplus/timelog/searchEmployee",
-				    	data: {'empName': empname},
-				    	success: function(response){
-				    		newresponse = response;
-				    		if(newresponse =="OK"){
-				    			$("#HrSearch").dialog({
-				    				
-									maxWidth : 550,
-									maxHeight : 600,
-									width : 550,
-									height : 600,
-									modal : true
-									
-								});
-				    			
-				    			$('#tblSearch tbody').remove();
-				    			$('#tblSearch thead').remove();
-				    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
-				    			$.ajax({		
-				    				
-				    			 	type: "POST",
-				    		        url: "/tempoplus/timelog/retrieveEmployee",
-				    		       	data: {'empName': empname},
-				    		    
-				    		       	success: function(response) {
-				    		       		
-				    		        	$.each(response,function(keys, values){
-
-				    		        		tblList += "<tr ondblclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
-				    						tblList +="<td>"+values.employeeId+"</td><td>"+values.lastname+"</td>";
-				    						tblList +="<td>"+values.firstname+"</td><td>"+values.middlename+"</td>";
-				    						tblList +="</tr>";	
-
-				    		        	});
-				    		        	tblList += "</tbody>";
-				    		        	$('#tblSearch').append(tblList);
-				    		        	
-				    		        	
-				    		        },
-				    		        error: function(e) {
-				    		            alert("Error: " + e);
-				    		            
-				    		        }
-		    			
-				    			}).done(
-							    		
-								    	function(){
-								    		my_jQuery3("#tblSearch")
-								    		 .tablesorter({widthFixed: false, widgets: ['zebra']});
-										});
-				    			
-				    		}else{
-				    	
-				    			alert("No Employee Found");
-				    		}
-				    		
-				    	},
-						
-					});
-		});
 		
+	$("#SearchButton").click(function() {
+		var newresponse;
+		var empname = $('#empName').val();
+							
+				$.ajax({
+					type: "POST",
+			        url: "/tempoplus/timelog/searchEmployee",
+			    	data: {'empName': empname},
+			    	success: function(response){
+			    		newresponse = response;
+			    		if(newresponse =="OK"){
+			    			$("#HrSearch").dialog({
+			    				
+								maxWidth : 550,
+								maxHeight : 600,
+								width : 550,
+								height : 600,
+								modal : true
+								
+							});
+			    			
+			    			$('#tblSearch tbody').remove();
+			    			$('#tblSearch thead').remove();
+			    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
+			    			$.ajax({		
+			    				
+			    			 	type: "POST",
+			    		        url: "/tempoplus/timelog/retrieveEmployee",
+			    		       	data: {'empName': empname},
+			    		    
+			    		       	success: function(response) {
+			    		       		
+			    		        	$.each(response,function(keys, values){
+
+			    		        		tblList += "<tr ondblclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
+			    						tblList +="<td>"+values.employeeId+"</td><td>"+values.lastname+"</td>";
+			    						tblList +="<td>"+values.firstname+"</td><td>"+values.middlename+"</td>";
+			    						tblList +="</tr>";		
+		
+
+			    		        	});
+			    		        	tblList += "</tbody>";
+			    		        	$('#tblSearch').append(tblList);
+			    		        	
+			    		        	
+			    		        },
+			    		        error: function(e) {
+			    		            alert("Error: " + e);
+			    		            
+			    		        }
+	    			
+			    			}).done(
+						    		
+							    	function(){
+							    		my_jQuery3("#tblSearch")
+							    		 .tablesorter({widthFixed: false, widgets: ['zebra']});
+									});
+			    			
+			    		}else{
+			    	
+			    			alert("No Employee Found");
+			    		}
+			    		
+			    	},
+					
+				});
+	});
+
+});
 
 
 function fetch(d){
@@ -106,7 +109,6 @@ function mylog()
 	$("#SearchSub").css({display: "none"});
 	$("#HrSearch").css({display: "none"});
 	$("#SearchRow").css({display:"none"});
-	
 	//hr search textbox and label
 	document.getElementById('from').value = ""; 
 	document.getElementById('to').value = ""; 
@@ -168,7 +170,7 @@ function others()
 	document.getElementById('empName').value = "";
 	$('#tblSearch tbody').remove();
 	
-	$("#result").css({display: "none"});
+	$("#result").css({display: "none"});;
 	if(user == "manager")
 		{
 		
@@ -207,7 +209,7 @@ function others()
 }
 function SearchTimeLog()
 {	
-		
+		document.getElementById('pagesize').selectedIndex=0;
 		var name;
 		var from = $('#from').val();
 		var to = $('#to').val();
@@ -381,5 +383,6 @@ function SearchTimeLog()
 				$('#tblTimeLog tbody').remove();
 				alert(rponse);
 				}
+			
 			}
 	}

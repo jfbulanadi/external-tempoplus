@@ -29,63 +29,66 @@ public class TimeLoggingService implements TimelogServiceInt{
 	@Override
 	public void flaggingProcess() throws DataAccessException, ParseException {
 		int id;
-		String desc,tIn,tOut,sIn,sInF,sOut;
-		boolean cTime,cIn,cOut,cLate;
-		cLate = false;
-		final String yDate = getDate();
-		final int cUser = timelogDAOInt.countUser();
+		String desc,timeIn,timeOut,shiftIn,shiftInReal,shiftOut;
+		boolean checkTime,checkIn,checkOut,checkLate;
+		final String yDate;
+		final int cUser;
 		int c;
+		
+		yDate = getDate();
+		checkLate = false;
+		cUser = timelogDAOInt.countUser();
+		
 		for(i = 0; i<cUser; i++)
 		{
 			id = timelogDAOInt.getUserID(i);
 			desc = timelogDAOInt.getShiftDesc(id);
+			shiftInReal = timelogDAOInt.getShiftInReal(desc);
+			shiftInReal =  yDate + " " + shiftInReal;
 			
-			sInF = timelogDAOInt.getShiftInReal(desc);
-			sInF =  yDate + " " + sInF;
 			
+			shiftIn = getShiftIn(id,desc,shiftInReal);
 			
-			sIn = getShiftIn(id,desc,sInF);
-			
-			sOut = timelogDAOInt.getShiftOut(id);
+			shiftOut = timelogDAOInt.getShiftOut(id);
 
-			c = sIn.compareTo(yDate + " " +"22:00:00");
+			c = shiftIn.compareTo(yDate + " " +"22:00:00");
 			if(c>=0)
 			{
-				sOut = nowDate() + " " + sOut;
+				shiftOut = nowDate() + " " + shiftOut;
 			}
 			else
 			{
-				sOut = yDate + " " + sOut;
+				shiftOut = yDate + " " + shiftOut;
 			}
 			
-			sOut = yDate + " " + sOut;
+			shiftOut = yDate + " " + shiftOut;
 
 			if(timelogDAOInt.checkTime(yDate,id)==0)
 			{
-				cTime = false;
+				checkTime = false;
 			}
 			else
 			{
-				cTime = true;
+				checkTime = true;
 			}
 			if(timelogDAOInt.checkTimeIn(yDate,id)==null)
 			{
-				cIn = false;
+				checkIn = false;
 			}
 			else
 			{
-				cIn = true;
+				checkIn = true;
 			}
 			if(timelogDAOInt.checkTimeOut(yDate,id)==null)
 			{
-				cOut = false;
+				checkOut = false;
 			}
 			else
 			{
-				cOut = true;
+				checkOut = true;
 			}		
 			//Check if there is a time
-			if(cTime==false)
+			if(checkTime==false)
 			{	
 				
 				//Insert to db
@@ -94,33 +97,30 @@ public class TimeLoggingService implements TimelogServiceInt{
 			else
 			{
 				//Insert flag
-				if(cIn)
+				if(checkIn)
 				{	
 					
 					//check first if late
-					tIn = timelogDAOInt.getTimeIn(yDate,id);
+					timeIn = timelogDAOInt.getTimeIn(yDate,id);
 
 					SimpleDateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
 					SimpleDateFormat printFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					java.util.Date dateIn = parseFormat.parse(tIn);
+					java.util.Date dateIn = parseFormat.parse(timeIn);
 					
-					tIn=printFormat.format(dateIn);
+					timeIn=printFormat.format(dateIn);
 
-					cLate = checkLate(yDate,id,sIn,tIn);
+					checkLate = checkLate(yDate,id,shiftIn,timeIn);
 
 					
-					if(cOut)
+					if(checkOut)
 
 					{
-						tOut = timelogDAOInt.getTimeOut(yDate,id);
-						try {
-							java.util.Date dateOut = parseFormat.parse(tOut);
-							tOut = printFormat.format(dateOut);
-							flagUndertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
-							flagOvertime(yDate, id,sInF,sIn,tIn, sOut, tOut,desc,cLate);
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
+						timeOut = timelogDAOInt.getTimeOut(yDate,id);
+							java.util.Date dateOut = parseFormat.parse(timeOut);
+							timeOut = printFormat.format(dateOut);
+							flagUndertime(yDate, id,shiftInReal,shiftIn,timeIn, shiftOut, timeOut,desc,checkLate);
+							flagOvertime(yDate, id,shiftInReal,shiftIn,timeIn, shiftOut, timeOut,desc,checkLate);
+						
 					}
 					else
 					{
@@ -128,7 +128,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 					}
 					
 				}
-				else if(cIn == false)
+				else if(checkIn == false)
 				{
 					timelogDAOInt.updateFlag(yDate,id,timelogDAOInt.getFlagId("No Time In")); 
 				}
@@ -153,28 +153,29 @@ public class TimeLoggingService implements TimelogServiceInt{
 			return dateFormat.format(cal.getTime());
 		}
 		//Get Shift In
-		private String getShiftIn(int id, String desc,String sInF) throws ParseException
+		private String getShiftIn(int id, String desc,String shiftInReal) throws ParseException
 		{
-			 String sIn;
-			 sIn ="";
+			 String shiftIn;
+			 shiftIn ="";
 			if(desc.equals("Flexi"))
 			{
-				sIn = addHour(sInF,2);
+				shiftIn = addHour(shiftInReal,2);
 			}
 			else
 			{
-				sIn = addMinutes(sInF,10);
+				shiftIn = addMinutes(shiftInReal,10);
+				
 			}
-			 return sIn;
+			 return shiftIn;
 		}
 		
 		//check if late and return boolean
-		private boolean checkLate(String d, int uid,String sin,String tin) throws DataAccessException
+		private boolean checkLate(String d, int uid,String shiftIn,String timeIn) throws DataAccessException
 		{
 			int comp;
 			boolean flag;
 			flag = false;
-			comp = tin.compareTo(sin);
+			comp = timeIn.compareTo(shiftIn);
 			if(comp > 0)
 			{
 				//late
@@ -185,41 +186,41 @@ public class TimeLoggingService implements TimelogServiceInt{
 			return flag;
 		}
 		//flag for undertime
-		private void flagUndertime(String d, int uid,String sinf,String sin,String tin, String sout, String tout,String desc,boolean clate) throws DataAccessException, ParseException
+		private void flagUndertime(String d, int uid,String shiftInReal,String shiftIn,String timeIn, String shiftOut, String timeOut,String desc,boolean checkLate) throws DataAccessException, ParseException
 		{
 			int comp;
 			String ntime;
 			if(desc.equals("Flexi"))
 			{	
-				if((tin.compareTo(sinf)) > 0)
+				if((timeIn.compareTo(shiftInReal)) > 0)
 				{
-					ntime = addHour(tin,9);
+					ntime = addHour(timeIn,9);
 				}
 				else
 				{
-					ntime = addHour(sinf,9);
+					ntime = addHour(shiftInReal,9);
 				}
 				
-				comp = ntime.compareTo(tout);
+				comp = ntime.compareTo(timeOut);
 				
 			}
 			else
 			{
-				if((tin.compareTo(sinf) > 0) && (tin.compareTo(sin) > 0))
+				if((timeIn.compareTo(shiftInReal) > 0) && (timeIn.compareTo(shiftIn) > 0))
 				{
-					ntime = addHour(tin,9);
+					ntime = addHour(timeIn,9);
 				}
 				else
 				{
-					ntime = addHour(sinf,9);
+					ntime = addHour(shiftInReal,9);
 				}
 				//shift out for shifting
-				comp = ntime.compareTo(tout);
+				comp = ntime.compareTo(timeOut);
 			}
 			if(comp > 0)
 			{
 				//undertime
-				if(clate == false)
+				if(checkLate == false)
 				{
 					timelogDAOInt.updateFlag(d,uid,timelogDAOInt.getFlagId("Undertime"));
 				}
@@ -229,42 +230,42 @@ public class TimeLoggingService implements TimelogServiceInt{
 				}
 			}
 		}
-		private void flagOvertime(String d, int uid,String sinf,String sin,String tin, String sout, String tout,String desc,boolean clate) throws DataAccessException, ParseException
+		private void flagOvertime(String d, int uid,String shiftInReal,String shiftIn,String timeIn, String shiftOut, String timeOut,String desc,boolean checkLate) throws DataAccessException, ParseException
 		{
 			int comp;
 			String ntime;
 			if(desc.equals("Flexi"))
 			{
-				if((tin.compareTo(sinf)) > 0)
+				if((timeIn.compareTo(shiftInReal)) > 0)
 				{
-					ntime = addHour(tin,9);
+					ntime = addHour(timeIn,9);
 					ntime = addHour(ntime,1);
 				}
 				else
 				{
-					ntime = addHour(sinf,9);
+					ntime = addHour(shiftInReal,9);
 					ntime = addHour(ntime,1);
 				}
 			}
 			else
 			{
-				if((tin.compareTo(sinf) > 0) && (tin.compareTo(sin) > 0))
+				if((timeIn.compareTo(shiftInReal) > 0) && (timeIn.compareTo(shiftIn) > 0))
 				{
-						ntime = addHour(tin,9);
+						ntime = addHour(timeIn,9);
 						ntime = addHour(ntime,1);
 				}
 				else
 				{
-					ntime = addHour(sinf,9);
+					ntime = addHour(shiftInReal,9);
 					ntime = addHour(ntime,1);
 				}
 				
 			}
-			comp = tout.compareTo(ntime);
+			comp = timeOut.compareTo(ntime);
 			if(comp >= 0)
 			{
 				//overtime
-				if(clate == false)
+				if(checkLate == false)
 				{
 					timelogDAOInt.updateFlag(d,uid,timelogDAOInt.getFlagId("Overtime"));
 				}
@@ -274,31 +275,31 @@ public class TimeLoggingService implements TimelogServiceInt{
 				}
 			}
 		}
-		private String addHour(String tin, int n) throws ParseException
+		private String addHour(String timeIn, int n) throws ParseException
 		{
 			String ntime;
 			ntime = "";
 			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Calendar c = Calendar.getInstance();
-			c.setTime(time.parse(tin));
+			c.setTime(time.parse(timeIn));
 			c.add(Calendar.HOUR,n);
 			ntime = time.format(c.getTime());
 			return ntime;
 		}
-		private String addMinutes(String tin, int n) throws ParseException
+		private String addMinutes(String timeIn, int n) throws ParseException
 		{
 			String ntime;
 			ntime = "";
 			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Calendar c = Calendar.getInstance();
-			c.setTime(time.parse(tin));
+			c.setTime(time.parse(timeIn));
 			c.add(Calendar.MINUTE,n);
 			ntime = time.format(c.getTime());
 			return ntime;
 		}
 		
 		@Override
-		public String ValidateInput(int id,String name,String from, String to) throws ParseException, DataAccessException {
+		public String validateInput(int id,String name,String from, String to) throws ParseException, DataAccessException {
 			String nwrponse;
 			nwrponse = "";
 			if(id == 0 || name.equals(""))
@@ -449,8 +450,8 @@ public class TimeLoggingService implements TimelogServiceInt{
 		
 		@Override
 		public String checkName(String name) {
-			
-			String newresponse = "";
+			String newresponse;
+			newresponse= "";
 			if (name.equals("")){
 				newresponse = "Invalid Input";
 			}else{
@@ -468,38 +469,34 @@ public class TimeLoggingService implements TimelogServiceInt{
 		}
 		
 		@Override
-		public void logTimeIn(TimeLogging timelogs){
+		public void logTimeIn(TimeLogging timelogs) throws DataAccessException{
 			
 			employeeid = user.getEmployeeId();
 						
-			try {
-			int count =	timelogDAOInt.validatetimeIn(employeeid);
+			int count;
+			count =	timelogDAOInt.validatetimeIn(employeeid);
 			
 			if(count == 0){
 				
 				timelogDAOInt.insertTimeIn(employeeid, timelogs);
 			}
-				
-			} catch (DataAccessException e) {
-
-				e.printStackTrace();
-			}
-			
-			
 		}
 		
 		@Override
 		public int getEmployeeId(){
-			int empID = employeeid;
+			int empID;
+			empID = employeeid;
 			
 			return empID;
 			
 		}
 		
 		@Override
-		public void logTimeOut(TimeLogging timeLogging) throws DataAccessException{
+		public void logTimeOut(TimeLogging timeLogging) throws DataAccessException, ParseException{
 			
 			timelogDAOInt.validateout(employeeid, timeLogging);
+			//labas si hourscompute, with method service
+			//
 		}
 
 }
