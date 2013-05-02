@@ -9,73 +9,81 @@ $(document).ready(function() {
 		$( "#SearchTimeLog" ).click(SearchTimeLog); 
 		id = idExternal;
 		
-		$("#SearchButton").click(function() {
-			var newresponse;
-			var empname = $('#empName').val();
+	$("#SearchButton").click(function() {
+		var newresponse = null;
+		var empname = $('#empName').val();
+							
+				$.ajax({
+					type: "POST",
+			        url: "/tempoplus/timelog/searchEmployee",
+			    	data: {'empName': empname},
+			    	success: function(response){
+			    		newresponse = response;
+			    		if(newresponse =="OK"){
+
+			    			$("#HrSearch").dialog({
+			    				
+								maxWidth : 550,
+								maxHeight : 600,
+								width : 550,
+								height : 600,
+								modal : true
 								
-					$.ajax({
-						type: "POST",
-				        url: "/tempoplus/timelog/searchEmployee",
-				    	data: {'empName': empname},
-				    	success: function(response){
-				    		newresponse = response;
-				    		if(newresponse =="OK"){
-				    			$("#HrSearch").dialog({
-				    				
-									maxWidth : 550,
-									maxHeight : 600,
-									width : 550,
-									height : 600,
-									modal : true
-									
-								});
-				    			
-				    			$('#tblSearch tbody').remove();
-				    			$('#tblSearch thead').remove();
-				    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
-				    			$.ajax({		
-				    				
-				    			 	type: "POST",
-				    		        url: "/tempoplus/timelog/retrieveEmployee",
-				    		       	data: {'empName': empname},
-				    		    
-				    		       	success: function(response) {
-				    		       		
-				    		        	$.each(response,function(keys, values){
+							});
+			    			
+			    						    			
+			    			$('#tblSearch tbody').remove();
+			    			$('#tblSearch thead').remove();
+			    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
+			    			$.ajax({		
+			    				
+			    			 	type: "POST",
+			    		        url: "/tempoplus/timelog/retrieveEmployee",
+			    		       	data: {'empName': empname},
+			    		    
+			    		       	success: function(response) {
+			    		       		
+			    		        	$.each(response,function(keys, values){
 
-				    		        		tblList += "<tr ondblclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
-				    						tblList +="<td>"+values.employeeId+"</td><td>"+values.lastname+"</td>";
-				    						tblList +="<td>"+values.firstname+"</td><td>"+values.middlename+"</td>";
-				    						tblList +="</tr>";	
-
-				    		        	});
-				    		        	tblList += "</tbody>";
-				    		        	$('#tblSearch').append(tblList);
-				    		        	
-				    		        	
-				    		        },
-				    		        error: function(e) {
-				    		            alert("Error: " + e);
-				    		            
-				    		        }
-		    			
-				    			}).done(
-							    		
-								    	function(){
-								    		my_jQuery3("#tblSearch")
-								    		 .tablesorter({widthFixed: false, widgets: ['zebra']});
-										});
-				    			
-				    		}else{
-				    	
-				    			alert("No Employee Found");
-				    		}
-				    		
-				    	},
-						
-					});
-		});
+			    		        		tblList += "<tr ondblclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
+			    						tblList +="<td>"+values.employeeId+"</td><td>"+values.lastname+"</td>";
+			    						tblList +="<td>"+values.firstname+"</td><td>"+values.middlename+"</td>";
+			    						tblList +="</tr>";		
 		
+
+			    		        	});
+			    		        	tblList += "</tbody>";
+			    		        	$('#tblSearch').append(tblList);
+			    		        	
+			    		        	
+			    		        },
+			    		        error: function(e) {
+			    		            alert("Error: " + e);
+			    		            
+			    		        }
+	    			
+			    			}).done(
+						    		
+							    	function(){
+							    		my_jQuery3("#tblSearch").tablesorter();
+							    		my_jQuery3("#tblSearch tbody td").hover(function() {
+											$(this).parents('tr').find('td').addClass('highlight');
+										}, function() {
+											$(this).parents('tr').find('td').removeClass('highlight');
+										});
+									});
+			    			
+			    		}else{
+			    			$("#result").css({display: "none"});
+			    			alert("No Employee Found");
+			    		}
+			    		
+			    	},
+					
+				});
+	});
+
+});
 
 
 function fetch(d){
@@ -119,6 +127,7 @@ function mylog()
 	$('#tblSearch tbody').remove();
 	
 	$("#result").css({display: "none"});
+
 	//check if hr or manager
 	var rponse ="";
 	
@@ -137,8 +146,7 @@ function mylog()
 	        }
 	    });
 	 view ='mylog';
-	//user = "hr";
-	//else user = ""
+
 	if(user == "hr" || user == "manager")
 		{
 		document.getElementById('others').href ="javascript:others()";
@@ -169,11 +177,13 @@ function others()
 	$('#tblSearch tbody').remove();
 	
 	$("#result").css({display: "none"});
+
 	if(user == "manager")
 		{
 		
 		$("#SearchSub").css({display: "block"});
 		$("#SearchBox").css({display: "none"});
+
 		var dropDownStr = "";
 		$('#sub option').remove();
 		$.ajax(
@@ -202,12 +212,12 @@ function others()
 		{
 		$("#SearchSub").css({display: "none"});
 		$("#SearchBox").css({display: "block"});
+
 		view = "hr";
 		}
 }
 function SearchTimeLog()
 {	
-		
 		var name;
 		var from = $('#from').val();
 		var to = $('#to').val();
@@ -234,7 +244,6 @@ function SearchTimeLog()
 		else if(view =="hr")
 			{
 			idd = Employee_Id;
-//			Employee_Id = 0;
 			name = id;
 			}
 		$.ajaxSetup({async:false});
@@ -255,6 +264,7 @@ function SearchTimeLog()
 		if(rponse == "OK")
 			{
 			$("#data").css({display: "none"});
+
 				if(view == "mylog")
 					{
 					$('#tblTimeLog tbody').remove();
@@ -369,7 +379,6 @@ function SearchTimeLog()
 			}
 		else
 			{
-			document.getElementById('tbl').value = ""; 
 			if(rponse=="No Data")
 				{
 				$('#tblTimeLog tbody').remove();
@@ -377,9 +386,9 @@ function SearchTimeLog()
 				}
 			else
 				{
-				$("#data").css({display: "none"});
 				$('#tblTimeLog tbody').remove();
 				alert(rponse);
 				}
+			
 			}
 	}

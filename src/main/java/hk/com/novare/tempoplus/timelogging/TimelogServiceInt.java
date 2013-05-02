@@ -27,7 +27,9 @@ public interface TimelogServiceInt {
 	//TimeLogs
 		void logTimeIn(TimeLogging timelogs) throws DataAccessException;
 		int getEmployeeId();
-		void logTimeOut(TimeLogging timeLogging) throws DataAccessException;
+		void logTimeOut(TimeLogging timeLogging) throws DataAccessException, ParseException;
+		String getCurrentTime();
+		String getCurrentDate();
 		
 }
 

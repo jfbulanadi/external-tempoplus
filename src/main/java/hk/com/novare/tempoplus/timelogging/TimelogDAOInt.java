@@ -43,9 +43,11 @@ public interface TimelogDAOInt {
 	
 	//Hr view
 		List<Employee> searchEmployees(String name) throws DataAccessException;
+		int getValidationOfEmployeeSearch();
 		
 	//Timein TimeOut
-		void insertTimeIn(int id, TimeLogging time) throws DataAccessException;
-		void validateout(int id, TimeLogging time) throws DataAccessException;
-		int validatetimeIn(int id) throws DataAccessException;	
+		void insertTimeIn(String datestring, String timestring, int id, TimeLogging time)throws DataAccessException;
+		void validateout(String totalHours, String datestring, String timestring,int id, TimeLogging time)throws DataAccessException ;
+		int validatetimeIn(String datestring,int id) throws DataAccessException;	
+		String getTimeIn(String dateString, String timeString, int id) throws DataAccessException;
 }
