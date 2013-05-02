@@ -22,11 +22,10 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 
 public class TimeLoggingDao implements TimelogDAOInt {
-		
-		//convert date to string
-		Date today = new Date();		
-		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
-		String datestring = formatter.format(today);	
+
+
+	int validateSearchEmployee = 0;
+
 
 	@Inject
 	DataSource dataSource;
@@ -224,6 +223,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		connection = null;
 		try {
 			connection = dataSource.getConnection();
+
 			final PreparedStatement ps = connection
 					.prepareStatement("INSERT into timelogs(employeeId,date,duration,flag) VALUES(?,?,?,?)");
 			ps.setInt(1, userid);
@@ -470,7 +470,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 	public List<TimeLogging> retrieveTimelog(int id, String from, String to)
 			throws DataAccessException {
 
-Connection connection = null;
+		Connection connection = null;
 		
 		try {
 			connection = dataSource.getConnection();
@@ -607,7 +607,8 @@ Connection connection = null;
 		public List<Employee> searchEmployees(String name)
 				throws DataAccessException {
 			Connection con = null;
-			
+			int count = 0;
+					
 			final List<Employee> employee = new ArrayList<Employee>();	
 			employee.clear();
 			
@@ -623,7 +624,7 @@ Connection connection = null;
 					
 					
 					while(resultSet.next()){
-												
+						count = 1;						
 						final Employee details = new Employee();
 						
 						details.setEmployeeId(resultSet.getInt(1));
@@ -635,6 +636,7 @@ Connection connection = null;
 						employee.add(details);
 				
 					}
+					validateSearchEmployee = count;
 					resultSet.close();
 					return employee;
 			} catch (SQLException e) {
@@ -748,21 +750,16 @@ Connection connection = null;
 		}
 		
 		@Override
-		public void insertTimeIn(int id, TimeLogging time)
+		public void insertTimeIn(String datestring, String timestring, int id, TimeLogging time)
 				throws DataAccessException {
-			
-			//convert time to string
-			Date timenow = new Date();
-			Format formattime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String timestring = formattime.format(timenow);
-			
+
 			Connection connection = null;
 			
 			try {
 				connection = dataSource.getConnection();
 
 				final PreparedStatement pstate = connection
-						.prepareStatement("INSERT INTO timelogs (employeeId, date, timeIn, duration) values ( ?, ?, ?, ?)");
+						.prepareStatement("INSERT INTO timelogs (employeeId, date, timeIn, duration) values (?, ?, ?, ?)");
 
 				// Save in db
 				pstate.setInt(1, id);
@@ -775,7 +772,8 @@ Connection connection = null;
 			} catch (SQLException e) {
 				// Throw a nested exception
 				// Encapsulation of exceptions
-				throw new DataAccessException("cannot connect", e);
+				throw new DataAccessException("cannot connect",e);
+
 			} finally {
 				// Always close the connection. Error or not.
 				if (connection != null) {
@@ -790,25 +788,56 @@ Connection connection = null;
 			
 		}
 
+		public String getTimeIn(String dateString, String timeString, int id) throws DataAccessException{
+			Connection connection = null;
+				
+			String timeIn = null;
+				
+			try {
+				connection = dataSource.getConnection();
+				
+				final PreparedStatement ps = connection.prepareStatement("SELECT timeIn FROM timelogs WHERE employeeId = ? and date=? ");
+				ps.setInt(1, id);
+				ps.setString(2, dateString);
+				
+				final ResultSet resultSet = ps.executeQuery();
+				
+				while(resultSet.next()){
+				
+					timeIn = resultSet.getString(1);
+				
+				}
+				resultSet.close();
+				return timeIn;
+			}catch (SQLException e) {
+				
+				throw new DataAccessException("cannot connect",e);
+			}finally{
+				
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (SQLException e) {
+						throw new DataAccessException("cannot close", e);
+					}
+				}
+				
+			}
+		}
+
+		
 		@Override
-		public void validateout(int id, TimeLogging time)
-				throws DataAccessException, ParseException {
-			
-			//convert time to string
-			Date timenow = new Date();
-			Format formattime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String timestring = formattime.format(timenow);
-			
+
+		public void validateout(String totalHours, String datestring, String timestring,int id, TimeLogging time)
+				throws DataAccessException {
+
 
 			Connection connection = null;
-			
-			int shift_id = getShift(id);
-			String shift_in = getskedin(shift_id);
+
 			String finalDate = datestring;
 			
-			String tin = null;
-			String tout = null;
-			String thours = "00:00:00";
+			String timeIn = null;
+			String duration = "00:00:00";
 			
 			int count = 0;
 			
@@ -823,7 +852,7 @@ Connection connection = null;
 				
 				while(resultSet.next()){
 				
-					tin = resultSet.getString(1);
+					timeIn = resultSet.getString(1);
 					count = 1;
 				}
 				
@@ -842,13 +871,8 @@ Connection connection = null;
 						.prepareStatement("UPDATE timelogs set timeOut = ?, duration = ? where employeeId = ? and date = ? ");
 				pstate.setString(1, timestring);
 							
-				//compute for total hours
-				tout = timestring;
-				
-				shift_in = getskedin(shift_id);
-				thours = hoursCompute(shift_in, tin, tout);
-				
-				pstate.setString(2, thours);
+				duration = totalHours;
+				pstate.setString(2, duration);
 				pstate.setInt(3, id);
 				pstate.setString(4, finalDate);
 				pstate.executeUpdate();
@@ -857,7 +881,9 @@ Connection connection = null;
 				resultSet.close();
 				
 			} catch (SQLException e) {
-				throw new DataAccessException("cannot connect", e);
+				
+				throw new DataAccessException("cannot connect",e);
+
 			}finally{
 				
 				if (connection != null) {
@@ -873,7 +899,7 @@ Connection connection = null;
 		}
 
 		@Override
-		public int validatetimeIn(int id) throws DataAccessException {
+		public int validatetimeIn(String datestring,int id) throws DataAccessException {
 			Connection connection = null;
 			int count = 0;
 			
@@ -913,114 +939,11 @@ Connection connection = null;
 		}
 		
 
-		
-
-		//retrieve shift_id in tbl_user
-		private int getShift(int id) throws DataAccessException{
-			int shift_id = 0;
-			
-			Connection conn = null;
-			
-			try {
-				conn = dataSource.getConnection();
-				final PreparedStatement ps = conn.prepareStatement("SELECT shiftId FROM employees WHERE employeeId = ?");
-				ps.setInt(1, id);
-				
-				final ResultSet resultSet = ps.executeQuery();
-				
-				while(resultSet.next()){
-					
-					shift_id = resultSet.getInt(1);
-
-				}
-				
-				return shift_id;
-				
-			} catch (SQLException e) {
-				throw new DataAccessException("cannot connect", e);
-			}finally{
-				
-				if (conn != null) {
-					try {
-						conn.close();
-					} catch (SQLException e) {
-						throw new DataAccessException("cannot close", e);
-					}
-				}
-				
-				
-			}
-			
-		}
-		
-		
-		//retrieve shift_in in shifts table
-		private String getskedin(int shift_id) throws DataAccessException{
-
-			String shift_in = null;
-			
-			Connection conn = null;
-			
-			try {
-				conn = dataSource.getConnection();
-				final PreparedStatement ps = conn.prepareStatement("SELECT timeIn FROM shifts WHERE id = ?");
-				ps.setInt(1, shift_id);
-				
-				final ResultSet resultSet = ps.executeQuery();
-				
-				while(resultSet.next()){
-					
-					shift_in = resultSet.getString(1);
-
-				}
-				
-				return shift_in;
-			} catch (SQLException e) {
-				throw new DataAccessException("cannot connect", e);
-			}finally{
-				
-				if (conn != null) {
-					try {
-						conn.close();
-					} catch (SQLException e) {
-						throw new DataAccessException("cannot close", e);
-					}
-				}
-				
-				
-			}
-			
-		}
-
-		//Computation of Duration
-		private String hoursCompute(String shift_in, String tin, String tout) throws ParseException{
-
-			String final_total_hours = "0";
-		
-				 SimpleDateFormat total_hours = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					
-				    Date final1 = total_hours.parse(tout);
-				    Date final2 = total_hours.parse(tin);
-				    
-				    long inTime = final1.getTime() - final2.getTime();
-				    
-				    long diffDays = inTime / (24*60*60*1000);
-				    
-				    long hour = (inTime / (60 * 60 * 1000)-diffDays * 24);
-				    long min = ((inTime / (60 * 1000))-diffDays * 24 * 60-hour * 60);
-
-				    long s = (inTime/1000-diffDays * 24 * 60 * 60-hour * 60 * 60-min * 60);
-				    
-				    String format = hour + ":" + min + ":" + s;
-				    
-				    final_total_hours = format;
-
-		    return final_total_hours;	
+		@Override
+		public int getValidationOfEmployeeSearch() {
+			return validateSearchEmployee;
 
 		}
-
-		
-
 		
 
 		

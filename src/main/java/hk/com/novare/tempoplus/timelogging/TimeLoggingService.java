@@ -5,9 +5,11 @@ import hk.com.novare.tempoplus.useraccount.user.User;
 import hk.com.novare.tempoplus.useraccount.user.UserDao;
 
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -450,9 +452,20 @@ public class TimeLoggingService implements TimelogServiceInt{
 		
 		@Override
 		public String checkName(String name) {
-			String newresponse;
-			newresponse= "";
+
+			int validate = 0;
+			try {
+				timelogDAOInt.searchEmployees(name);
+				validate = timelogDAOInt.getValidationOfEmployeeSearch();
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+			}
+			
+			String newresponse = "";
+
 			if (name.equals("")){
+				newresponse = "Invalid Input";
+			}else if(validate == 0){
 				newresponse = "Invalid Input";
 			}else{
 				newresponse = "OK";
@@ -473,13 +486,14 @@ public class TimeLoggingService implements TimelogServiceInt{
 			
 			employeeid = user.getEmployeeId();
 						
-			int count;
-			count =	timelogDAOInt.validatetimeIn(employeeid);
+			int count =	timelogDAOInt.validatetimeIn(getCurrentDate(),employeeid);
+
 			
 			if(count == 0){
 				
-				timelogDAOInt.insertTimeIn(employeeid, timelogs);
+				timelogDAOInt.insertTimeIn(getCurrentDate(),getCurrentTime(), employeeid, timelogs);
 			}
+			
 		}
 		
 		@Override
@@ -493,10 +507,68 @@ public class TimeLoggingService implements TimelogServiceInt{
 		
 		@Override
 		public void logTimeOut(TimeLogging timeLogging) throws DataAccessException, ParseException{
-			
-			timelogDAOInt.validateout(employeeid, timeLogging);
-			//labas si hourscompute, with method service
-			//
+
+			String duration =hoursCompute(getTime(), getCurrentTime());
+						
+			timelogDAOInt.validateout(duration,getCurrentDate(),getCurrentTime(),employeeid, timeLogging);
 		}
+		
+		public String getCurrentTime(){
+			//convert time to string
+			Date timenow = new Date();
+			Format formattime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String timestring = formattime.format(timenow);
+			return timestring;
+		}
+		
+		public String getCurrentDate(){
+			
+			//convert date to string
+			Date today = new Date();		
+			Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+			String datestring = formatter.format(today);	
+			
+			return datestring;
+		}
+		
+		private String getTime(){
+			
+			String timeIn = null;
+			try {
+				timeIn = timelogDAOInt.getTimeIn(getCurrentDate(), getCurrentTime(), getEmployeeId());
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+			}
+			return timeIn;
+		}
+		
+		//Computation of Duration
+		private String hoursCompute(String timeIn, String tout) throws ParseException, DataAccessException{
+			timeIn = timelogDAOInt.getTimeIn(getCurrentDate(), getCurrentTime(), getEmployeeId());
+			
+			String final_total_hours = "0";
+		
+				 SimpleDateFormat total_hours = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					
+				    Date final1 = total_hours.parse(tout);
+				    Date final2 = total_hours.parse(timeIn);
+				    
+				    long inTime = final1.getTime() - final2.getTime();
+				    
+				    long diffDays = inTime / (24*60*60*1000);
+				    
+				    long hour = (inTime / (60 * 60 * 1000)-diffDays * 24);
+				    long min = ((inTime / (60 * 1000))-diffDays * 24 * 60-hour * 60);
+
+				    long s = (inTime/1000-diffDays * 24 * 60 * 60-hour * 60 * 60-min * 60);
+				    
+				    String format = hour + ":" + min + ":" + s;
+				    
+				    final_total_hours = format;
+
+		    return final_total_hours;	
+
+		}
+
 
 }

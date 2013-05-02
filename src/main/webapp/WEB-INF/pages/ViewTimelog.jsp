@@ -24,7 +24,8 @@
 	<script type="text/javascript" src="../resources/timelog/js/jquery.tablesorter.pager.js"></script>
 	<script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
 	<script type="text/javascript">var idExternal =${id}</script>
-</head>
+	
+	</head>
 <body onload = "mylog()">
 
 <table id = "tblNav">
@@ -45,7 +46,7 @@
 Subordinates: <select id ="sub"> </select>
 </div>
 <div id="SearchBox">
-Employee Lastname/Firstname: <input type="text" id="empName" /> <button id="SearchButton">Search</button>
+Lastname/Firstname: <input type="text" id="empName" /> <button id="SearchButton">Search</button>
 </div>
 </td>
 </tr>
