@@ -46,7 +46,7 @@ public class UserController {
 			HttpSession session,
 			ModelMap modelMap,
 			@RequestParam(value = "userName")String userEmail,
-			@RequestParam(value = "password") String password) {
+			@RequestParam(value = "password") String password) throws DataAccessException {
 		
 		boolean isValid = userService.validateLogInAccess(userEmail, password);
 		

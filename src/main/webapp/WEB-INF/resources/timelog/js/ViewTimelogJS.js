@@ -9,6 +9,7 @@ $(document).ready(function() {
 		$( "#SearchTimeLog" ).click(SearchTimeLog); 
 		id = idExternal;
 		
+
 	$("#SearchButton").click(function() {
 		var newresponse = null;
 		var empname = $('#empName').val();
@@ -31,7 +32,7 @@ $(document).ready(function() {
 								
 							});
 			    			
-			    						    			
+
 			    			$('#tblSearch tbody').remove();
 			    			$('#tblSearch thead').remove();
 			    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
@@ -86,6 +87,7 @@ $(document).ready(function() {
 });
 
 
+
 function fetch(d){
 	$("#HrSearch").dialog('close');
 	var rowid = d.id;
@@ -114,7 +116,6 @@ function mylog()
 	$("#SearchSub").css({display: "none"});
 	$("#HrSearch").css({display: "none"});
 	$("#SearchRow").css({display:"none"});
-	
 	//hr search textbox and label
 	document.getElementById('from').value = ""; 
 	document.getElementById('to').value = ""; 
@@ -218,6 +219,7 @@ function others()
 }
 function SearchTimeLog()
 {	
+		document.getElementById('pagesize').selectedIndex=0;
 		var name;
 		var from = $('#from').val();
 		var to = $('#to').val();

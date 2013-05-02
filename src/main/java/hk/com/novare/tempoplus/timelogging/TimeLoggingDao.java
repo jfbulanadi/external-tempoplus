@@ -23,15 +23,17 @@ import javax.sql.DataSource;
 
 public class TimeLoggingDao implements TimelogDAOInt {
 
+
 	int validateSearchEmployee = 0;
+
 
 	@Inject
 	DataSource dataSource;
 	
 	@Override
 	public int countUser() throws DataAccessException {
-		int cUser;
-		cUser=0;
+		int countUser;
+		countUser=0;
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
@@ -39,12 +41,13 @@ public class TimeLoggingDao implements TimelogDAOInt {
 					.prepareStatement("SELECT count(id) FROM employees");
 			final ResultSet resultSet = ps.executeQuery();
 			while (resultSet.next()) {
-				cUser = resultSet.getInt(1);
+				countUser = resultSet.getInt(1);
 			}
 			resultSet.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally
+			throw new DataAccessException("cannot connect",e);
+
+		}  finally
 		{
 			if (connection != null) {
 				try {
@@ -55,7 +58,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			}
 		}
 		
-		return cUser;
+		return countUser;
 	}
 
 	@Override
@@ -77,8 +80,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		
 			id = (Integer) getID.get(i);
 		} catch (SQLException e) {
-			
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		} finally
 		{
 			if (connection != null) {
@@ -108,8 +110,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			}
 			resultSet.close();
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		} finally
 		{
 			if (connection != null) {
@@ -125,8 +126,8 @@ public class TimeLoggingDao implements TimelogDAOInt {
 	
 	@Override
 	public String getShiftInReal(String desc) throws DataAccessException {
-	String sIn;
-	sIn = "";
+	String shiftIn;
+	shiftIn = "";
 	Connection connection = null;
 	try {
 		connection = dataSource.getConnection();
@@ -135,11 +136,11 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		ps.setString(1, desc);
 		final ResultSet resultSet = ps.executeQuery();
 		while (resultSet.next()) {
-		sIn = resultSet.getString(1);
+			shiftIn = resultSet.getString(1);
 		}
 		resultSet.close();
 	} catch (SQLException e) {
-		e.printStackTrace();
+		throw new DataAccessException("cannot connect", e);
 	} finally
 	{
 		if (connection != null) {
@@ -150,13 +151,13 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			}
 		}
 	}
-		return sIn;
+		return shiftIn;
 	}
 
 	@Override
 	public String getShiftOut(int id) throws DataAccessException {
-		String sOut;
-		sOut = "";
+		String shiftOut;
+		shiftOut = "";
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
@@ -165,12 +166,11 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			ps.setInt(1, id);
 			final ResultSet resultSet = ps.executeQuery();
 			while (resultSet.next()) {
-			sOut = resultSet.getString(1);
+				shiftOut = resultSet.getString(1);
 			}
 			resultSet.close();
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		} finally
 		{
 			if (connection != null) {
@@ -181,30 +181,29 @@ public class TimeLoggingDao implements TimelogDAOInt {
 				}
 			}
 		}
-			return sOut;
+			return shiftOut;
 	}
 	
 	
 	@Override
-	public int checkTime(String d, int uid) throws DataAccessException {
-		int cin;
-		cin=0;
+	public int checkTime(String d, int userid) throws DataAccessException {
+		int checkTime;
+		checkTime=0;
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
 					.prepareStatement("SELECT count(employeeId) FROM timelogs WHERE date = ? and employeeId = ?");
 			ps.setString(1, d);
-			ps.setInt(2, uid);
+			ps.setInt(2, userid);
 			final ResultSet resultSet = ps.executeQuery();
 			while (resultSet.next()) {
-				cin = resultSet.getInt(1);
+				checkTime = resultSet.getInt(1);
 			}
 			resultSet.close();
 	
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		} finally
 		{
 			if (connection != null) {
@@ -215,25 +214,25 @@ public class TimeLoggingDao implements TimelogDAOInt {
 				}
 			}
 		}
-		return cin;
+		return checkTime;
 	}
 	
 	@Override
-	public void insertRec(String d, int uid) throws DataAccessException {
-		Connection connection = null;
+	public void insertRec(String d, int userid) throws DataAccessException {
+		Connection connection;
+		connection = null;
 		try {
 			connection = dataSource.getConnection();
-	
+
 			final PreparedStatement ps = connection
 					.prepareStatement("INSERT into timelogs(employeeId,date,duration,flag) VALUES(?,?,?,?)");
-			ps.setInt(1, uid);
+			ps.setInt(1, userid);
 			ps.setString(2, d);
 			ps.setString(3, "00:00:00");
 			ps.setInt(4, getFlagId("No Log"));
 			ps.executeUpdate();
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		} finally
 		{
 			if (connection != null) {
@@ -248,20 +247,19 @@ public class TimeLoggingDao implements TimelogDAOInt {
 	}
 
 	@Override
-	public void updateFlag(String d, int uid, int fid)
+	public void updateFlag(String date, int userId, int flagId)
 			throws DataAccessException {
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
 					.prepareStatement("UPDATE timelogs set flag = ? where employeeId = ? and date = ? ");
-			ps.setInt(1, fid);
-			ps.setInt(2,uid);
-			ps.setString(3,d);
+			ps.setInt(1, flagId);
+			ps.setInt(2,userId);
+			ps.setString(3,date);
 			ps.executeUpdate();
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		} finally
 		{
 			if (connection != null) {
@@ -277,8 +275,8 @@ public class TimeLoggingDao implements TimelogDAOInt {
 
 	@Override
 	public int getFlagId(String desc) throws DataAccessException {
-		int fID;
-		fID = 0;
+		int flagID;
+		flagID = 0;
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
@@ -287,13 +285,12 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			ps.setString(1, desc);
 			final ResultSet resultSet = ps.executeQuery();
 			while (resultSet.next()) {
-				fID = resultSet.getInt(1);
+				flagID = resultSet.getInt(1);
 			}
 			resultSet.close();
 	
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		} finally
 		{
 			if (connection != null) {
@@ -304,30 +301,29 @@ public class TimeLoggingDao implements TimelogDAOInt {
 				}
 			}
 		}
-		return fID;
+		return flagID;
 	}
 
 	@Override
-	public String checkTimeIn(String d, int uid) throws DataAccessException {
-		String In;
-		In = "";
+	public String checkTimeIn(String date, int userId) throws DataAccessException {
+		String timeIn;
+		timeIn = "";
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
 					.prepareStatement("SELECT timeIn FROM timelogs WHERE date = ? and employeeId = ?");
-			ps.setString(1, d);
-			ps.setInt(2, uid);
+			ps.setString(1, date);
+			ps.setInt(2, userId);
 			final ResultSet resultSet = ps.executeQuery();
 			while (resultSet.next()) {
-				In = resultSet.getString(1);
+				timeIn = resultSet.getString(1);
 			}
 				
 			resultSet.close();
 	
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		} finally
 		{
 			if (connection != null) {
@@ -338,30 +334,29 @@ public class TimeLoggingDao implements TimelogDAOInt {
 				}
 			}
 		}
-		return In;
+		return timeIn;
 	}
 
 	@Override
-	public String getTimeIn(String d, int uid) throws DataAccessException {
-		String tIn;
-		tIn = "";
+	public String getTimeIn(String date, int userId) throws DataAccessException {
+		String timeIn;
+		timeIn = "";
 		Connection connection = null;
 		
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
 					.prepareStatement("SELECT timeIn FROM timelogs WHERE date = ? and employeeId = ?");
-			ps.setString(1, d);
-			ps.setInt(2, uid);
+			ps.setString(1, date);
+			ps.setInt(2, userId);
 			final ResultSet resultSet = ps.executeQuery();
 			while (resultSet.next()) {
-				tIn = resultSet.getString(1);
+				timeIn = resultSet.getString(1);
 			}
 			resultSet.close();
 	
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		} finally
 		{
 			if (connection != null) {
@@ -372,30 +367,29 @@ public class TimeLoggingDao implements TimelogDAOInt {
 				}
 			}
 		}
-		return tIn;
+		return timeIn;
 	}
 
 	@Override
-	public String checkTimeOut(String d, int uid) throws DataAccessException {
-		String Out;
-		Out = "";
+	public String checkTimeOut(String date, int userId) throws DataAccessException {
+		String timeOut;
+		timeOut = "";
 		Connection connection = null;
 		try {
 				connection = dataSource.getConnection();
 				final PreparedStatement ps = connection
 						.prepareStatement("SELECT timeOut FROM timelogs WHERE date = ? and employeeId = ?");
-				ps.setString(1, d);
-				ps.setInt(2, uid);
+				ps.setString(1, date);
+				ps.setInt(2, userId);
 				final ResultSet resultSet = ps.executeQuery();
 				while (resultSet.next()) {
-					Out = resultSet.getString(1);
+					timeOut = resultSet.getString(1);
 					}
 								
 					resultSet.close();
 					
 					} catch (SQLException e) {
-				
-							e.printStackTrace();
+						throw new DataAccessException("cannot connect", e);
 					} finally
 					{
 						if (connection != null) {
@@ -406,28 +400,27 @@ public class TimeLoggingDao implements TimelogDAOInt {
 							}
 						}
 					}
-					return Out;
+					return timeOut;
 	}
 	@Override
-	public String getTimeOut(String d, int uid) throws DataAccessException {
-		String tOut;
-		tOut = "";
+	public String getTimeOut(String date, int userId) throws DataAccessException {
+		String timeOut;
+		timeOut = "";
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
 					.prepareStatement("SELECT timeOut FROM timelogs WHERE date = ? and employeeId = ?");
-			ps.setString(1, d);
-			ps.setInt(2, uid);
+			ps.setString(1, date);
+			ps.setInt(2, userId);
 			final ResultSet resultSet = ps.executeQuery();
 			while (resultSet.next()) {
-				tOut = resultSet.getString(1);
+				timeOut = resultSet.getString(1);
 			}
 			resultSet.close();
 	
 		} catch (SQLException e) {
-	
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		} finally
 		{
 			if (connection != null) {
@@ -438,12 +431,13 @@ public class TimeLoggingDao implements TimelogDAOInt {
 				}
 			}
 		}
-		return tOut;
+		return timeOut;
 	}
 
 	@Override
 	public List retrieveSubordinates(int id) throws DataAccessException {
-		Connection connection = null;
+		Connection connection;
+		connection = null;
 		final List sub = new ArrayList();
 		try {
 			connection = dataSource.getConnection();
@@ -458,8 +452,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 			}
 			
 		} catch (SQLException e) {
-		
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect",e);
 		}finally {
 			// Always close the connection. Error or not.
 			if (connection != null) {
@@ -477,7 +470,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 	public List<TimeLogging> retrieveTimelog(int id, String from, String to)
 			throws DataAccessException {
 
-Connection connection = null;
+		Connection connection = null;
 		
 		try {
 			connection = dataSource.getConnection();
@@ -509,7 +502,7 @@ Connection connection = null;
 		} catch (SQLException e) {
 			// Throw a nested exception
 			// Encapsulation of exceptions
-			throw new DataAccessException(e);
+			throw new DataAccessException("cannot connect", e);
 		} finally {
 			// Always close the connection. Error or not.
 			if (connection != null) {
@@ -561,7 +554,7 @@ Connection connection = null;
 		} catch (SQLException e) {
 			// Throw a nested exception
 			// Encapsulation of exceptions
-			throw new DataAccessException(e);
+			throw new DataAccessException("cannot connect", e);
 		} finally {
 			// Always close the connection. Error or not.
 			if (connection != null) {
@@ -592,8 +585,7 @@ Connection connection = null;
 			}
 			
 		} catch (SQLException e) {
-	
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		}finally {
 			// Always close the connection. Error or not.
 			if (connection != null) {
@@ -649,7 +641,7 @@ Connection connection = null;
 					return employee;
 			} catch (SQLException e) {
 				
-				throw new DataAccessException(e);
+				throw new DataAccessException("cannot connect", e);
 			}finally {
 				// Always close the connection. Error or not.
 				if (con != null) {
@@ -680,8 +672,7 @@ Connection connection = null;
 				}
 				
 			} catch (SQLException e) {
-		
-				e.printStackTrace();
+				throw new DataAccessException("cannot connect", e);
 			}finally {
 				// Always close the connection. Error or not.
 				if (connection != null) {
@@ -711,8 +702,7 @@ Connection connection = null;
 				}
 				
 			} catch (SQLException e) {
-			
-				e.printStackTrace();
+				throw new DataAccessException("cannot connect", e);
 			}finally {
 				// Always close the connection. Error or not.
 				if (connection != null) {
@@ -745,7 +735,7 @@ Connection connection = null;
 			}
 			resultSet.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DataAccessException("cannot connect", e);
 		} finally
 		{
 			if (connection != null) {
@@ -783,6 +773,7 @@ Connection connection = null;
 				// Throw a nested exception
 				// Encapsulation of exceptions
 				throw new DataAccessException("cannot connect",e);
+
 			} finally {
 				// Always close the connection. Error or not.
 				if (connection != null) {
@@ -836,8 +827,10 @@ Connection connection = null;
 
 		
 		@Override
+
 		public void validateout(String totalHours, String datestring, String timestring,int id, TimeLogging time)
 				throws DataAccessException {
+
 
 			Connection connection = null;
 
@@ -890,6 +883,7 @@ Connection connection = null;
 			} catch (SQLException e) {
 				
 				throw new DataAccessException("cannot connect",e);
+
 			}finally{
 				
 				if (connection != null) {
@@ -930,7 +924,7 @@ Connection connection = null;
 			} catch (SQLException e) {
 				// Throw a nested exception
 				// Encapsulation of exceptions
-				throw new DataAccessException(e);
+				throw new DataAccessException("cannot connect", e);
 			} finally {
 				// Always close the connection. Error or not.
 				if (connection != null) {
@@ -948,6 +942,7 @@ Connection connection = null;
 		@Override
 		public int getValidationOfEmployeeSearch() {
 			return validateSearchEmployee;
+
 		}
 		
 

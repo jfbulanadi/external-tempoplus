@@ -24,17 +24,20 @@ public class TimeLoggingController {
 		TimelogServiceInt timelogServiceInt;
 		
 		@RequestMapping(value = "/flagging", method = RequestMethod.GET)
-		public @ResponseBody String flagging(ModelMap modelMap) throws ParseException {
-			try {
+		public @ResponseBody String flagging(ModelMap modelMap) throws ParseException{
+			try
+			{
 				timelogServiceInt.flaggingProcess();
-			} catch (DataAccessException e) {
-				
-				e.printStackTrace();
 			}
+			catch(DataAccessException e)
+			{
+				System.out.println("Connection error");
+			}
+			
 			return "Background Process";
 		}
 		
-		@RequestMapping(value = "/UserLog", method = RequestMethod.GET)
+		@RequestMapping(value = "/userLog", method = RequestMethod.GET)
 		public String sayUserLog(ModelMap modelMap) {
 		
 			modelMap.addAttribute("id", timelogServiceInt.getEmployeeId());
@@ -46,7 +49,7 @@ public class TimeLoggingController {
 				@RequestParam(value = "name") String name,
 				@RequestParam(value = "from") String from,
 				@RequestParam(value = "to") String to) throws ParseException, DataAccessException {
-				return timelogServiceInt.ValidateInput(id,name,from,to);
+				return timelogServiceInt.validateInput(id,name,from,to);
 		}
 		
 		@RequestMapping(value = "/checkUser", method=RequestMethod.POST)
