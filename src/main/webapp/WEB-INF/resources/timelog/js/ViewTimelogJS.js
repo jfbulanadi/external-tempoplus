@@ -20,7 +20,6 @@ $(document).ready(function() {
 				    	success: function(response){
 				    		newresponse = response;
 				    		if(newresponse =="OK"){
-//				    			document.getElementById('HrSearch').style.visibility = 'visible';
 				    			$("#HrSearch").dialog({
 				    				
 									maxWidth : 550,
@@ -76,8 +75,7 @@ $(document).ready(function() {
 						
 					});
 		});
-
-	});
+		
 
 
 function fetch(d){
@@ -88,7 +86,7 @@ function fetch(d){
 	var firstname = delimited[2];
 	var lastname = delimited[1]; 
 	
-	document.getElementById('result').style.visibility = 'visible';
+	$("#result").css({display: "block"});
 	
 	
 	$('#employee').val(lastname +", " +firstname);
@@ -103,11 +101,12 @@ function fetch(d){
 }
 function mylog()
 {	
-	document.getElementById('data').style.visibility = 'hidden';
-	document.getElementById('SearchBox').style.visibility = 'hidden'; 
-	document.getElementById('SearchSub').style.visibility = 'hidden'; 
-	document.getElementById('SearchSub').style.display = 'none';
-	document.getElementById('SearchBox').style.display = 'none';
+	$("#data").css({display: "none"});
+	$("#SearchBox").css({display: "none"});
+	$("#SearchSub").css({display: "none"});
+	$("#HrSearch").css({display: "none"});
+	$("#SearchRow").css({display:"none"});
+	
 	//hr search textbox and label
 	document.getElementById('from').value = ""; 
 	document.getElementById('to').value = ""; 
@@ -118,7 +117,8 @@ function mylog()
 	document.getElementById('tbl').disabled=true;
 	document.getElementById('pagesize').selectedIndex=0;
 	$('#tblSearch tbody').remove();
-	document.getElementById('result').style.visibility = 'hidden';
+	
+	$("#result").css({display: "none"});
 	//check if hr or manager
 	var rponse ="";
 	
@@ -159,7 +159,7 @@ function mylog()
 
 function others()
 {
-	document.getElementById('data').style.visibility = 'hidden';
+	$("#data").css({display: "none"});
 	document.getElementById('from').value = ""; 
 	document.getElementById('to').value = ""; 
 	$('#tblTimeLog tbody').remove();
@@ -167,12 +167,13 @@ function others()
 	document.getElementById('pagesize').selectedIndex=0;
 	document.getElementById('empName').value = "";
 	$('#tblSearch tbody').remove();
-	document.getElementById('result').style.visibility = 'hidden';
+	
+	$("#result").css({display: "none"});
 	if(user == "manager")
 		{
-		document.getElementById('SearchSub').style.visibility = 'visible'; 
-		document.getElementById('SearchBox').style.visibility = 'hidden'; 
 		
+		$("#SearchSub").css({display: "block"});
+		$("#SearchBox").css({display: "none"});
 		var dropDownStr = "";
 		$('#sub option').remove();
 		$.ajax(
@@ -199,8 +200,8 @@ function others()
 		}
 	else if(user == "hr")
 		{
-		document.getElementById('SearchSub').style.visibility = 'hidden';
-		document.getElementById('SearchBox').style.visibility = 'visible';
+		$("#SearchSub").css({display: "none"});
+		$("#SearchBox").css({display: "block"});
 		view = "hr";
 		}
 }
@@ -253,7 +254,7 @@ function SearchTimeLog()
 		    });
 		if(rponse == "OK")
 			{
-			document.getElementById('data').style.visibility = 'hidden';
+			$("#data").css({display: "none"});
 				if(view == "mylog")
 					{
 					$('#tblTimeLog tbody').remove();
@@ -372,12 +373,11 @@ function SearchTimeLog()
 			if(rponse=="No Data")
 				{
 				$('#tblTimeLog tbody').remove();
-				document.getElementById('data').style.visibility = 'visible';
-				
+				$("#data").css({display: "block"});
 				}
 			else
 				{
-				document.getElementById('data').style.visibility = 'hidden';
+				$("#data").css({display: "none"});
 				$('#tblTimeLog tbody').remove();
 				alert(rponse);
 				}

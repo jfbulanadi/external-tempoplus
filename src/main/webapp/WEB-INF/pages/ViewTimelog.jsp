@@ -37,7 +37,7 @@
 </table>
 
 
-<br>
+<br><br><br><br>
 <table id ="tblAll">
 <tr>
 <td>
@@ -49,8 +49,7 @@ Employee Lastname/Firstname: <input type="text" id="empName" /> <button id="Sear
 </div>
 </td>
 </tr>
-		
-		<tr>
+		<tr id = "SearchRow">
 		<td  id ="tdTimeLogAll">
 		<div id ="HrSearch" title="List of Employees">
 			<center>
@@ -99,7 +98,7 @@ Employee Lastname/Firstname: <input type="text" id="empName" /> <button id="Sear
 <tr>
 <td>
 
-<table id ="tblID"">
+<table id ="tblID">
 
 	<tbody>
 	<tr>

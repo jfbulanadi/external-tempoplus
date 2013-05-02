@@ -107,8 +107,8 @@ public class TimeLoggingService implements TimelogServiceInt{
 					tIn=printFormat.format(dateIn);
 
 					cLate = checkLate(yDate,id,sIn,tIn);
+
 					
-			
 					if(cOut)
 
 					{
