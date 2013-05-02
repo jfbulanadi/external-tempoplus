@@ -49,6 +49,7 @@ Employee Lastname/Firstname: <input type="text" id="empName" /> <button id="Sear
 </div>
 </td>
 </tr>
+		
 		<tr>
 		<td  id ="tdTimeLogAll">
 		<div id ="HrSearch" title="List of Employees">
@@ -59,6 +60,7 @@ Employee Lastname/Firstname: <input type="text" id="empName" /> <button id="Sear
 		</div>
 		</td>
 		</tr>
+		
 		<tr>
 		<td>
 		<div id = "result">
@@ -67,7 +69,6 @@ Employee Lastname/Firstname: <input type="text" id="empName" /> <button id="Sear
 		</td>
 		</tr>
 		
-
 <tr>
 <td>
 <div id="Date">

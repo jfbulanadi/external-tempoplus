@@ -106,6 +106,8 @@ function mylog()
 	document.getElementById('data').style.visibility = 'hidden';
 	document.getElementById('SearchBox').style.visibility = 'hidden'; 
 	document.getElementById('SearchSub').style.visibility = 'hidden'; 
+	document.getElementById('SearchSub').style.display = 'none';
+	document.getElementById('SearchBox').style.display = 'none';
 	//hr search textbox and label
 	document.getElementById('from').value = ""; 
 	document.getElementById('to').value = ""; 
@@ -170,6 +172,7 @@ function others()
 		{
 		document.getElementById('SearchSub').style.visibility = 'visible'; 
 		document.getElementById('SearchBox').style.visibility = 'hidden'; 
+		
 		var dropDownStr = "";
 		$('#sub option').remove();
 		$.ajax(
@@ -196,13 +199,14 @@ function others()
 		}
 	else if(user == "hr")
 		{
-		document.getElementById('SearchSub').style.visibility = 'hidden'; 
-		document.getElementById('SearchBox').style.visibility = 'visible'; 
+		document.getElementById('SearchSub').style.visibility = 'hidden';
+		document.getElementById('SearchBox').style.visibility = 'visible';
 		view = "hr";
 		}
 }
 function SearchTimeLog()
 {	
+		
 		var name;
 		var from = $('#from').val();
 		var to = $('#to').val();
@@ -364,16 +368,18 @@ function SearchTimeLog()
 			}
 		else
 			{
+			document.getElementById('tbl').value = ""; 
 			if(rponse=="No Data")
 				{
 				$('#tblTimeLog tbody').remove();
 				document.getElementById('data').style.visibility = 'visible';
+				
 				}
 			else
 				{
+				document.getElementById('data').style.visibility = 'hidden';
 				$('#tblTimeLog tbody').remove();
 				alert(rponse);
 				}
-			
 			}
 	}
