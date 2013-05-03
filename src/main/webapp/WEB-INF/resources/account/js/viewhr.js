@@ -34,9 +34,7 @@ $(document).ready(function() {
 								shift:$("#shift").val(),
 								level:$("#level").val(),
 								hireDate:$("#hiredDate").val(),
-								supervisorName:$("#supervisorName").val(),
-								supervisorEmail:$("#supervisorEmail").val(),
-								locAssign:$("#locAssign").val(),
+								supervisorName:$("#selectSupervisorName").val(),
 								employeeEmail:$("#employeeEmail").val(),
 								};
 						

@@ -2,6 +2,7 @@ package hk.com.novare.tempoplus.accountsystem;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,9 @@ public class UserDb implements TransformFile {
 	Sheet sheet;
 
 	@Override
-	public List<EmployeeFullInfoDTO> toExcel(MultipartFile multipartFile) {
+	public List<HumanResourceDTO> toExcel(MultipartFile multipartFile) {
+		List<HumanResourceDTO> humanResourcefromUpload = new ArrayList<HumanResourceDTO>();
+		HumanResourceDTO employee = null;
 
 		try {
 			final InputStream is = multipartFile.getInputStream();
@@ -31,99 +34,196 @@ public class UserDb implements TransformFile {
 			invalidFormatException.printStackTrace();
 		}
 
-		List<EmployeeFullInfoDTO> personList = new ArrayList<EmployeeFullInfoDTO>();
+		
+		
 		for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-			final EmployeeFullInfoDTO p = new EmployeeFullInfoDTO();
 			Row row = sheet.getRow(i);
-			for (int x = 0; x < row.getLastCellNum(); x++) {
-				Cell cell = row.getCell(x);
-
-				switch (x) {
+			employee = new HumanResourceDTO();
+			for (int col = 0; col < row.getLastCellNum(); col++) {
+				
+				Cell cell = row.getCell(col, Row.CREATE_NULL_AS_BLANK);
+				
+				switch (col) {
 				case 1:
-					//BIOMETRIC ID
-					System.out.print(cell.getNumericCellValue());
-					/*
-					 * if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-					 * p.setBiometrics((int) cell.getNumericCellValue());
-					 * 
-					 * }
-					 */
+					int biometrics = 0;
+					// BIOMETRIC ID\
+					if (cell.getNumericCellValue() == 0) {
+						biometrics = 0;
+					} else {
+						biometrics = (int) cell.getNumericCellValue();
+						
+						employee.setBiometricId(biometrics);
+						
+					}
+					
 					break;
 				case 2:
-					//NAME
-					System.out.println(cell.getStringCellValue());
-					/*
-					 * if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-					 * //p.setFirstName(cell.getStringCellValue());
-					 * System.out.println(cell.getStringCellValue()); }
-					 */
+					// NAME
+					String firstName = null;
+					String middleName = null;
+					String lastName = null;
+
+					if (cell.getStringCellValue() == null) {
+
+					} else {
+						String[] name = cell.getStringCellValue().split(",");
+						try {
+							if (name[0] != null) {
+								lastName = name[0];
+							}
+							if (name[1] != null) {
+								firstName = name[1];
+							}
+							if (name[2] != null) {
+								middleName = name[2];
+							}
+
+						} catch (ArrayIndexOutOfBoundsException e) {
+							// do nothing
+						}
+						employee.setFirstName(firstName);
+						employee.setMiddleName(middleName);
+						employee.setLastName(lastName);
+					}
 					break;
-				// System.out.print(cell.getStringCellValue() + " \n");
 				case 3:
-					//Department
-					/*
-					 * if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-					 * //p.setDepartment(cell.getStringCellValue()); }
-					 */
+					// Department
+					String department;
+					if (cell.getStringCellValue() == null) {
+						department = null;
+					} else {
+						department = cell.getStringCellValue();
+					}
+					employee.setDepartment(department);
 					break;
 				case 5:
-					//Shifting
-					/*
-					 * if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-					 * //p.setShift(cell.getStringCellValue()); }
-					 */
-					System.out.println(cell.getStringCellValue());
+					// Shifting
+
+					String shift;
+					if (cell.getStringCellValue() == null) {
+						shift = null;
+					} else {
+						shift = cell.getStringCellValue();
+					}
+					employee.setShift(shift);
 					break;
 				case 6:
-					//Employee Id
-					System.out.println(cell.getStringCellValue());
-					/*
-					 * if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-					 * p.setEmployeeId((int) cell.getNumericCellValue()); }
-					 */
+					// Employee Id
+					int employeeId;
+					if (cell.getNumericCellValue() == 0) {
+						employeeId = 0;
+					} else {
+						employeeId = (int) cell.getNumericCellValue();
+					}
+
+					employee.setEmployeeId(employeeId);
 					break;
 				case 7:
-					//Position
-					System.out.println(cell.getStringCellValue());
+					// Position
+					String position;
+					if (cell.getStringCellValue() == null) {
+						position = null;
+					} else {
+						position = cell.getStringCellValue();
+					}
+
+					employee.setPosition(position);
 					break;
 
 				case 8:
-					//Level
-					System.out.println(cell.getStringCellValue());
+					// Level
+					int level;
+					if (cell.getNumericCellValue() == 0) {
+						level = 0;
+					} else {
+						level = (int) cell.getNumericCellValue();
+					}
+
+					employee.setLevel(level);
 					break;
 				case 9:
 					// Hire Date
-					System.out.println(cell.getStringCellValue());
+					String hireDate;
+					if (cell.getDateCellValue() == null) {
+						hireDate = null;
+					} else {
+						SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+								"yyyy-MM-dd");
+						hireDate = simpleDateFormat.format(cell
+								.getDateCellValue());
+					}
+					employee.setHiredDate(hireDate);
+
 					break;
 
 				case 10:
 					// Regularization Date
-					System.out.println(cell.getStringCellValue());
+					String regularizationDate;
+					if (cell.getDateCellValue() == null) {
+						regularizationDate = null;
+					} else {
+						SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat(
+								"yyyy-MM-dd");
+						regularizationDate = simpleDateFormat2.format(cell
+								.getDateCellValue());
+					}
+					employee.setRegularizationDate(regularizationDate);
+
 					break;
 				case 11:
 					// Resignation Date
-					System.out.println(cell.getStringCellValue());
+					String resignationDate;
+					if (cell.getDateCellValue() == null) {
+						resignationDate = null;
+					} else {
+						SimpleDateFormat simpleDateFormat3 = new SimpleDateFormat(
+								"yyyy-MM-dd");
+						resignationDate = simpleDateFormat3.format(cell
+								.getDateCellValue());
+					}
+					employee.setResignationDate(resignationDate);
 					break;
 				case 12:
 					// Employee's Email
-					System.out.println(cell.getStringCellValue());
+					String email;
+					if (cell.getStringCellValue() == null) {
+						email = null;
+					} else {
+						email = cell.getStringCellValue();
+					}
+					employee.setEmployeeEmail(email);
 					break;
 				case 13:
 					// Supervisor in NT3
-					System.out.println(cell.getStringCellValue());
-					break;
-				case 14:
-					// Supervisor's Email in NT3
-					System.out.println(cell.getStringCellValue());
+					String supervisor;
+					if (cell.getStringCellValue() == null) {
+						supervisor = null;
+					} else {
+						supervisor = cell.getStringCellValue();
+					}
+					employee.setSupervisorEmail(supervisor);
+
 					break;
 				case 15:
 					// Location Assignment
-					System.out.println(cell.getStringCellValue());
+					String location;
+					if (cell.getStringCellValue() == null) {
+						location = null;
+					} else {
+						location = cell.getStringCellValue();
+					}
+					employee.setLocAssign(location);
 					break;
 				}
-				personList.add(p);
 			}
+			humanResourcefromUpload.add(employee);
 		}
-		return personList;
+		
+		/*for(HumanResource2 em: humanResourcefromUpload) {
+			
+			System.out.println(em.getBiometricId() + " ");
+		}
+*/
+		return humanResourcefromUpload;
 	}
 }

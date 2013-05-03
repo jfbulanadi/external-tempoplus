@@ -1,12 +1,12 @@
 package hk.com.novare.tempoplus.accountsystem;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service("hrService")
 public class HrService {
@@ -14,9 +14,9 @@ public class HrService {
 	@Autowired
 	HrDAO hrDAO;
 
-	public List<EmployeePartialInfoDTO> retrieveAllEmployee() {
+	public List<HumanResourcePartialInfoDTO> retrieveAllEmployee() {
 		List<HumanResource> selectAllEmployee = hrDAO.selectAll();
-		List<EmployeePartialInfoDTO> employeePartialInfoDTOs = new ArrayList<EmployeePartialInfoDTO>();
+		List<HumanResourcePartialInfoDTO> employeePartialInfoDTOs = new ArrayList<HumanResourcePartialInfoDTO>();
 
 		for (HumanResource employee : selectAllEmployee) {
 			employeePartialInfoDTOs
@@ -26,9 +26,9 @@ public class HrService {
 	}
 
 	// construct EmployeePartialDTO from employee instance
-	private EmployeePartialInfoDTO constructEmployeePartialInfoDTO(
+	private HumanResourcePartialInfoDTO constructEmployeePartialInfoDTO(
 			HumanResource employee) {
-		EmployeePartialInfoDTO employeePartialInfoDTO = new EmployeePartialInfoDTO();
+		HumanResourcePartialInfoDTO employeePartialInfoDTO = new HumanResourcePartialInfoDTO();
 		employeePartialInfoDTO.setBiometrics(employee.getBiometrics());
 		employeePartialInfoDTO.setDepartment(employee.getDepartment());
 		employeePartialInfoDTO.setFirstName(employee.getFirstName());
@@ -39,9 +39,9 @@ public class HrService {
 	}
 
 	// construct EmployeeFullDTO from employee instance
-	private EmployeeFullInfoDTO constructEmployeeFullInfoDTO(
+	private HumanResourceFullInfoDTO constructEmployeeFullInfoDTO(
 			HumanResource employee) {
-		EmployeeFullInfoDTO employeeFullInfoDto = new EmployeeFullInfoDTO();
+		HumanResourceFullInfoDTO employeeFullInfoDto = new HumanResourceFullInfoDTO();
 		employeeFullInfoDto.setBiometrics(employee.getBiometrics());
 		employeeFullInfoDto.setDepartment(employee.getDepartment());
 		employeeFullInfoDto.setDepartmentId(employee.getDepartmentId());
@@ -65,7 +65,7 @@ public class HrService {
 
 	// construct Employee from employeeFullDTO instance
 	private HumanResource contructEmployee(
-			EmployeeFullInfoDTO employeeFullInfoDTO) {
+			HumanResourceFullInfoDTO employeeFullInfoDTO) {
 		HumanResource employee = new HumanResource();
 		employee.setBiometrics(employeeFullInfoDTO.getBiometrics());
 		employee.setFirstName(employeeFullInfoDTO.getFirstName());
@@ -89,7 +89,7 @@ public class HrService {
 	}
 
 	// search by category that will return DTO;
-	public EmployeeFullInfoDTO searchEmployee(String searchString,
+	public HumanResourceFullInfoDTO searchEmployee(String searchString,
 			String category) {
 		
 		HumanResource employee = null;
@@ -97,23 +97,20 @@ public class HrService {
 		return constructEmployeeFullInfoDTO(employee);
 	}
 
-	public void saveEmployeeDetail(EmployeeFullInfoDTO employeeFullInfoDTO) {
+	public void saveEmployeeDetail(HumanResourceFullInfoDTO employeeFullInfoDTO) {
 		HumanResource humanResource = contructEmployee(employeeFullInfoDTO);
 		int departmentId = hrDAO.retrieveDepartmentId(humanResource.getDepartment());
 		int positionId = hrDAO.retrievePositionId(humanResource.getPosition());
 		humanResource.setDepartmentId(departmentId);
 		humanResource.setPositionId(positionId);
 		
-		hrDAO.save(humanResource);
+		hrDAO.updateEmployee(humanResource);
 
 	}
 	
-	public void createEmployeeDetail(EmployeeFullInfoDTO employeeFullInfoDTO) {
+	public void createEmployeeDetail(HumanResourceFullInfoDTO employeeFullInfoDTO) {
 		HumanResource humanResource = contructEmployee(employeeFullInfoDTO);
-		System.out.println("service"+humanResource.getFirstName());
-		System.out.println("service"+humanResource.getDepartmentId());
-		System.out.println("service"+humanResource.getPositionId());
-		hrDAO.addEmployee(humanResource);
+		hrDAO.createEmployee(humanResource);
 		int employeeId = Integer.parseInt(humanResource.getEmployeeId());
 		hrDAO.createAccount(employeeId);
 	}
@@ -130,5 +127,32 @@ public class HrService {
 		return hrDAO.retrieveSupervisor(departmentId);
 	}
 	
+	public void userDBFileUpload(MultipartFile multipartfile) {
+		//convert excel file to array of humanresource2
+		TransformFile transformFile = new UserDb();
+		// Obj from file upload
+		List<HumanResourceDTO> uploadHumanResources = transformFile.toExcel(multipartfile);
+		
+		//retrieve all employeeId from Database
+		List<Integer> employeeIdList = hrDAO.retrieveAllEmployeeId();
+
+		//put the new employeeId
+		List<HumanResourceDTO> newhumanResourcesListToBeAddedToDatabase = new ArrayList<HumanResourceDTO>();
+		
+		//check employeeId for duplicate
+		for(int in = 0; in < uploadHumanResources.size(); in++) {
+			if(!employeeIdList.contains(uploadHumanResources.get(in).getEmployeeId())) {
+				newhumanResourcesListToBeAddedToDatabase.add(uploadHumanResources.get(in));
+			}
+		}
+		
+		//save humanresource that has no duplicate in database
+		for(HumanResourceDTO humanResource2: newhumanResourcesListToBeAddedToDatabase) {
+			System.out.println(humanResource2.getFirstName());
+			System.out.println(humanResource2.getEmployeeId());
+		}
+		
+		
+	}
 	
 }

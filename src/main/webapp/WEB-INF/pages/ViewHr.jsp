@@ -65,7 +65,6 @@
 					<td>${employee.middleName }</td>
 					<td>${employee.lastName }</td>
 					<td>${employee.department }</td>
-
 				</tr>
 			</c:forEach>
 		</tbody>
@@ -165,14 +164,6 @@
 					<td><select id ="selectSupervisorName">
 
 					</select></td>
-				</tr>
-				<tr>
-					<td>Supervisor Email :</td>
-					<td><input size="50" id="supervisorEmail" /></td>
-				</tr>
-				<tr>
-					<td>Location Assignment :</td>
-					<td><input size="50" id="locAssign" /></td>
 				</tr>
 			</table>
 		</form>

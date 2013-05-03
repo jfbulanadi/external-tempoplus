@@ -6,7 +6,7 @@ import java.util.List;
 public interface HrModel {
 
 	List<HumanResource> selectAll();
-	void addEmployee(HumanResource employee );
+	void createEmployee(HumanResource employee );
 	HumanResource search(String searches, String category);
 
 	

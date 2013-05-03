@@ -115,7 +115,7 @@ public class HrDAO implements HrModel {
 	}
 
 	@Override
-	public void addEmployee(HumanResource employee) {
+	public void createEmployee(HumanResource employee) {
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
@@ -380,6 +380,40 @@ public class HrDAO implements HrModel {
 		return positionId;
 	}
 	
+	public List<Integer> retrieveAllEmployeeId() {
+		Connection connection = null;
+		List<Integer> employeeIdList = new ArrayList<Integer>();
+		int empId;
+		try {
+			connection = dataSource.getConnection();
+			final PreparedStatement ps = connection
+					.prepareStatement("SELECT employeeId from employees");
+			final ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				empId = resultSet.getInt("employeeId");
+				// Store in an object
+				employeeIdList.add(empId);
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return employeeIdList;
+	}
+	
 	public Map<Integer, String> retrieveSupervisor(int departmentId) {
 		Connection connection = null;
 		Map<Integer, String> map = new HashMap<Integer, String>();
@@ -423,7 +457,7 @@ public class HrDAO implements HrModel {
 	}
 	
 
-	public void save(HumanResource employee) {
+	public void updateEmployee(HumanResource employee) {
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
@@ -468,7 +502,7 @@ public class HrDAO implements HrModel {
         try {
             connection = dataSource.getConnection();
             final PreparedStatement createUserStatement =
-                    connection.prepareStatement("INSERT INTO users (employeeId_FK, password) " +
+                    connection.prepareStatement("INSERT INTO users (employeeId, password) " +
                             "values (?,?)");
             createUserStatement.setInt(1, employeeId);
             createUserStatement.setString(2, "MD5(default)");

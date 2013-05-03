@@ -35,14 +35,14 @@ public class HrController {
 
 	@RequestMapping(value = "/selectAllJSON")
 	public @ResponseBody
-	List<EmployeePartialInfoDTO> subPage() {
+	List<HumanResourcePartialInfoDTO> subPage() {
 		return hrService.retrieveAllEmployee();
 
 	}
 	
 	@RequestMapping(value = "/searchEmployee")
 	public @ResponseBody
-	EmployeeFullInfoDTO searchEmployee( @RequestParam(value = "employeeId") String searchString) {
+	HumanResourceFullInfoDTO searchEmployee( @RequestParam(value = "employeeId") String searchString) {
 		return hrService.searchEmployee(searchString, "employeeId");
 	}
 	
@@ -65,7 +65,7 @@ public class HrController {
 			@RequestParam(value = "employeeEmail") String employeeEmail) {
 		
 		
-		EmployeeFullInfoDTO employeeFullInfoDTO = new EmployeeFullInfoDTO();
+		HumanResourceFullInfoDTO employeeFullInfoDTO = new HumanResourceFullInfoDTO();
 		
 		employeeFullInfoDTO.setFirstName(firstName);
 		employeeFullInfoDTO.setMiddleName(middleName);
@@ -103,10 +103,9 @@ public class HrController {
 			@RequestParam(value = "level") String level,
 			@RequestParam(value = "hireDate") String hireDate,
 			@RequestParam(value = "supervisorName") String supervisorName,
-			@RequestParam(value = "supervisorEmail") String supervisorEmail,
 			@RequestParam(value = "employeeEmail") String employeeEmail) {
 		
-		EmployeeFullInfoDTO employeeFullInfoDTO = new EmployeeFullInfoDTO();
+		HumanResourceFullInfoDTO employeeFullInfoDTO = new HumanResourceFullInfoDTO();
 		
 		employeeFullInfoDTO.setFirstName(firstName);
 		employeeFullInfoDTO.setMiddleName(middleName);
@@ -118,7 +117,6 @@ public class HrController {
 		employeeFullInfoDTO.setShift(shift);
 		employeeFullInfoDTO.setLevel(level);
 		employeeFullInfoDTO.setHiredDate(hireDate);
-		employeeFullInfoDTO.setSupervisorEmail(supervisorEmail);
 		employeeFullInfoDTO.setSupervisorName(supervisorName);
 		employeeFullInfoDTO.setEmployeeEmail(employeeEmail);
 		hrService.createEmployeeDetail(employeeFullInfoDTO);
@@ -152,16 +150,9 @@ public class HrController {
 			ModelMap modelMap) {
 
 		// upload file
-		final MultipartFile files = uploadForm.getFile();
-
-		// transform to direct category userDb
-		TransformFile tf;
-		tf = new UserDb();
-		List<EmployeeFullInfoDTO> pList = tf.toExcel(files);
-
-		// pass to add_profile.jsp
-		//modelMap.addAttribute("employeeList", hrService.retieveAllEmployee());
-		return "ViewHr";
+		hrService.userDBFileUpload(uploadForm.getFile());
+		
+		return "redirect:employeemanager";
 
 	}
 	
