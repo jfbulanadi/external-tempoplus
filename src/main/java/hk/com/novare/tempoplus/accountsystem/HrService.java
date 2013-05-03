@@ -38,31 +38,6 @@ public class HrService {
 		return employeePartialInfoDTO;
 	}
 
-	// construct EmployeeFullDTO from employee instance
-	private HumanResourceFullInfoDTO constructEmployeeFullInfoDTO(
-			HumanResource employee) {
-		HumanResourceFullInfoDTO employeeFullInfoDto = new HumanResourceFullInfoDTO();
-		employeeFullInfoDto.setBiometrics(employee.getBiometrics());
-		employeeFullInfoDto.setDepartment(employee.getDepartment());
-		employeeFullInfoDto.setDepartmentId(employee.getDepartmentId());
-		employeeFullInfoDto.setPositionId(employee.getPositionId());
-		employeeFullInfoDto.setFirstName(employee.getFirstName());
-		employeeFullInfoDto.setMiddleName(employee.getMiddleName());
-		employeeFullInfoDto.setLastName(employee.getLastName());
-		employeeFullInfoDto.setEmployeeId(employee.getEmployeeId());
-		employeeFullInfoDto.setEmployeeEmail(employee.getEmployeeEmail());
-		employeeFullInfoDto.setHiredDate(employee.getHiredDate());
-		employeeFullInfoDto.setRegularizationDate(employee
-				.getRegularizationDate());
-		employeeFullInfoDto.setResignationDate(employee.getResignationDate());
-		employeeFullInfoDto.setLevel(employee.getLevel());
-		employeeFullInfoDto.setPosition(employee.getPosition());
-		employeeFullInfoDto.setSupervisorEmail(employee.getSupervisorEmail());
-		employeeFullInfoDto.setSupervisorName(employee.getSupervisorName());
-
-		return employeeFullInfoDto;
-	}
-
 	// construct Employee from employeeFullDTO instance
 	private HumanResource contructEmployee(
 			HumanResourceFullInfoDTO employeeFullInfoDTO) {
@@ -87,24 +62,91 @@ public class HrService {
 		
 		return employee;
 	}
-
-	// search by category that will return DTO;
-	public HumanResourceFullInfoDTO searchEmployee(String searchString,
-			String category) {
+	
+	
+	// construct Employee from employeeFullDTO instance
+	private HumanResourceDTO contructEmployeeFromEdited(HumanResourceFullInfoDTO employeeFullInfoDTO) {
 		
-		HumanResource employee = null;
-		employee = hrDAO.search(searchString, "employees.employeeId");
-		return constructEmployeeFullInfoDTO(employee);
+		HumanResourceDTO employee = new HumanResourceDTO();
+		employee.setBiometricId(Integer.parseInt(employeeFullInfoDTO.getBiometrics()));
+		employee.setFirstName(employeeFullInfoDTO.getFirstName());
+		employee.setMiddleName(employeeFullInfoDTO.getMiddleName());
+		employee.setLastName(employeeFullInfoDTO.getLastName());
+		employee.setDepartment(employeeFullInfoDTO.getDepartment());
+		employee.setEmployeeId(Integer.parseInt(employeeFullInfoDTO.getEmployeeId()));
+		employee.setEmployeeEmail(employeeFullInfoDTO.getEmployeeEmail());
+		employee.setHiredDate(employeeFullInfoDTO.getHiredDate());
+		employee.setRegularizationDate(employeeFullInfoDTO
+				.getRegularizationDate());
+		employee.setResignationDate(employeeFullInfoDTO.getResignationDate());
+		employee.setLevel(Integer.parseInt(employeeFullInfoDTO.getLevel()));
+		employee.setPosition(employeeFullInfoDTO.getPosition());
+		employee.setSupervisorName(employeeFullInfoDTO.getSupervisorName());
+		employee.setSupervisorEmail(employeeFullInfoDTO.getSupervisorEmail());
+		employee.setDepartmentId(employeeFullInfoDTO.getDepartmentId());
+		employee.setPositionId(employeeFullInfoDTO.getPositionId());
+		employee.setShift(employeeFullInfoDTO.getShift());
+		employee.setLocAssign(employeeFullInfoDTO.getLocAssign());
+		return employee;
 	}
 
-	public void saveEmployeeDetail(HumanResourceFullInfoDTO employeeFullInfoDTO) {
-		HumanResource humanResource = contructEmployee(employeeFullInfoDTO);
-		int departmentId = hrDAO.retrieveDepartmentId(humanResource.getDepartment());
-		int positionId = hrDAO.retrievePositionId(humanResource.getPosition());
-		humanResource.setDepartmentId(departmentId);
-		humanResource.setPositionId(positionId);
+	// search by category that will return DTO;
+	public HumanResourceDTO searchEmployee(String searchString,
+			String category) {
 		
-		hrDAO.updateEmployee(humanResource);
+		HumanResourceDTO employee = null;
+		SupervisorDTO supervisorDTO = null;
+		
+		employee = hrDAO.search(searchString, "employees.employeeId");
+
+		supervisorDTO = hrDAO.retrieveSupervisorNameAndEmail(employee.getSupervisorId());
+		employee.setSupervisorEmail(supervisorDTO.getEmail());
+		employee.setSupervisorName(supervisorDTO.getName());
+		
+		return employee;
+	}
+	
+	/**
+	 * 
+	 * @param employeeFullInfoDTO
+	 * save the edited employee, 
+	 * convert department name to departmentId
+	 * convert position name to positionId
+	 * convert shift to shiftId
+	 * convert supervisor name to supervisorId
+	 */
+	public void saveEditedEmployeeDetail(HumanResourceFullInfoDTO employeeFullInfoDTO) {
+		
+		HumanResourceDTO humanResourceDTO = contructEmployeeFromEdited(employeeFullInfoDTO);
+		int departmentId = hrDAO.retrieveDepartmentId(humanResourceDTO.getDepartment());
+		int positionId = hrDAO.retrievePositionId(humanResourceDTO.getPosition());
+		int shiftId = hrDAO.retrieveShiftId(humanResourceDTO.getShift());
+		int supervisorId = hrDAO.retrieveSupervisorEmployeeId(humanResourceDTO.getSupervisorEmail());
+		humanResourceDTO.setSupervisorId(supervisorId);
+		humanResourceDTO.setDepartmentId(departmentId);
+		humanResourceDTO.setPositionId(positionId);
+		humanResourceDTO.setShiftId(shiftId);
+		
+		if(humanResourceDTO.getHiredDate().length() == 0) {
+			String hiredDate = null;
+			humanResourceDTO.setHiredDate(hiredDate);
+		}
+		if(humanResourceDTO.getRegularizationDate().length() == 0) {
+			String RegularizationDate = null;
+			humanResourceDTO.setRegularizationDate(RegularizationDate);
+		}
+		if(humanResourceDTO.getResignationDate().length() == 0) {
+			String ResignationDate = null;
+			humanResourceDTO.setResignationDate(ResignationDate);
+			System.out.println("hrservice resignationdate" + humanResourceDTO.getResignationDate());
+		}
+		System.out.println("dept " +departmentId);
+		System.out.println("position " +positionId);
+		System.out.println("shift " + shiftId);
+		System.out.println("superviso r" + supervisorId);
+		System.out.println("shift from object " + humanResourceDTO.getShift());
+		
+		hrDAO.updateEmployee(humanResourceDTO);
 
 	}
 	
@@ -146,12 +188,30 @@ public class HrService {
 			}
 		}
 		
-		//save humanresource that has no duplicate in database
+		//PHASE I - save humanresource that has no duplicate in database 
 		for(HumanResourceDTO humanResource2: newhumanResourcesListToBeAddedToDatabase) {
-			System.out.println(humanResource2.getFirstName());
-			System.out.println(humanResource2.getEmployeeId());
+			int departmentId = hrDAO.retrieveDepartmentId(humanResource2.getDepartment());
+			int positionId = hrDAO.retrievePositionId(humanResource2.getPosition());
+			int shiftId = hrDAO.retrieveShiftId(humanResource2.getShift());
+			
+			humanResource2.setDepartmentId(departmentId);
+			humanResource2.setPositionId(positionId);
+			humanResource2.setShiftId(shiftId);
+			
+			if(humanResource2.getLevel() >= 3) {
+				humanResource2.setIsSupervisor("true");
+			}
+			hrDAO.createEmployeeFromUpload(humanResource2);
 		}
 		
+		//PHASE II - assigned designated supervisor using supervisor email
+		for(HumanResourceDTO humanResourceDTO: newhumanResourcesListToBeAddedToDatabase) {
+			int supervisorId = hrDAO.retrieveSupervisorEmployeeId(humanResourceDTO.getSupervisorEmail());
+			humanResourceDTO.setSupervisorId(supervisorId);
+			
+			//update supervisorId
+			hrDAO.updateSupervisorId(humanResourceDTO);
+		}
 		
 	}
 	

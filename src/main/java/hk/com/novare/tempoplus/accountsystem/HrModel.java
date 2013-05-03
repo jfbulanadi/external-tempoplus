@@ -7,7 +7,8 @@ public interface HrModel {
 
 	List<HumanResource> selectAll();
 	void createEmployee(HumanResource employee );
-	HumanResource search(String searches, String category);
+	HumanResourceDTO search(String searches, String category);
+	void createEmployeeFromUpload(HumanResourceDTO employee);
 
 	
 }

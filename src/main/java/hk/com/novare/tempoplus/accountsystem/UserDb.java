@@ -201,7 +201,17 @@ public class UserDb implements TransformFile {
 					} else {
 						supervisor = cell.getStringCellValue();
 					}
-					employee.setSupervisorEmail(supervisor);
+					employee.setSupervisorName(supervisor);
+					
+				case 14:
+					//supervisor email
+					String supervisoremail;
+					if (cell.getStringCellValue() == null) {
+						supervisoremail = null;
+					} else {
+						supervisoremail = cell.getStringCellValue();
+					}
+					employee.setSupervisorEmail(supervisoremail);
 
 					break;
 				case 15:
@@ -215,15 +225,11 @@ public class UserDb implements TransformFile {
 					employee.setLocAssign(location);
 					break;
 				}
+				
+
 			}
 			humanResourcefromUpload.add(employee);
 		}
-		
-		/*for(HumanResource2 em: humanResourcefromUpload) {
-			
-			System.out.println(em.getBiometricId() + " ");
-		}
-*/
 		return humanResourcefromUpload;
 	}
 }

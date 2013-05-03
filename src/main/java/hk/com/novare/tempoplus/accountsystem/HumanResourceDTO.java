@@ -22,6 +22,35 @@ public class HumanResourceDTO {
 	private String active;
 	private int departmentId;
 	private int positionId;
+	private int shiftId;
+	private String isSupervisor;
+	private int supervisorId;
+	
+	
+	
+	public int getSupervisorId() {
+		return supervisorId;
+	}
+
+	public void setSupervisorId(int supervisorId) {
+		this.supervisorId = supervisorId;
+	}
+
+	public String getIsSupervisor() {
+		return isSupervisor;
+	}
+
+	public void setIsSupervisor(String isSupervisor) {
+		this.isSupervisor = isSupervisor;
+	}
+
+	public int getShiftId() {
+		return shiftId;
+	}
+
+	public void setShiftId(int shiftId) {
+		this.shiftId = shiftId;
+	}
 
 	public String getFirstName() {
 		return firstName;

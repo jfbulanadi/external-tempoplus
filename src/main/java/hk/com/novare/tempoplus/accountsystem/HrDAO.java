@@ -160,29 +160,86 @@ public class HrDAO implements HrModel {
 			}
 		}
 	}
+	
+	@Override
+	public void createEmployeeFromUpload(HumanResourceDTO employee) {
+		Connection connection = null;
+		try {
+			connection = dataSource.getConnection();
+			// ? are placeholders for the parameters
+			/*final PreparedStatement ps = connection
+					.prepareStatement("INSERT INTO employees (firstname, middlename, lastname, biometricId,"
+							+ " employeeId, email, hireDate, "
+							+ "departmentId, positionId, level, supervisorId) values (?, ?,"
+							+ " ?, ?, ?, ?, ?, ?, ?, ?, ? )");*/
+			
+			
+			final PreparedStatement ps = connection
+					.prepareStatement("INSERT INTO employees (firstname, lastname, middlename, " +
+							"biometricId, departmentId, shiftId, employeeId, positionId, level, " +
+							"hireDate, regularizationDate, resignationDate, email, locationAssign, isSupervisor)" +
+							" VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+			// Convert object to a row
+			
+			ps.setString(1, employee.getFirstName());
+			ps.setString(2, employee.getLastName());
+			ps.setString(3, employee.getMiddleName());
+			ps.setInt(4, employee.getBiometricId());
+			ps.setInt(5, employee.getDepartmentId());
+			ps.setInt(6, employee.getShiftId());
+			ps.setInt(7, employee.getEmployeeId());
+			ps.setInt(8, employee.getPositionId());
+			ps.setInt(9, employee.getLevel());
+			ps.setString(10, employee.getHiredDate());
+			ps.setString(11, employee.getRegularizationDate());
+			ps.setString(12, employee.getResignationDate());
+			ps.setString(13, employee.getEmployeeEmail());
+			ps.setString(14, employee.getLocAssign());
+			ps.setString(15, employee.getIsSupervisor());
+			ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			
+
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// Ignore. Can't do anything anymore.
+				}
+			}
+		}
+	}
 
 	@Override
-	public HumanResource search(String searchString, String category) {
+	public HumanResourceDTO search(String searchString, String category) {
 
 		Connection connection = null;
-		final HumanResource employee = new HumanResource();
+		final HumanResourceDTO employee = new HumanResourceDTO();
 
 		try {
 			connection = dataSource.getConnection();
 			final Statement st = connection.createStatement();
 			final ResultSet resultSet = st
-					.executeQuery("SELECT * FROM tempoplus.employees, departments, positions  "
+					.executeQuery("SELECT firstname, lastname, middlename, biometricId, shiftId, employeeId, " +
+							"positionId, level, hireDate, regularizationDate, resignationDate, email, " +
+							"locationAssign, departments.name, positions.description, locationAssign, supervisorId, shifts.description" +
+							" FROM tempoplus.employees, departments, positions, shifts  "
 							+ "WHERE employees.employeeId = "
 							+ searchString
 							+ " and "
-							+ "positions.id = employees.positionId and departments.id = employees.departmentId;");
+							+ "positions.id = employees.positionId and departments.id = employees.departmentId " +
+							"and shifts.id = employees.shiftId");
 
 			while (resultSet.next()) {
 				final String firstName = resultSet.getString("firstname");
 				final String middleName = resultSet.getString("middlename");
 				final String lastName = resultSet.getString("lastname");
-				final String biometricsNo = resultSet.getString("biometricId");
-				final String employeeId = resultSet.getString("employeeId");
+				final int biometricsNo = resultSet.getInt("biometricId");
+				final int employeeId = resultSet.getInt("employeeId");
 				final String employeeEmail = resultSet.getString("email");
 				final String hiredDate = resultSet.getString("hireDate");
 				final String regularizationDate = resultSet
@@ -191,21 +248,20 @@ public class HrDAO implements HrModel {
 						.getString("employees.resignationDate");
 				final String departmentName = resultSet
 						.getString("departments.name");
-				final String level = resultSet.getString("employees.level");
+				final int level = resultSet.getInt("employees.level");
 				final String position = resultSet
 						.getString("positions.description");
-				/*
-				 * final String supervisorName = resultSet
-				 * .getString("SUPERVISOR_NAME"); final String supervisorEmail =
-				 * resultSet .getString("SUPERVISOR_EMAIL");
-				 */
+				final String location = resultSet
+						.getString("locationAssign");
+				final int supervisorId = resultSet.getInt("supervisorId");
+				final String shift = resultSet.getString("shifts.description");
 
 				// Store in an object
 
 				employee.setFirstName(firstName);
 				employee.setMiddleName(middleName);
 				employee.setLastName(lastName);
-				employee.setBiometrics(biometricsNo);
+				employee.setBiometricId(biometricsNo);
 				employee.setEmployeeId(employeeId);
 				employee.setEmployeeEmail(employeeEmail);
 				employee.setHiredDate(hiredDate);
@@ -214,10 +270,9 @@ public class HrDAO implements HrModel {
 				employee.setDepartment(departmentName);
 				employee.setLevel(level);
 				employee.setPosition(position);
-				/*
-				 * employee.setSupervisorName(supervisorName);
-				 * employee.setSupervisorEmail(supervisorEmail);
-				 */
+				employee.setLocAssign(location);
+				employee.setSupervisorId(supervisorId);
+				employee.setShift(shift);
 
 			}
 			resultSet.close();
@@ -273,6 +328,41 @@ public class HrDAO implements HrModel {
 		}
 		return departmentId;
 	}
+	
+	public int retrieveShiftId(String shift) {
+		Connection connection = null;
+		int shiftId = 0;
+
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st
+					.executeQuery("SELECT id from shifts where description like '"+ shift + "'");
+
+			while (resultSet.next()) {
+				shiftId = resultSet.getInt("id");
+			
+				// Store in an object
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return shiftId;
+	}
+	
 	
 	public Map<Integer, String> retrieveDepartment() {
 		Connection connection = null;
@@ -456,29 +546,142 @@ public class HrDAO implements HrModel {
 		return map;
 	}
 	
+	public SupervisorDTO retrieveSupervisorNameAndEmail(int supervisorId) {
+		Connection connection = null;
+		SupervisorDTO supervisorDTO = new SupervisorDTO();
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st.executeQuery("SELECT firstname, lastname, email FROM tempoplus.employees WHERE " +
+							"isSupervisor like 'true' and employeeId = '"+ supervisorId+"'");
+			
+			while (resultSet.next()) {
 
-	public void updateEmployee(HumanResource employee) {
+				final String firstName = resultSet.getString("firstname");
+				final String lastName = resultSet.getString("lastname");
+				final String email= resultSet.getString("email");
+				
+				// Store in an object
+				supervisorDTO.setFirstname(firstName);
+				supervisorDTO.setLastname(lastName);
+				supervisorDTO.setEmail(email);
+				
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return supervisorDTO;
+	}
+	
+	
+	public int retrieveSupervisorEmployeeId(String supervisorEmail) {
+		Connection connection = null;
+		int employeeId = 0;
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st
+					.executeQuery("SELECT employeeId FROM tempoplus.employees WHERE " +
+							"isSupervisor like 'true' and email like '"+ supervisorEmail+"'");
+			
+			while (resultSet.next()) {
+
+				employeeId = resultSet.getInt("employeeId");
+				
+				// Store in an object
+				
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return employeeId;
+	}
+	
+
+	public void updateEmployee(HumanResourceDTO employee) {
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			// ? are placeholders for the parameters
 			final PreparedStatement ps = connection
-					.prepareStatement("UPDATE employees SET firstname= ?, middlename = ?, lastname = ?, biometricId = ?,"
-							+ "employeeId = ?, email = ?, hireDate = ?, departmentId = ?, positionId = ?, "
-							+ "level = ?  WHERE employeeId = '"
-							+ employee.getEmployeeId() + "'");
+					.prepareStatement("UPDATE employees SET firstname= ?, middlename = ?, lastname = ?, " +
+							"employeeId = ?, biometricId = ?, departmentId = ?, positionId = ?, shiftId = ?, " +
+							"level = ?, hireDate = ?, regularizationDate = ?, resignationDate = ?, supervisorId = ?," +
+							" locationAssign = ?, email = ?  WHERE employeeId = ?");
 
 			// Convert object to a row
 			ps.setString(1, employee.getFirstName());
 			ps.setString(2, employee.getMiddleName());
-			ps.setString(3, employee.getLastName());
-			ps.setString(4, employee.getBiometrics());
-			ps.setString(5, employee.getEmployeeId());
-			ps.setString(6, employee.getEmployeeEmail());
-			ps.setString(7, employee.getHiredDate());
-			ps.setInt(8, employee.getDepartmentId());
-			ps.setInt(9, employee.getPositionId());
-			ps.setString(10, employee.getLevel());
+			ps.setString(3, employee.getLastName());			
+			ps.setInt(4, employee.getEmployeeId());
+			ps.setInt(5, employee.getBiometricId());
+			ps.setInt(6, employee.getDepartmentId());
+			ps.setInt(7, employee.getPositionId());
+			ps.setInt(8, employee.getShiftId());
+			ps.setInt(9, employee.getLevel());
+			ps.setString(10, employee.getHiredDate());
+			ps.setString(11, employee.getRegularizationDate());
+			ps.setString(12, employee.getResignationDate());
+			ps.setInt(13, employee.getSupervisorId());
+			ps.setString(14, employee.getLocAssign());
+			ps.setString(15, employee.getEmployeeEmail());
+			ps.setInt(16, employee.getEmployeeId());
+			
+			
+			ps.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					// Ignore. Can't do anything anymore.
+				}
+			}
+		}
+
+	}
+	
+	public void updateSupervisorId(HumanResourceDTO employee) {
+		Connection connection = null;
+		try {
+			connection = dataSource.getConnection();
+			// ? are placeholders for the parameters
+			final PreparedStatement ps = connection
+					.prepareStatement("UPDATE employees SET supervisorId= ? WHERE employeeId = '"+ employee.getEmployeeId() + "'");
+
+			// Convert object to a row
+			ps.setInt(1, employee.getSupervisorId());
+			
 			ps.executeUpdate();
 
 		} catch (SQLException e) {

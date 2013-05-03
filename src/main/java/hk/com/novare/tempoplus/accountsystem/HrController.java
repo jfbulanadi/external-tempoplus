@@ -42,7 +42,7 @@ public class HrController {
 	
 	@RequestMapping(value = "/searchEmployee")
 	public @ResponseBody
-	HumanResourceFullInfoDTO searchEmployee( @RequestParam(value = "employeeId") String searchString) {
+	HumanResourceDTO searchEmployee( @RequestParam(value = "employeeId") String searchString) {
 		return hrService.searchEmployee(searchString, "employeeId");
 	}
 	
@@ -62,7 +62,7 @@ public class HrController {
 			@RequestParam(value = "resignationDate") String resignationDate,
 			@RequestParam(value = "supervisorName") String supervisorName,
 			@RequestParam(value = "supervisorEmail") String supervisorEmail,
-			@RequestParam(value = "employeeEmail") String employeeEmail) {
+			@RequestParam(value = "employeeEmail") String employeeEmail){
 		
 		
 		HumanResourceFullInfoDTO employeeFullInfoDTO = new HumanResourceFullInfoDTO();
@@ -81,9 +81,10 @@ public class HrController {
 		employeeFullInfoDTO.setResignationDate(resignationDate);
 		employeeFullInfoDTO.setSupervisorName(supervisorName);
 		employeeFullInfoDTO.setSupervisorEmail(supervisorEmail);
-		employeeFullInfoDTO.setEmployeeEmail(employeeEmail);		
+		employeeFullInfoDTO.setEmployeeEmail(employeeEmail);
 		
-		hrService.saveEmployeeDetail(employeeFullInfoDTO);
+		
+		hrService.saveEditedEmployeeDetail(employeeFullInfoDTO);
 		
 		return "ViewHr";
 	}

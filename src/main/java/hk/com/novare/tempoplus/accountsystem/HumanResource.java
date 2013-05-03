@@ -2,7 +2,7 @@ package hk.com.novare.tempoplus.accountsystem;
 
 import org.springframework.stereotype.Service;
 
-@Service
+
 public class HumanResource {
 	
 	private String firstName;

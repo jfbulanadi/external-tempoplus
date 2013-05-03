@@ -272,7 +272,7 @@ function showToForm(empInfo) {
 			$("#editMiddleName").val(response.middleName)
 			$("#editLastName").val(response.lastName)
 			$("#editEmployeeId").val(response.employeeId)
-			$("#editBiometrics").val(response.biometrics)
+			$("#editBiometrics").val(response.biometricId)
 			$("#editDepartment").val(response.department)
 			$("#editShift").val(response.shift)
 			$("#editPosition").val(response.position)
