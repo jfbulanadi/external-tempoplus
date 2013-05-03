@@ -58,6 +58,19 @@ font-size: 62.5%;
 											
 												$.each(data, function(keys,
 														values) {
+													
+													if(values.timeIn==null && values.timeOut!=null) {
+														values.timeIn = "&nbsp";
+													} else  if(values.timeOut==null && values.timeIn!=null) {
+														values.timeOut = "&nbsp";
+													} else if(values.timeIn==null && values.timeOut==null) {
+														console.log("I HAVE NULL VALUES");
+														values.timeIn = "&nbsp";
+														values.timeOut = "&nbsp";
+													} else {
+														//has timein and timeout
+													}
+													
 													htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "' onclick=showToForm(this)>";
 													htmlstr += "<td>" + values.employeeId + "</td>";
 													htmlstr += "<td>" + values.biometricId +"</td>";
@@ -66,6 +79,7 @@ font-size: 62.5%;
 													htmlstr += "<td>" + values.lastname + "</td>";
 													htmlstr += "<td>" + values.email + "</td>";
 													htmlstr += "<td>" + values.position + "</td>";
+													htmlstr += "<td>" + values.date + "</td>";
 													htmlstr += "<td>" + values.timeIn + "</td>";
 													htmlstr += "<td>" + values.timeOut + "</td>";
 													htmlstr += "</tr>";
@@ -79,7 +93,7 @@ font-size: 62.5%;
 									$("#tablesorter").append(htmlstr);
 									var resort = true;
 									$("#tablesorter").trigger("update", [ resort ]);
-									var sorting = [ [ 0, 0 ], [ 0, 0 ] ];
+									var sorting = [ [ 2, 0 ], [7, 0] ];
 									$("table").trigger("sorton", [ sorting ]);
 
 								});
@@ -132,15 +146,8 @@ function showToForm(myId) {
 	 $("#txttimeout").val(timeout);
 }
 </script>
-
-
-
 </head>
 <body>
-	
-	
-	
-	
 	<!-- FORM IS HIDDEN BY DIALOG -->
 	<div id="dialog" title="Update time">
 		<hr/>
@@ -169,41 +176,8 @@ function showToForm(myId) {
 	</div>
 	<!-- FORM IS HIDDEN BY DIALOG -->
 	<hr/>
-	<div>Select consolidated sheet</div>
-	
-	Month
-	<select>
-		<option>Jan</option>
-		<option>Feb</option>
-		<option>Mar</option>
-	</select>
-	Period
-	<select>
-		<option>1</option>
-		<option>2</option>
-	</select>
-	<button>Select</button>
-	<hr />
-	<table id="tablesorter" class="tablesorter">
-		<thead>
-			<th>Employee ID</th>
-			<th>Biometric ID</th>
-			<th>First name</th>
-			<th>Middle name</th>
-			<th>Last name</th>
-			<th>Email</th>
-			<th>Position</th>
-			<th>Time in</th>
-			<th>TIme out</th>
-			
-			
-		</thead>
-		<tbody>
-		</tbody>
-	</table>
 	<div>
-	<button>Destroy</button>
-	<div class="pager">
+	<div class="pager" align="right">
 		<img src="../resources/bmn/css/images/first.png" class="first" /> <img
 			src="../resources/bmn/css/images/prev.png" class="prev" /> <span
 			class="pagedisplay"></span>
@@ -218,6 +192,25 @@ function showToForm(myId) {
 	</div>
 	</div>
 	<hr/>	
+	<table id="tablesorter" class="tablesorter">
+		<thead>
+			<th>Employee ID</th>
+			<th>Biometric ID</th>
+			<th>First name</th>
+			<th>Middle name</th>
+			<th>Last name</th>
+			<th>Email</th>
+			<th>Position</th>
+			<th>Date</th>
+			<th>Time in</th>
+			<th>Time out</th>
+			
+			
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+	<hr/>
 	<div>
 	<form:form method="post" action="uploadfile"
 		modelAttribute="uploadForm" enctype="multipart/form-data">

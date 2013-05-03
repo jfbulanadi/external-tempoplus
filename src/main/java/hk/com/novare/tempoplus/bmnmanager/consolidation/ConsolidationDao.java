@@ -191,24 +191,53 @@ public class ConsolidationDao {
 		
 		try {
 				connection = dataSource.getConnection();
-				ps = connection.prepareStatement("SELECT * FROM employees");
+				ps = connection.prepareStatement("SELECT e.employeeId, e.id, e.biometricId, e.firstname, e.middlename, e.lastname, e.email, p.description AS position, CONCAT_WS(', ' , e.lastname, e.firstname) AS fullName, e.hiredate, e.regularizationdate, "
+       + "(SELECT CONCAT_WS(', ' , lastname, firstname) AS fullName FROM employees WHERE employeeId = e.supervisorId) AS supervisor, "
+       + "t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, "
+       + "m.category, m.status, n.startDate, n.endDate, n.duration, n.absenceType, n.absenceStatus, "
+       + "(SELECT MIN(bIn.logTime) FROM biometrics AS bIn WHERE log = 0 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeIn, "
+       + "(SELECT MAX(bOut.logTime)  FROM biometrics AS bOut WHERE log = 1 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeOut "
+       + "FROM timelogs AS t JOIN employees AS e ON t.employeeId = e.employeeId "
+       + "LEFT JOIN positions p ON p.id = e.positionId "
+       + "LEFT JOIN consolidations c ON t.id = c.timelogId "
+       + "LEFT JOIN mantises m ON m.id = c.mantisId "
+       + "LEFT JOIN nt3s n ON n.id = c.nt3Id ORDER BY e.id");
 				resultSet = ps.executeQuery();
 				
 				while(resultSet.next()) {
 					
+					String biometricId = resultSet.getString("biometricId");
 					String employeeId = resultSet.getString("employeeId");
 					String firstname = resultSet.getString("firstname");
 					String middlename = resultSet.getString("middlename");
 					String lastname = resultSet.getString("lastname");
+					String position = resultSet.getString("position");
+					String email = resultSet.getString("email") + "@novare.com.hk";
+					String timeIn = resultSet.getString("bioTimeIn");
+					String timeOut = resultSet.getString("bioTimeOut");
+					String date = resultSet.getString("date");
+					
+					//			String email = resultSet.getString("email");
+					//String position = resultSet.getString("position");
+					
 //					String timeIn = resultSet.getString("timeIn");
 //					String timeOut = resultSet.getString("timeOut");
 //					
 					final ConsolidationDTO consolidations = new ConsolidationDTO();
 					
 					consolidations.setEmployeeId(employeeId);
+					consolidations.setBiometricId(biometricId);
 					consolidations.setFirstname(firstname);
 					consolidations.setMiddlename(middlename);
 					consolidations.setLastname(lastname);
+					consolidations.setPosition(position);
+					consolidations.setEmail(email);
+					consolidations.setDate(date);
+					consolidations.setTimeIn(timeIn);
+					consolidations.setTimeOut(timeOut);
+				
+					
+			//		consolidations.setEmail(email);
 					
 					
 					list.add(consolidations);
