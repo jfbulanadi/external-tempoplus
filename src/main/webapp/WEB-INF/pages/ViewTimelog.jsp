@@ -74,8 +74,8 @@ Lastname/Firstname: <input type="text" id="empName" /> <button id="SearchButton"
 <div id="Date">
 	<table>
 	<tr >
-	<td>From: <input type="text" id="from" /> </td>
-	<td>To: <input type="text" id="to" /> </td>
+	<td>From: <input type="text" id="from" readonly="readonly"/> </td>
+	<td>To: <input type="text" id="to" readonly="readonly" /> </td>
 	<td> <input type="button" id="SearchTimeLog" value="Search"> </td>
 	</tr>
 	</table>
