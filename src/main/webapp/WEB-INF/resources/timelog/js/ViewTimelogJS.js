@@ -3,7 +3,6 @@ var Employee_Id = 0; //for hr
 var view =""
 var id;
 $(document).ready(function() {
-		
 		$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
 		$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
 		$( "#SearchTimeLog" ).click(SearchTimeLog); 

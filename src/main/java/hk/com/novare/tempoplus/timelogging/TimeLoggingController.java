@@ -43,19 +43,19 @@ public class TimeLoggingController {
 		public @ResponseBody String SearchTimeLog(@RequestParam(value = "id") int id,
 				@RequestParam(value = "name") String name,
 				@RequestParam(value = "from") String from,
-				@RequestParam(value = "to") String to) throws ParseException, DataAccessException {
+				@RequestParam(value = "to") String to){
 				logger.info("Validate input from user");
 				return timelogServiceInt.validateInput(id,name,from,to);
 		}
 		
 		@RequestMapping(value = "/checkUser", method=RequestMethod.POST)
-		public @ResponseBody String checkUser(@RequestParam(value = "id") int id) throws ParseException, DataAccessException {
+		public @ResponseBody String checkUser(@RequestParam(value = "id") int id){
 			logger.info("Check user type");
 			return timelogServiceInt.checkUser(id);
 		}
 		
 		@RequestMapping(value = "/retrieveSub", method=RequestMethod.POST)
-		public @ResponseBody List retrieveSub(@RequestParam(value = "id") int id) throws ParseException, DataAccessException {
+		public @ResponseBody List retrieveSub(@RequestParam(value = "id") int id){
 			logger.info("Retrieve Manager's subordinates");
 			return timelogServiceInt.retrieveSubordinates(id);
 		}
@@ -63,7 +63,7 @@ public class TimeLoggingController {
 		@RequestMapping(value = "/retrieveTimelog", method=RequestMethod.POST)
 		public @ResponseBody List<TimeLogging> retrieveTimelog(@RequestParam(value = "name") String name,
 				@RequestParam(value = "from") String from,
-				@RequestParam(value = "to") String to) throws ParseException, DataAccessException {
+				@RequestParam(value = "to") String to){
 			logger.info("Retrieve timelog history of employee");
 			return timelogServiceInt.retrieveTimelog(name,from,to);
 		}
@@ -72,13 +72,13 @@ public class TimeLoggingController {
 		@RequestMapping(value = "/retrieveMylog", method=RequestMethod.POST)
 		public @ResponseBody List<TimeLogging> retrieveMylog(@RequestParam(value = "id") int id,
 				@RequestParam(value = "from") String from,
-				@RequestParam(value = "to") String to) throws ParseException, DataAccessException {
+				@RequestParam(value = "to") String to){
 			logger.info("Retrieve own timelog history");
 			return timelogServiceInt.retrieveMylog(id,from,to);
 		}
 		//Hr Search
 			@RequestMapping(value = "/searchEmployee", method= RequestMethod.POST)
-			public @ResponseBody String employeeSearch(@RequestParam(value = "empName") String empName) throws DataAccessException{
+			public @ResponseBody String employeeSearch(@RequestParam(value = "empName") String empName){
 				logger.info("Search employee name");
 				return timelogServiceInt.checkName(empName);
 				
