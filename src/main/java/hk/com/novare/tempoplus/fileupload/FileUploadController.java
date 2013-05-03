@@ -40,11 +40,12 @@ public class FileUploadController {
 	public String handleFileUpload(@RequestParam CommonsMultipartFile[] file, @RequestParam(value="category") int category) throws Exception {
 		//TODO Add Parameter Category
 		//This is not yet finished
-			
+			String description = "Timesheet 1";
 			
 			switch (category) {
-			case 1: biometricService.readData(file);
-			biometricService.updateTimelog();
+			case 1: //biometricService.insertBiometricData(biometricService.readData(file));
+//				biometricService.updateTimelog();
+				timesheetService.updateTimesheetRecord(description);
 				break;
 			case 2: mantisService.readData(file);	
 //				mantisService.splitMantisData();

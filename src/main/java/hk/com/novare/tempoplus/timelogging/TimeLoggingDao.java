@@ -1,6 +1,7 @@
 package hk.com.novare.tempoplus.timelogging;
 
 
+import hk.com.novare.tempoplus.bmnmanager.biometric.Biometric;
 import hk.com.novare.tempoplus.employee.Employee;
 
 import java.sql.Connection;
@@ -8,12 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.Format;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -945,7 +943,118 @@ public class TimeLoggingDao implements TimelogDAOInt {
 
 		}
 		
+		
+		/*
+		 * Jeffrey's Methods
+		 */
+		
+		public void updateTimeLoggingDataPhase1(ArrayList<Biometric> list) {
+			Connection connection = null;
+			try {
+				connection = dataSource.getConnection();
 
+				PreparedStatement preparedStatement = connection
+						.prepareStatement("INSERT INTO timelogs (employeeId, date, timeIn)"
+								+ " values ((SELECT employeeId FROM employees WHERE biometricId = ?), ?, ?)");
+
+				for (Biometric biometric : list) {
+					preparedStatement.setInt(1, biometric.getBiometricId());
+					preparedStatement.setString(2, biometric.getDate());
+					preparedStatement.setString(3, biometric.getTime());
+					preparedStatement.addBatch();
+				}
+
+				preparedStatement.executeBatch();
+				preparedStatement.close();
+
+			} catch (SQLException e) {
+
+			} finally {
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (SQLException e) {
+
+					}
+				}
+			}
+
+		}
+
+		// Not yet DONE
+		public void updateTimeLoggingDataPhase2(ArrayList<Biometric> list) {
+			Connection connection = null;
+			try {
+				connection = dataSource.getConnection();
+
+				PreparedStatement preparedStatement = connection
+						.prepareStatement("UPDATE timelogs SET timeOut=?, duration = (SELECT TIMEDIFF(timeOut,timeIn)) WHERE employeeId = "
+								+ "(SELECT employeeId FROM employees WHERE biometricId = ?) AND date=?");
+
+				for (Biometric biometric : list) {
+					preparedStatement.setString(1, biometric.getTime());
+					// preparedStatement.setString(2, biometric.getDate());
+					preparedStatement.setInt(2, biometric.getBiometricId());
+					preparedStatement.setString(3, biometric.getDate());
+					preparedStatement.addBatch();
+				}
+
+				preparedStatement.executeBatch();
+				preparedStatement.close();
+
+			} catch (SQLException e) {
+
+			} finally {
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (SQLException e) {
+
+					}
+				}
+			}
+
+		}
+
+		public ArrayList<TimeLogging> retrieveTimeLogs() {
+			ArrayList<TimeLogging> list = new ArrayList<TimeLogging>();
+			Connection connection = null;
+			try {
+				System.out.println("Here");
+				connection = dataSource.getConnection();
+
+				PreparedStatement preparedStatement = connection
+						.prepareStatement("SELECT id, employeeId, date, timeIn, timeOut, duration FROM timelogs");
+
+				ResultSet resultSet = preparedStatement.executeQuery();
+
+				int ctr = 0;
+				while (resultSet.next()) {
+					System.out.println(++ctr);
+					TimeLogging timelogging = new TimeLogging();
+
+					timelogging.setId(resultSet.getInt("id"));
+					timelogging.setEmployeeId(resultSet.getInt("employeeId"));
+					timelogging.setDate(resultSet.getString("date"));
+
+					list.add(timelogging);
+				}
+				preparedStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (SQLException e) {
+
+					}
+				}
+			}
+
+			return list;
+
+		}
 		
 
 	

@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,14 +29,13 @@ import org.springframework.stereotype.Service;
 public class TimesheetService {
 
 	@Inject
-	TimesheetDao timesheetDao;
+	private TimesheetDao timesheetDao;
 	@Inject
-	BiometricDao biometricDao;
+	private BiometricDao biometricDao;
 
 	public void createTimesheetSummary() {
 
-		ArrayList<Timesheet> timesheetList = timesheetDao
-				.retrieveTimesheetData();
+		List<Timesheet> timesheetList = timesheetDao.retrieveTimesheetData();
 
 		TimeLogging timelog;
 		EmployeeDetails employeeDetails;
@@ -58,7 +58,7 @@ public class TimesheetService {
 
 			Cell cell;
 			if (rowCounter == 0) {
-				
+
 				for (int counter = 0; counter < 61; counter++) {
 					cell = row.createCell(counter);
 					switch (counter) {
@@ -277,7 +277,8 @@ public class TimesheetService {
 						cell.setCellValue(employeeDetails.getHireDate());
 						break;
 					case 7:
-						cell.setCellValue(employeeDetails.getRegularizationDate());
+						cell.setCellValue(employeeDetails
+								.getRegularizationDate());
 						break;
 					case 8:
 						cell.setCellValue(employeeDetails.getShift());
@@ -293,8 +294,9 @@ public class TimesheetService {
 						break;
 					case 12:
 						String dateFormat = null;
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-						
+						SimpleDateFormat sdf = new SimpleDateFormat(
+								"yyyy-MM-dd");
+
 						Date date = null;
 						try {
 							date = sdf.parse(timelog.getDate());
@@ -305,7 +307,7 @@ public class TimesheetService {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						
+
 						break;
 					case 13:
 						cell.setCellValue("Holiday");
@@ -634,5 +636,26 @@ public class TimesheetService {
 			e.printStackTrace();
 		}
 
+	}
+
+	public Boolean createTimesheet(String name) {
+	
+		if(timesheetDao.createTimesheet(name) == 0) {
+			return false;
+		} 
+		
+		return true;
+	}
+
+	public List<TimesheetList> retrieveTimesheets() {
+		
+		List<TimesheetList> list = timesheetDao.retrieveTimesheetList(); 
+		
+		return list;
+	}
+	
+	public void updateTimesheetRecord(String description) {
+		
+		timesheetDao.updateTimesheetRecord(description);
 	}
 }

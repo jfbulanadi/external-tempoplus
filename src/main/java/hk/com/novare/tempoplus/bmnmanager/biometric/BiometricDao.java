@@ -18,8 +18,8 @@ public class BiometricDao {
 
 	private Connection connection = null;
 
-	public void addBiometricData(ArrayList<Biometric> list) {
-
+	public int[] addBiometricData(ArrayList<Biometric> list) {
+		int[] rows = null;
 		try {
 			connection = dataSource.getConnection();
 
@@ -35,10 +35,11 @@ public class BiometricDao {
 				preparedStatement.addBatch();
 			}
 
-			preparedStatement.executeBatch();
+			rows = preparedStatement.executeBatch();
 			preparedStatement.close();
 
 		} catch (SQLException e) {
+			//TODO use LOGS
 			System.out.println("Problem with Biometrics");
 		} finally {
 			if (connection != null) {
@@ -49,6 +50,8 @@ public class BiometricDao {
 				}
 			}
 		}
+		
+		return rows;
 	}
 
 	public ArrayList<Biometric> retrieveAllBiometricData() {
