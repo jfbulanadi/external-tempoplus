@@ -10,10 +10,10 @@
 	href="../resources/account/css/theme.default.css"></link>
 <link rel="stylesheet" type="text/css"
 	href="../resources/account/css/viewhr.css"></link>
-
 <link rel="stylesheet"
-	href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+	href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
 <script src="../resources/account/js/jquery-1.9.1.js"></script>
+<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.min.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.widgets.min.js"></script>
 <script src="../resources/account/js/jquery-ui.js"></script>
@@ -24,6 +24,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" type="text/css"
 	href="../resources/account/css/administration.css"></link>
+<script src="../resources/account/js/viewhr.js"></script>
 <title>Insert title here</title>
 
 <script>

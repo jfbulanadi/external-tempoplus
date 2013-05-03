@@ -1,6 +1,7 @@
 package hk.com.novare.tempoplus.accountsystem;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,6 +26,7 @@ public class HrController {
 	public String subPage(ModelMap modelMap) {
 		
 		modelMap.addAttribute("employeeList", hrService.retieveAllEmployee());
+		
 		return "ViewHr";
 	}
 	
@@ -38,7 +40,7 @@ public class HrController {
 	@RequestMapping(value = "/searchEmployee")
 	public @ResponseBody
 	EmployeeFullInfoDTO searchEmployee( @RequestParam(value = "employeeId") String searchString) {
-		return hrService.searchByCategory(searchString, "employeeId").get(0);
+		return hrService.searchEmployee(searchString, "employeeId");
 	}
 	
 	@RequestMapping(value = "/saveEditEmployee", method = RequestMethod.POST)
@@ -49,6 +51,7 @@ public class HrController {
 			@RequestParam(value = "employeeId") String employeeId,
 			@RequestParam(value = "biometrics") String biometrics,
 			@RequestParam(value = "department") String department,
+			@RequestParam(value = "position") String position,
 			@RequestParam(value = "shift") String shift,
 			@RequestParam(value = "level") String level,
 			@RequestParam(value = "hireDate") String hireDate,
@@ -67,8 +70,9 @@ public class HrController {
 		employeeFullInfoDTO.setBiometrics(biometrics);
 		employeeFullInfoDTO.setEmployeeId(employeeId);
 		employeeFullInfoDTO.setDepartment(department);
+		employeeFullInfoDTO.setPosition(position);
 		employeeFullInfoDTO.setShift(shift);
-		//employeeFullInfoDTO.setLevel(level);
+		employeeFullInfoDTO.setLevel(level);
 		employeeFullInfoDTO.setHiredDate(hireDate);
 		employeeFullInfoDTO.setRegularizationDate(regularizationDate);
 		employeeFullInfoDTO.setResignationDate(resignationDate);
@@ -90,7 +94,8 @@ public class HrController {
 			@RequestParam(value = "lastName") String lastName,
 			@RequestParam(value = "employeeId") String employeeId,
 			@RequestParam(value = "biometrics") String biometrics,
-			@RequestParam(value = "department") String department,
+			@RequestParam(value = "department") int departmentId,
+			@RequestParam(value = "position") int positionId,
 			@RequestParam(value = "shift") String shift,
 			@RequestParam(value = "level") String level,
 			@RequestParam(value = "hireDate") String hireDate,
@@ -99,12 +104,14 @@ public class HrController {
 			@RequestParam(value = "employeeEmail") String employeeEmail) {
 		
 		EmployeeFullInfoDTO employeeFullInfoDTO = new EmployeeFullInfoDTO();
+		
 		employeeFullInfoDTO.setFirstName(firstName);
 		employeeFullInfoDTO.setMiddleName(middleName);
 		employeeFullInfoDTO.setLastName(lastName);
 		employeeFullInfoDTO.setEmployeeId(employeeId);
 		employeeFullInfoDTO.setBiometrics(biometrics);
-		employeeFullInfoDTO.setDepartment(department);
+		employeeFullInfoDTO.setDepartmentId(departmentId);
+		employeeFullInfoDTO.setPositionId(positionId);
 		employeeFullInfoDTO.setShift(shift);
 		employeeFullInfoDTO.setLevel(level);
 		employeeFullInfoDTO.setHiredDate(hireDate);
@@ -112,15 +119,26 @@ public class HrController {
 		employeeFullInfoDTO.setSupervisorName(supervisorName);
 		employeeFullInfoDTO.setEmployeeEmail(employeeEmail);
 		
-		hrService.saveEmployeeDetail(employeeFullInfoDTO);
+		System.out.println(employeeFullInfoDTO.getFirstName());
+		System.out.println(employeeFullInfoDTO.getDepartmentId());
+		System.out.println(employeeFullInfoDTO.getPositionId());
+		
+		hrService.createEmployeeDetail(employeeFullInfoDTO);
 		
 		return "ViewHr";
 	}
 	
+	@RequestMapping(value = "/retrieveDepartmentJSON")
+	public @ResponseBody
+	Map<Integer, String> retrieveDepartment() {
+		return hrService.retrieveDepartment();
+	}
 	
-
-	@RequestMapping(value = "/addemployeeAjax")
-	public String addEmployeeAjax(ModelMap model) {
-		return "addemployee";
+	@RequestMapping(value = "/retrievePositionJSON")
+	public @ResponseBody
+	Map<Integer, String> retrievePosition(
+			@RequestParam(value = "department") int departmentId) {
+		System.out.println(departmentId);
+		return hrService.retievePosition(departmentId);
 	}
 }
