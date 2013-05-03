@@ -68,6 +68,28 @@ public class UserDao {
 
 		Connection connection = null;
 
+<<<<<<< HEAD
+		 try{
+		
+				 connection = dataSource.getConnection();
+				 final PreparedStatement searchPasswordStatement =
+						 connection.prepareStatement("select password from " +
+						 		"users where employeeId = ?");
+				 searchPasswordStatement.setInt(1, employeeId);
+				 ResultSet resultSet = searchPasswordStatement.executeQuery();
+
+					 while(resultSet.next()){ 	
+						 	
+						 user.setPassword(resultSet.getString("password"));	
+					 }
+					 
+					 resultSet.close();
+		 }catch(SQLException e){
+			 
+		 }finally{
+			 
+			 try {
+=======
 		try {
 
 			connection = dataSource.getConnection();
@@ -88,6 +110,7 @@ public class UserDao {
 		} finally {
 
 			try {
+>>>>>>> 31143c62c27e6342862138038bb3cf10c41c57f4
 				connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -102,6 +125,62 @@ public class UserDao {
 
 		try {
 
+<<<<<<< HEAD
+				connection = dataSource.getConnection();
+								
+				final PreparedStatement retrieveDetailsStatement = 
+						connection.prepareStatement("select * from employees " + 
+								"where email = ?");
+				retrieveDetailsStatement.setString(1, userEmail);
+
+				ResultSet rs = retrieveDetailsStatement.executeQuery();
+
+				while(rs.next()) {
+
+					final int biometricsID = rs.getInt("biometricId");
+					
+					final String lastName = rs.getString("lastname");
+					final String firstName = rs.getString("firstname");
+					final String middleName = rs.getString("middlename");
+
+					final int departmentId = rs.getInt("departmentId");
+					final int positionId = rs.getInt("positionId");
+					final int level = rs.getInt("level");
+					
+					
+					final String regularizationDate = rs.getString("regularizationDate");
+					final String hireDate = rs.getString("hireDate");
+					final String resignationDate = rs.getString("resignationDate");
+												
+					final int supervisorId = rs.getInt("supervisorId");
+					final int isSupervisor = rs.getInt("isSupervisor");
+					
+					//save details to object
+					
+					user.setBiometricId(biometricsID);
+					
+					user.setLastname(lastName);
+					user.setFirstname(firstName);
+					user.setMiddlename(middleName);
+					
+					user.setDepartmentId(departmentId);
+					user.setPositionId(positionId);
+					user.setLevel(level);
+					user.setSupervisorId(supervisorId);
+					
+					 				  
+					  user.setDepartment(findDepartmentName(departmentId));
+					  user.setPosition(findPositionName(positionId));
+					  user.setIsSupervisor(isSupervisor);
+					  
+					user.setHireDate(hireDate);
+					user.setRegularizationDate(regularizationDate);
+					user.setResignationDate(resignationDate);
+					
+				}
+				userDetailsList.add(user);
+				rs.close();
+=======
 			connection = dataSource.getConnection();
 
 			final PreparedStatement retrieveDetailsStatement = connection
@@ -155,6 +234,7 @@ public class UserDao {
 			}
 			userDetailsList.add(user);
 			rs.close();
+>>>>>>> 31143c62c27e6342862138038bb3cf10c41c57f4
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -284,9 +364,16 @@ public class UserDao {
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
+<<<<<<< HEAD
+			final PreparedStatement updateNewPasswordStatement = 
+					connection.prepareStatement("update users " +
+							"set password = MD5(?)" +
+									" where employeeId = ?");
+=======
 			final PreparedStatement updateNewPasswordStatement = connection
 					.prepareStatement("update users " + "set password = MD5(?)"
 							+ " where employeeId= ?");
+>>>>>>> 31143c62c27e6342862138038bb3cf10c41c57f4
 			updateNewPasswordStatement.setString(1, newPassword);
 			updateNewPasswordStatement.setInt(2, employeeId);
 			updateNewPasswordStatement.executeUpdate();

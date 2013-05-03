@@ -18,14 +18,13 @@ public class BiometricDao {
 
 	private Connection connection = null;
 
-
 	public void addBiometricData(ArrayList<Biometric> list) {
 
 		try {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("INSERT INTO biometrics (biometricId, logDate, logTime, log, log2, timestamp) values (?, ?, ?, ?, ?, NOW())");
+					.prepareStatement("INSERT INTO biometrics (biometricId, logDate, logTime, log, log2) values (?, ?, ?, ?, ?)");
 
 			for (Biometric biometric : list) {
 				preparedStatement.setInt(1, biometric.getBiometricId());
@@ -117,7 +116,6 @@ public class BiometricDao {
 
 			final ResultSet resultSet = preparedStatement.executeQuery();
 
-
 			while (resultSet.next()) {
 				final Biometric bio = new Biometric();
 
@@ -146,7 +144,7 @@ public class BiometricDao {
 					.prepareStatement("SELECT id, biometricId, logDate, MAX(logTime), log "
 							+ "FROM biometrics WHERE log = 1 "
 							+ "GROUP BY biometricId, logDate");
-			
+
 			final ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
@@ -167,4 +165,37 @@ public class BiometricDao {
 		return list;
 	}
 
+	public ArrayList<BiometricDetails> retrieveDailyBiometric() {
+
+		ArrayList<BiometricDetails> list = new ArrayList<BiometricDetails>();
+
+		try {
+			connection = dataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("SELECT id, biometricId, logDate, MIN(logTime) as timeIn, "
+							+ "(SELECT MAX(logTime) FROM biometrics b2 WHERE log = 1 AND b1.biometricId = b2.biometricId AND b1.logDate = b2.logDate) "
+							+ "AS timeOut ,log FROM biometrics b1 "
+							+ "WHERE log = 0 "
+							+ "GROUP BY biometricId, logDate;");
+
+			final ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				final BiometricDetails bio = new BiometricDetails();
+
+				bio.setBiometricId(resultSet.getInt("biometricId"));
+				bio.setDate(resultSet.getString("logDate"));
+				bio.setTimeIn(resultSet.getString("timeIn"));
+				bio.setTimeOut(resultSet.getString("timeOut"));
+
+				list.add(bio);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+
+	}
 }

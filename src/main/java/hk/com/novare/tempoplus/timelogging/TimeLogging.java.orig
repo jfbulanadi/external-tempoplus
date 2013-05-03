@@ -32,6 +32,10 @@ public class TimeLogging {
 	public void setEmployeeId(int employeeId) {
 		this.employeeId = employeeId;
 	}
+<<<<<<< HEAD
+
+=======
+>>>>>>> 31143c62c27e6342862138038bb3cf10c41c57f4
 	public String getDate() {
 		return date;
 	}

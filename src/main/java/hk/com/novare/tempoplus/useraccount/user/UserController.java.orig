@@ -1,14 +1,15 @@
 package hk.com.novare.tempoplus.useraccount.user;
 
 import hk.com.novare.tempoplus.employee.Employee;
-<<<<<<< HEAD
 import hk.com.novare.tempoplus.timelogging.DataAccessException;
-=======
+import java.sql.SQLException;
 
+<<<<<<< HEAD
+=======
 import java.sql.SQLException;
 
 import java.util.List;
->>>>>>> 9f4eefce18068a282304f59748bb1899e2260115
+>>>>>>> 31143c62c27e6342862138038bb3cf10c41c57f4
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingService;
 
