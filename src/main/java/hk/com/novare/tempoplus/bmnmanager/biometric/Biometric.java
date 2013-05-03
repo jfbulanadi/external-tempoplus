@@ -6,7 +6,7 @@ package hk.com.novare.tempoplus.bmnmanager.biometric;
  * 
  */
 public class Biometric {
-
+//Comment by Arjin
 	private int id;
 	private int biometricId;
 	private String date;
