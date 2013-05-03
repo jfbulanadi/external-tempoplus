@@ -1,6 +1,5 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
-import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.employee.Employee;
 
 import java.sql.SQLException;
@@ -57,10 +56,13 @@ public class ConsolidationController {
 	}
 	
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public @ResponseBody ArrayList<Employee> updateViewContent(@RequestParam(value="employeeid") int employeeid, 
-			@RequestParam(value="firstname") String firstname) throws SQLException {
+	public @ResponseBody ArrayList<Employee> updateViewContent(@RequestParam(value="employeeId") int employeeId, 
+			@RequestParam(value = "timeIn") String timeIn,
+			@RequestParam(value = "timeOut") String timeOut,
+			@RequestParam(value = "firstName") String firstName,
+			@RequestParam(value = "date") String date) throws SQLException {
 		
-			return consolidationService.updateViewConsolidated(employeeid, firstname);
+			return consolidationService.updateViewConsolidated(employeeId, timeIn, timeOut, date);
 		
 	}
 	

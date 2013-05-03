@@ -8,20 +8,33 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>BMN Manager</title>
+
+ 
 <link rel="stylesheet" type="text/css"
 	href="../resources/bmn/css/jquery.tablesorter.pager.css"></link>
 <link rel="stylesheet" type="text/css"
 	href="../resources/bmn/css/theme.default.css"></link>
+<link rel="stylesheet" type="text/css"
+	href="../resources/account/css/jquery-ui.css"></link>
  
-<script src="../resources/bmn/js/jquery.1.4.1-min.js"></script>
+ 
+<script src="../resources/bmn/js/jquery-1.9.1.js"></script>
+<script src="../resources/bmn/js/jquery-ui.js"></script>
 <script src="../resources/bmn/js/jquery.tablesorter.min.js"></script>
 <script src="../resources/bmn/js/jquery.tablesorter.widgets.min.js"></script>
 <script
 	src="../resources/bmn/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
 <script src="../resources/bmn/js/jquery.tablesorter.pager.min.js"></script>
+<style>
+div#dialog {
+display: none;
+font-size: 62.5%;   
+</style>
 
 <script>
 $(document).ready(function() {
+	
+	
 	var pagerOptions = {
 		container: $(".pager"),
 		output: '{startRow} - {endRow} / {filteredRows} ({totalRows})',
@@ -30,26 +43,40 @@ $(document).ready(function() {
 		cssGoto:   '.gotoPage',		
 	};
 	$("table").tablesorter({
-		widgets: ['zebra', 'filter']
+		widgets: ['zebra', 'filter'],
+		headers: { 0: '1px' }
 	}).
 	tablesorterPager(pagerOptions);	
-	
+
 	
 	$("#btnUpdate").click(function() {
-		var firstname = $("#txtfirstname").val();
-		var employeeid = $("#txtemployeeid").val();
+		var firstName = $("#txtfirstname").val();
+		var employeeId = $("#txtemployeeid").val();
+		var timeIn = $("#txttimein").val();
+		var timeOut = $("#txttimeout").val();
+		
+		//Still on going
+		//var date = $("#txtdate")
+		console.log(timeIn + "<>" + timeOut);
 		$.ajax({
 			type: "POST",
 			url: "/tempoplus/consolidation/update",
 			data: {
-				firstname: firstname,
-				employeeid: employeeid
+				firstName: firstName,
+				employeeId: employeeId,
+				timeIn : timeIn,
+				timeOut: timeOut
 			},
 			success: function() {
-				window.location.replace("/tempoplus/consolidation/view");
+				console.log(timeIn);
+				console.log(timeOut);
+				console.log(employeeId);
+				console.log("succeeded update");
+				//window.location.replace("/tempoplus/consolidation/view");
 			}
 		});
 	});
+	
 	
 	$("button:contains(Destroy)").click(function(){
 		var $t = $(this);
@@ -67,6 +94,11 @@ $(document).ready(function() {
 </script>
 <script>
 function showToForm(myId) {
+	$("#dialog").dialog({
+		width:330,
+		height:280
+		
+	});
 	var trId = myId.id;
 	var firstname = null;
 	var middlename = null;
@@ -98,38 +130,58 @@ function showToForm(myId) {
 
 
 
-
 </head>
 <body>
-	<div>
-
+	
+	
+	
+	
+	<!-- FORM IS HIDDEN BY DIALOG -->
+	<div id="dialog" title="Update time">
+		<hr/>
 		<div>Employee ID</div>
 		<div>
-			<input type="text" id="txtemployeeid" size="8" disabled />
+			<input type="text" id="txtemployeeid" size="8" disabled class="text ui-widget-content ui-corner-all" />
 		</div>
 
 		<div>Full name:</div>
 		<div>
-			<input type="text" id="txtfirstname" size="45" disabled />
+			<input type="text" id="txtfirstname" size="45" disabled class="text ui-widget-content ui-corner-all" />
 		</div>
 
 		<div>Time in</div>
 		<div>
-			<input type="text" id="txttimein" />
+			<input type="text" id="txttimein" class="text ui-widget-content ui-corner-all" />
 		</div>
 
 		<div>Time out</div>
 		<div>
-			<input type="text" id="txttimeout" />
+			<input type="text" id="txttimeout" class="text ui-widget-content ui-corner-all" />
 		</div>
-
+		<hr/>
 		<button id="btnUpdate">Update</button>
+		<hr/>
 	</div>
-
-	<hr />
-	<button>Destroy</button>
-	<div class="pager" align="right">
+	<!-- FORM IS HIDDEN BY DIALOG -->
+	<hr/>
+	<div>Select consolidated sheet</div>
 	
+	Month
+	<select>
+		<option>Jan</option>
+		<option>Feb</option>
+		<option>Mar</option>
+	</select>
+	Period
+	<select>
+		<option>1</option>
+		<option>2</option>
+	</select>
+	<button>Select</button>
+	
+	<hr />
+	<div class="pager" align="right">
+		<button>Destroy</button>	
 		<img src="../resources/bmn/css/images/first.png" class="first" /> <img
 			src="../resources/bmn/css/images/prev.png" class="prev" /> <span
 			class="pagedisplay"></span>
@@ -160,8 +212,8 @@ function showToForm(myId) {
 		</thead>
 		<tbody>
 		
-			<c:forEach items="${content}" var="timesheet">
-				<tr id="${timesheet.employee.employeeId},${timesheet.employee.firstname},${timesheet.employee.middlename},${timesheet.employee.lastname},${timesheet.timelog.timeIn},${timesheet.timelog.timeOut}" onclick=showToForm(this)>
+			<c:forEach items="${content}" var="timesheet">	
+		  	<tr id="${timesheet.employee.employeeId},${timesheet.employee.firstname},${timesheet.employee.middlename},${timesheet.employee.lastname},${timesheet.timelog.timeIn},${timesheet.timelog.timeOut}" onclick=showToForm(this)>
 					<td>${timesheet.employee.employeeId}</td>
 					<td>${timesheet.employee.biometricId}</td>
 					<td>${timesheet.employee.firstname}</td>
@@ -178,7 +230,7 @@ function showToForm(myId) {
 
 		</tbody>
 	</table>
-	
+<hr/>	
 	<div>
 	<form:form method="post" action="uploadfile"
 		modelAttribute="uploadForm" enctype="multipart/form-data">

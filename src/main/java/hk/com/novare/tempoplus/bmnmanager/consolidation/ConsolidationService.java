@@ -41,9 +41,9 @@ public class ConsolidationService {
 		return consolidationDao.viewConsolidated();
 	}
 
-	public ArrayList<Employee> updateViewConsolidated(int employeeid,
-			String firstname) throws SQLException {
-		return consolidationDao.updateViewConsolidated(employeeid, firstname);
+	public ArrayList<Employee> updateViewConsolidated(int employeeId,
+			String timeIn, String timeOut, String date) throws SQLException {
+		return consolidationDao.updateViewConsolidated(employeeId, timeIn, timeOut, date);
 
 	}
 

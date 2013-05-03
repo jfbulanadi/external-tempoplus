@@ -3,6 +3,7 @@ package hk.com.novare.tempoplus.bmnmanager.consolidation;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
+import hk.com.novare.tempoplus.timelogging.TimeLoggingDao;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
+
+import org.springframework.web.bind.annotation.RequestParam;
 
 public class ConsolidationDao {
 
@@ -210,17 +213,17 @@ public class ConsolidationDao {
 			final String timeOut = resultSet.getString("timeOut");
 			final String duration = resultSet.getString("duration");
 
-			System.out.println("----------------------");
-			System.out.println(resultSet.getString("firstname"));
-			System.out.println(employeeId);
-			System.out.println(firstname);
-			System.out.println(middlename);
-			System.out.println(lastname);
-			System.out.println(dateIn);
-			System.out.println(timeIn + "this");
-			System.out.println(timeOut);
-			System.out.println(duration);
-			System.out.println("----------------------");
+//			System.out.println("----------------------");
+//			System.out.println(resultSet.getString("firstname"));
+//			System.out.println(employeeId);
+//			System.out.println(firstname);
+//			System.out.println(middlename);
+//			System.out.println(lastname);
+//			System.out.println(dateIn);
+//			System.out.println(timeIn + "this");
+//			System.out.println(timeOut);
+//			System.out.println(duration);
+//			System.out.println("----------------------");
 
 			employee.setEmployeeId(employeeId);
 			employee.setBiometricId(biometricId);
@@ -240,44 +243,38 @@ public class ConsolidationDao {
 			list.add(timesheet);
 
 		}
-
+	
 		return list;
 
 	}
 
-	public ArrayList<Employee> updateViewConsolidated(int employeeid,
-			String firstname) throws SQLException {
+	public ArrayList<Employee> updateViewConsolidated(int employeeId,
+			String timeIn, String timeOut, String date) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
+		TimeLoggingDao timelog = new TimeLoggingDao();
 		ArrayList<Employee> list = new ArrayList<Employee>();
-
+		timeOut = "2014-05-31 00:00:00.0";
+		timeIn = "2014-05-31 " + timeIn;
+	
+		System.out.println(employeeId + "<>" + timeIn + "<>" + timeOut);
 		connection = dataSource.getConnection();
 		ps = connection
-				.prepareStatement("UPDATE employees SET firstname=? WHERE employeeId=?");
-		ps.setString(1, firstname);
-		ps.setInt(2, employeeid);
+				.prepareStatement("UPDATE timelogs SET timeIn = ?, timeOut = ? WHERE employeeId = ? and date= ?");
+		ps.setString(1, timeIn);
+		ps.setString(2, timeOut);
+		ps.setInt(3, employeeId);
+		ps.setString(4, date);
 		ps.executeUpdate();
+
 		ps.close();
-
-		ps = connection.prepareStatement("SELECT * FROM employees");
-		ResultSet resultSet = ps.executeQuery();
-
-		while (resultSet.next()) {
-			final int employeeidupdated = resultSet.getInt(2);
-			final String firstnameupdated = resultSet.getString(3);
-
-			Employee employee = new Employee();
-			employee.setEmployeeId(employeeidupdated);
-			employee.setFirstname(firstnameupdated);
-
-			list.add(employee);
-		}
-		resultSet.close();
 
 		connection.close();
 		return list;
 
 	}
+	
+	
 
 	public void consolidateTimeSheetPhase1() {
 
