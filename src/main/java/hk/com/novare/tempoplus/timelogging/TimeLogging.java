@@ -17,7 +17,6 @@ public class TimeLogging {
 	private String timeIn;
 	private String timeOut;
 	private String duration;
-
 	public int getId() {
 		return id;
 	}
