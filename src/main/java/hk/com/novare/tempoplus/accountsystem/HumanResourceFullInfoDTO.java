@@ -1,9 +1,6 @@
 package hk.com.novare.tempoplus.accountsystem;
 
-import org.springframework.stereotype.Service;
-
-
-public class HumanResource {
+public class HumanResourceFullInfoDTO {
 	
 	private String firstName;
 	private String middleName;
@@ -148,7 +145,5 @@ public class HumanResource {
 	}
 	
 	
-	
-	
-	
+
 }
