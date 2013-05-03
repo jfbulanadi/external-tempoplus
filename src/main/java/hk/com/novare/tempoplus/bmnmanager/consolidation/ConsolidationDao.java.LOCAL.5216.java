@@ -6,9 +6,11 @@ import hk.com.novare.tempoplus.timelogging.TimeLogging;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingDao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -300,7 +302,6 @@ public class ConsolidationDao {
 			preparedStatement.close();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
 			System.out.println("Error in Consolidation Phase2");
 
 		} finally {

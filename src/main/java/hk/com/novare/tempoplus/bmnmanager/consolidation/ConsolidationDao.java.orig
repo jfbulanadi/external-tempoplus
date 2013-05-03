@@ -186,6 +186,64 @@ public class ConsolidationDao {
 		ResultSet resultSet = null;
 		Connection connection = null;
 		PreparedStatement ps = null;
+<<<<<<< HEAD
+=======
+		final ArrayList<Timesheet> list = new ArrayList<Timesheet>();
+
+		ps = connection
+				.prepareStatement("SELECT e.employeeId, e.id, e.biometricId, e.firstname, e.middlename, e.lastname, e.email, CONCAT_WS(',', e.lastname, e.firstname), p.description, e.hiredate, e.regularizationdate, t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, m.category, m.status, n.startDate, n.endDate, n.duration, n.absenceType, n.absenceStatus, (SELECT MIN(logTime) FROM biometrics WHERE log = 0 AND biometricId = e.biometricId AND logDate=t.date GROUP BY biometricId, logDate), (SELECT MAX(logTime) FROM biometrics WHERE log = 1 AND biometricId = e.biometricId AND logDate=t.date GROUP BY biometricId, logDate) FROM timelogs AS t JOIN employees AS e ON t.employeeId = e.employeeId JOIN positions as p on p.id = e.positionId LEFT JOIN consolidations c ON t.id = c.timelogId LEFT JOIN mantises m ON m.id = c.mantisId LEFT JOIN nt3s n ON n.id = c.nt3Id ORDER BY e.id");
+		ResultSet resultSet = ps.executeQuery();
+
+		while (resultSet.next()) {
+			final Employee employee = new Employee();
+			final TimeLogging timelog = new TimeLogging();
+			final Timesheet timesheet = new Timesheet();
+
+			final int employeeId = resultSet.getInt("employeeId");
+			final int biometricId = resultSet.getInt("biometricId");
+			final String name = resultSet
+					.getString("CONCAT_WS(',', e.lastname, e.firstname)");
+			final String firstname = resultSet.getString("firstname");
+			final String middlename = resultSet.getString("middlename");
+			final String lastname = resultSet.getString("lastname");
+			final String email = resultSet.getString("email");
+			final String position = resultSet.getString("description");
+			final String dateIn = resultSet.getString("date");
+			final String timeIn = resultSet.getString("timeIn");
+			final String timeOut = resultSet.getString("timeOut");
+			final String duration = resultSet.getString("duration");
+
+			System.out.println("----------------------");
+			System.out.println(resultSet.getString("firstname"));
+			System.out.println(employeeId);
+			System.out.println(firstname);
+			System.out.println(middlename);
+			System.out.println(lastname);
+			System.out.println(dateIn);
+			System.out.println(timeIn + "this");
+			System.out.println(timeOut);
+			System.out.println(duration);
+			System.out.println("----------------------");
+
+			employee.setEmployeeId(employeeId);
+			employee.setBiometricId(biometricId);
+			employee.setFirstname(firstname);
+			employee.setMiddlename(middlename);
+			employee.setLastname(lastname);
+			employee.setEmail(email);
+
+			timelog.setDate(dateIn);
+			timelog.setTimeIn(timeIn);
+			timelog.setTimeOut(timeOut);
+			timelog.setDuration(duration);
+
+//			timesheet.setEmployee(employee);
+			timesheet.setTimelog(timelog);
+
+			list.add(timesheet);
+
+		}
+>>>>>>> dc13a9c1ee626b9c2e9766e6e3fae1019ba8c324
 
 		final ArrayList<ConsolidationDTO> list = new ArrayList<ConsolidationDTO>();
 		

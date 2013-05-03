@@ -1,10 +1,15 @@
 package hk.com.novare.tempoplus.useraccount.user;
 
 import hk.com.novare.tempoplus.employee.Employee;
+import hk.com.novare.tempoplus.timelogging.DataAccessException;
+import java.sql.SQLException;
 
-import java.util.List;
+import java.sql.SQLException;
+
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingService;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +49,7 @@ public class UserController {
 			HttpSession session,
 			ModelMap modelMap,
 			@RequestParam(value = "userName")String userEmail,
-			@RequestParam(value = "password") String password) {
+			@RequestParam(value = "password") String password) throws DataAccessException {
 		
 		String redirect = "";
 		if(userEmail.equals("") || password.equals("")){
@@ -78,12 +83,13 @@ public class UserController {
 		modelMap.addAttribute("userEmployeeId", user.getEmployeeId());
 		modelMap.addAttribute("userEmail",user.getEmail());
 		
-		modelMap.addAttribute("userId", modelMap.get("userEmployeeId"));
-		if(user.getDepartmentId() == 2){
+		modelMap.addAttribute("userFirstName", user.getFirstname().toLowerCase());
+		modelMap.addAttribute("userEmail", modelMap.get("userEmail"));
+		if(user.getDepartmentId() == 11){
 			//for HR access
 			 accessLevel ="homeHR";
 		}
-		else if(user.getLevel() >= 5){
+		else if(user.getIsSupervisor() == 1){
 			//for Supervisor access
 			accessLevel = "homeSupervisor";
 		}else {
@@ -116,39 +122,19 @@ public class UserController {
 		return accessLevel;
 	}
 	
-	
 	@RequestMapping("/logout")
-	public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest){
+	public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest) throws SQLException{
+		
 		httpServletRequest.getSession().invalidate();
 		modelMap.clear();
 		
 		//clear all objects in memory
-		List<User> userList = userService.retrieveUserInformation(user.getEmail());
-		List<Employee> supervisorList = userService.retrieveSupervisorInformation(user.getSupervisorId());
+		List<User> userList = userService.clearUserInformation(user.getEmail());
+		List<Employee> supervisorList = userService.clearSupervisorInformation(user.getSupervisorId());
+
 		userList.clear();
 		supervisorList.clear();
+		
 		return "redirect:index";
 	}
-	
-	/*@RequestMapping(value = "/login	",  method = RequestMethod.GET)
-	public String accessLogin(
-			ModelMap modelMap,HttpServletRequest httpServletRequest){
-		
-		if(modelMap.get("userEmployeeId").equals(null)){
-			return "redirect:index";
-		}
-		else{
-			return "redirect:home";
-		}
-	}*/
-	
-	/*	@RequestMapping(value = "/homeHR", method = RequestMethod.GET)
-	public String homeHR(){
-		return "hrmainpage";
-	}
-	
-	@RequestMapping(value = "/homeSupervisor", method = RequestMethod.GET)
-	public String homeSupervisor(){
-		return "";
-	}*/
 }

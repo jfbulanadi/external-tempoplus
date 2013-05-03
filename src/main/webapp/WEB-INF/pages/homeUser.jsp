@@ -9,7 +9,7 @@
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 
-<title>Insert title here</title>
+<title>Tempoplus User</title>
 
 <script>
 $(function() {
@@ -53,7 +53,9 @@ function retrieveEmployeeDetails(){
 	<div align = "right"> 
 		<table>
 			<tr>
-			<td>Hi ${userId}!</td>
+			<td>Hi ${userFirstName}!</td>
+			</tr>
+			<tr>
 			<td><a href = "logout">Logout</a></td>
 			</tr>
 		</table>
@@ -75,18 +77,21 @@ function retrieveEmployeeDetails(){
 					<td>  </td>
 					<td>  </td>
 				</tr>
-						
-					<c:forEach items="${employeeDetailsList}" var="employeeDetailsList">
-						<tr>
-							<th>${employeeDetailsList.firstname} ${employeeDetailsList.middlename} ${employeeDetailsList.lastname} </th>
+						<tr align = "center">
+							<th><b>
+							${employeeDetailsList.firstname} ${employeeDetailsList.middlename} ${employeeDetailsList.lastname} 
+							</b></th>
 							
+							<tr align = "center">
+								<td><b>${employeeDetailsList.email}</b></td>
+								<td></td>
+							</tr>
 						</tr>
-						
 						<tr>
-							<td><b>${employeeDetailsList.email}</b></td>
+							<td>  </td>
 							<td>  </td>
 						</tr>
-						<tr>
+							<tr>
 							<td>  </td>
 							<td>  </td>
 						</tr>
@@ -119,15 +124,14 @@ function retrieveEmployeeDetails(){
 							<td>Hire Date:  ${employeeDetailsList.hireDate} </td>
 							<td>Regularization Date: ${employeeDetailsList.regularizationDate} </td>
 						</tr>
-						<c:forEach items="${supervisorDetails}" var="supervisorDetails">
+			
 							<tr>
 									<td>Supervisor: ${supervisorDetails.firstname} ${supervisorDetails.lastname}</td>
 									<td>Supervisor's Email: ${supervisorDetails.email}</td>
 							</tr>
-						</c:forEach>
+					
 					
 				
-					</c:forEach>
 			
 				</tbody>	
 		

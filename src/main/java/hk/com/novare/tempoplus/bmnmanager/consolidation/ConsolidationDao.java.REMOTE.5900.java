@@ -3,7 +3,6 @@ package hk.com.novare.tempoplus.bmnmanager.consolidation;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
-import hk.com.novare.tempoplus.timelogging.TimeLoggingDao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,8 +12,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
-
-import org.springframework.web.bind.annotation.RequestParam;
 
 public class ConsolidationDao {
 
@@ -181,75 +178,104 @@ public class ConsolidationDao {
 		}
 
 	}
-	
-	public ArrayList<ConsolidationDTO> viewConsolidation() {
-		ResultSet resultSet = null;
-		Connection connection = null;
-		PreparedStatement ps = null;
 
-		final ArrayList<ConsolidationDTO> list = new ArrayList<ConsolidationDTO>();
-		
-		try {
-				connection = dataSource.getConnection();
-				ps = connection.prepareStatement("SELECT * FROM employees");
-				resultSet = ps.executeQuery();
-				
-				while(resultSet.next()) {
-					
-					String employeeId = resultSet.getString("employeeId");
-					String firstname = resultSet.getString("firstname");
-					String middlename = resultSet.getString("middlename");
-					String lastname = resultSet.getString("lastname");
-//					String timeIn = resultSet.getString("timeIn");
-//					String timeOut = resultSet.getString("timeOut");
-//					
-					final ConsolidationDTO consolidations = new ConsolidationDTO();
-					
-					consolidations.setEmployeeId(employeeId);
-					consolidations.setFirstname(firstname);
-					consolidations.setMiddlename(middlename);
-					consolidations.setLastname(lastname);
-					
-					
-					list.add(consolidations);
-				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+	public ArrayList<Timesheet> viewConsolidated() throws SQLException {
+		Connection connection = null;
+		connection = dataSource.getConnection();
+		PreparedStatement ps = null;
+		final ArrayList<Timesheet> list = new ArrayList<Timesheet>();
+
+		ps = connection
+				.prepareStatement("SELECT e.employeeId, e.id, e.biometricId, e.firstname, e.middlename, e.lastname, e.email, CONCAT_WS(',', e.lastname, e.firstname), p.description, e.hiredate, e.regularizationdate, t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, m.category, m.status, n.startDate, n.endDate, n.duration, n.absenceType, n.absenceStatus, (SELECT MIN(logTime) FROM biometrics WHERE log = 0 AND biometricId = e.biometricId AND logDate=t.date GROUP BY biometricId, logDate), (SELECT MAX(logTime) FROM biometrics WHERE log = 1 AND biometricId = e.biometricId AND logDate=t.date GROUP BY biometricId, logDate) FROM timelogs AS t JOIN employees AS e ON t.employeeId = e.employeeId JOIN positions as p on p.id = e.positionId LEFT JOIN consolidations c ON t.id = c.timelogId LEFT JOIN mantises m ON m.id = c.mantisId LEFT JOIN nt3s n ON n.id = c.nt3Id ORDER BY e.id");
+		ResultSet resultSet = ps.executeQuery();
+
+		while (resultSet.next()) {
+			final Employee employee = new Employee();
+			final TimeLogging timelog = new TimeLogging();
+			final Timesheet timesheet = new Timesheet();
+
+			final int employeeId = resultSet.getInt("employeeId");
+			final int biometricId = resultSet.getInt("biometricId");
+			final String name = resultSet
+					.getString("CONCAT_WS(',', e.lastname, e.firstname)");
+			final String firstname = resultSet.getString("firstname");
+			final String middlename = resultSet.getString("middlename");
+			final String lastname = resultSet.getString("lastname");
+			final String email = resultSet.getString("email");
+			final String position = resultSet.getString("description");
+			final String dateIn = resultSet.getString("date");
+			final String timeIn = resultSet.getString("timeIn");
+			final String timeOut = resultSet.getString("timeOut");
+			final String duration = resultSet.getString("duration");
+
+			System.out.println("----------------------");
+			System.out.println(resultSet.getString("firstname"));
+			System.out.println(employeeId);
+			System.out.println(firstname);
+			System.out.println(middlename);
+			System.out.println(lastname);
+			System.out.println(dateIn);
+			System.out.println(timeIn + "this");
+			System.out.println(timeOut);
+			System.out.println(duration);
+			System.out.println("----------------------");
+
+			employee.setEmployeeId(employeeId);
+			employee.setBiometricId(biometricId);
+			employee.setFirstname(firstname);
+			employee.setMiddlename(middlename);
+			employee.setLastname(lastname);
+			employee.setEmail(email);
+
+			timelog.setDate(dateIn);
+			timelog.setTimeIn(timeIn);
+			timelog.setTimeOut(timeOut);
+			timelog.setDuration(duration);
+
+//			timesheet.setEmployee(employee);
+			timesheet.setTimelog(timelog);
+
+			list.add(timesheet);
+
+		}
+
 		return list;
-		
-		
+
 	}
 
-	public ArrayList<Employee> updateViewConsolidated(int employeeId,
-			String timeIn, String timeOut, String date) throws SQLException {
+	public ArrayList<Employee> updateViewConsolidated(int employeeid,
+			String firstname) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
-		TimeLoggingDao timelog = new TimeLoggingDao();
 		ArrayList<Employee> list = new ArrayList<Employee>();
-		timeOut = "2014-05-31 00:00:00.0";
-		timeIn = "2014-05-31 " + timeIn;
-	
-		System.out.println(employeeId + "<>" + timeIn + "<>" + timeOut);
+
 		connection = dataSource.getConnection();
 		ps = connection
-				.prepareStatement("UPDATE timelogs SET timeIn = ?, timeOut = ? WHERE employeeId = ? and date= ?");
-		ps.setString(1, timeIn);
-		ps.setString(2, timeOut);
-		ps.setInt(3, employeeId);
-		ps.setString(4, date);
+				.prepareStatement("UPDATE employees SET firstname=? WHERE employeeId=?");
+		ps.setString(1, firstname);
+		ps.setInt(2, employeeid);
 		ps.executeUpdate();
-
 		ps.close();
+
+		ps = connection.prepareStatement("SELECT * FROM employees");
+		ResultSet resultSet = ps.executeQuery();
+
+		while (resultSet.next()) {
+			final int employeeidupdated = resultSet.getInt(2);
+			final String firstnameupdated = resultSet.getString(3);
+
+			Employee employee = new Employee();
+			employee.setEmployeeId(employeeidupdated);
+			employee.setFirstname(firstnameupdated);
+
+			list.add(employee);
+		}
+		resultSet.close();
 
 		connection.close();
 		return list;
 
 	}
-	
-	
 
 	public void consolidateTimeSheetPhase1() {
 

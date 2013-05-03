@@ -23,7 +23,9 @@
 	<script type="text/javascript" src="../resources/timelog/js/jquery.tablesorter.js"></script>
 	<script type="text/javascript" src="../resources/timelog/js/jquery.tablesorter.pager.js"></script>
 	<script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
-</head>
+	<script type="text/javascript">var idExternal =${id}</script>
+	
+	</head>
 <body onload = "mylog()">
 
 <table id = "tblNav">
@@ -34,7 +36,7 @@
 </td>
 </tr>
 </table>
-<input type ="text" value = "${id}" id = "empId"/>
+
 
 <br><br><br><br>
 <table id ="tblAll">
@@ -44,20 +46,21 @@
 Subordinates: <select id ="sub"> </select>
 </div>
 <div id="SearchBox">
-Employee Lastname/Firstname: <input type="text" id="empName" /> <input type="button" id="SearchName" value="Search">
+Lastname/Firstname: <input type="text" id="empName" /> <button id="SearchButton">Search</button>
 </div>
 </td>
 </tr>
-
-
-		<tr>
-		<td>
-		<div id ="HrSearch">
-			<table id ="tblSearch">
-			</table>
+		<tr id = "SearchRow">
+		<td  id ="tdTimeLogAll">
+		<div id ="HrSearch" title="List of Employees">
+			<center>
+				<table id ="tblSearch" class="tablesorter" style="cursor:pointer">
+				</table>
+			</center>
 		</div>
 		</td>
 		</tr>
+		
 		<tr>
 		<td>
 		<div id = "result">
@@ -66,7 +69,6 @@ Employee Lastname/Firstname: <input type="text" id="empName" /> <input type="but
 		</td>
 		</tr>
 		
-
 <tr>
 <td>
 <div id="Date">
@@ -83,7 +85,7 @@ Employee Lastname/Firstname: <input type="text" id="empName" /> <input type="but
 
 <tr>
 <td id ="tdTimeLogAll">
-	<table id="tblTimeLog"  class="tablesorter">
+	<table  id="tblTimeLog" class="tablesorter">
 	<thead>
 	<th>Date</th>
 	<th>Time IN</th>
@@ -93,6 +95,27 @@ Employee Lastname/Firstname: <input type="text" id="empName" /> <input type="but
 	</table>
 </td>
 </tr>
+
+<tr>
+<td>
+
+<table id ="tblID">
+
+	<tbody>
+	<tr>
+	<td>
+	<center>
+<input type = "text" id ="data" value = "No Data" readonly="readonly" style="border:solid 0px;height:20px;width:160px;"/>
+	</center>
+	</td>
+	</tr>
+	</tbody>
+	
+</table>
+
+</td>
+</tr>
+
 <tr>
 <td>
 <div id="pager" class="pager">
