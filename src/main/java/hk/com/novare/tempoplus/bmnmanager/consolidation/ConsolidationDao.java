@@ -1,6 +1,6 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
-
+import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 
@@ -12,8 +12,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
-
-
 
 public class ConsolidationDao {
 
@@ -72,18 +70,17 @@ public class ConsolidationDao {
 
 		return true;
 	}
-	
-	
-	public void updateConsolidatedTimesheetById(int id, Consolidation consolidation) {
-		
+
+	public void updateConsolidatedTimesheetById(int id,
+			Consolidation consolidation) {
 
 		try {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("UPDATE consolidations (userId_FK, biometricId_FK, mantisId_FK, nt3Id_FK, name, " +
-							" periodStart, periodEnd) VALUES (?, ?, ?, ?, ?, ?, ?, ?) WHERE id = ?");
-			
+					.prepareStatement("UPDATE consolidations (userId, biometricId, mantisId, nt3Id, name, "
+							+ " periodStart, periodEnd) VALUES (?, ?, ?, ?, ?, ?, ?, ?) WHERE id = ?");
+
 			preparedStatement.setInt(1, consolidation.getUserId());
 			preparedStatement.setInt(2, consolidation.getBiometricId());
 			preparedStatement.setInt(3, consolidation.getMantisId());
@@ -106,24 +103,24 @@ public class ConsolidationDao {
 
 				}
 			}
-		}		
-		
+		}
+
 	}
-	
+
 	public Consolidation isReadyForConsolidation(int id) {
-		
+
 		Consolidation consolidation = new Consolidation();
 		try {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("SELECT userId_FK, biometricId_FK, mantisId_FK, nt3Id_FK, name, " +
-							" periodStart, periodEnd FROM consolidations WHERE id=?");
-			
+					.prepareStatement("SELECT userId, biometricId, mantisId, nt3Id, name, "
+							+ " periodStart, periodEnd FROM consolidations WHERE id=?");
+
 			preparedStatement.setInt(1, id);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-						
+
 			consolidation.setUserId(resultSet.getInt(1));
 			consolidation.setBiometricId(resultSet.getInt(2));
 			consolidation.setMantisId(resultSet.getInt(3));
@@ -131,11 +128,10 @@ public class ConsolidationDao {
 			consolidation.setName(resultSet.getString(5));
 			consolidation.setPeriodStart(resultSet.getString(6));
 			consolidation.setPeriodEnd(resultSet.getString(7));
-			
-			
+
 			preparedStatement.close();
 			resultSet.close();
-			
+
 		} catch (SQLException e) {
 			// TODO Create Custom Exception
 		} finally {
@@ -146,21 +142,21 @@ public class ConsolidationDao {
 
 				}
 			}
-		}	
-		
+		}
+
 		return consolidation;
-		
+
 	}
 
 	public void consolidateTimeSheet(ArrayList<Integer> idList) {
-		
+
 		try {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("INSERT INTO consolidations (employeeId_FK, timelogId_FK, date) SELECT employeeId_FK, id, date FROM timelog WHERE employeeId_FK = ?");
+					.prepareStatement("INSERT INTO consolidations (employeeId, timelogId, date) SELECT employeeId, id, date FROM timelog WHERE employeeId = ?");
 
-			for(int id:idList) {
+			for (int id : idList) {
 				System.out.println(id);
 				preparedStatement.setInt(1, id);
 				preparedStatement.addBatch();
@@ -180,116 +176,105 @@ public class ConsolidationDao {
 				}
 			}
 		}
-		
+
 	}
-	
-	public ArrayList<Employee> viewConsolidated() throws SQLException {
+
+	public ArrayList<Timesheet> viewConsolidated() throws SQLException {
 		Connection connection = null;
 		connection = dataSource.getConnection();
-		PreparedStatement sql = null;
-		
-	
-		sql = connection.prepareStatement("SELECT * FROM employees");
-	
-		
-		//ps = connection.prepareStatement("SELECT * FROM consolidations WHERE usersId_FK=?, biometrics_FK=?, mantises_FK=?, mantisesId_FK=?, nt3sId_FK=?, overtimesId_FK=?, officialBusinessesId_FK=?, deductionsId_FK=?, timelogAdjustmentsId_FK=?, consolidationName=?, periodStart=?, periodEnd=?, timestamp=?");
-		ResultSet resultSet = sql.executeQuery();
-		
-		final ArrayList<Employee> bmn = new ArrayList<Employee>();
-		
-		while(resultSet.next()) {
-			
-			
+		PreparedStatement ps = null;
+		final ArrayList<Timesheet> list = new ArrayList<Timesheet>();
+
+		ps = connection
+				.prepareStatement("SELECT e.employeeId, e.id, e.biometricId, e.firstname, e.middlename, e.lastname, e.email, CONCAT_WS(',', e.lastname, e.firstname), p.description, e.hiredate, e.regularizationdate, t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, m.category, m.status, n.startDate, n.endDate, n.duration, n.absenceType, n.absenceStatus, (SELECT MIN(logTime) FROM biometrics WHERE log = 0 AND biometricId = e.biometricId AND logDate=t.date GROUP BY biometricId, logDate), (SELECT MAX(logTime) FROM biometrics WHERE log = 1 AND biometricId = e.biometricId AND logDate=t.date GROUP BY biometricId, logDate) FROM timelogs AS t JOIN employees AS e ON t.employeeId = e.employeeId JOIN positions as p on p.id = e.positionId LEFT JOIN consolidations c ON t.id = c.timelogId LEFT JOIN mantises m ON m.id = c.mantisId LEFT JOIN nt3s n ON n.id = c.nt3Id ORDER BY e.id");
+		ResultSet resultSet = ps.executeQuery();
+
+		while (resultSet.next()) {
 			final Employee employee = new Employee();
-			final int employeeId = resultSet.getInt(2);
-			final String firstname = resultSet.getString(4);
-			final String middlename = resultSet.getString(6);
-			final String lastname = resultSet.getString(3);
+			final TimeLogging timelog = new TimeLogging();
+			final Timesheet timesheet = new Timesheet();
+
+			final int employeeId = resultSet.getInt("employeeId");
+			final int biometricId = resultSet.getInt("biometricId");
+			final String name = resultSet
+					.getString("CONCAT_WS(',', e.lastname, e.firstname)");
+			final String firstname = resultSet.getString("firstname");
+			final String middlename = resultSet.getString("middlename");
+			final String lastname = resultSet.getString("lastname");
+			final String email = resultSet.getString("email");
+			final String position = resultSet.getString("description");
+			final String dateIn = resultSet.getString("date");
+			final String timeIn = resultSet.getString("timeIn");
+			final String timeOut = resultSet.getString("timeOut");
+			final String duration = resultSet.getString("duration");
+
+			System.out.println("----------------------");
+			System.out.println(resultSet.getString("firstname"));
+			System.out.println(employeeId);
+			System.out.println(firstname);
+			System.out.println(middlename);
+			System.out.println(lastname);
+			System.out.println(dateIn);
+			System.out.println(timeIn + "this");
+			System.out.println(timeOut);
+			System.out.println(duration);
+			System.out.println("----------------------");
 
 			employee.setEmployeeId(employeeId);
+			employee.setBiometricId(biometricId);
 			employee.setFirstname(firstname);
 			employee.setMiddlename(middlename);
 			employee.setLastname(lastname);
+			employee.setEmail(email);
 
-			bmn.add(employee);
+			timelog.setDate(dateIn);
+			timelog.setTimeIn(timeIn);
+			timelog.setTimeOut(timeOut);
+			timelog.setDuration(duration);
+
+//			timesheet.setEmployee(employee);
+			timesheet.setTimelog(timelog);
+
+			list.add(timesheet);
+
 		}
-		resultSet.close();
-		connection.close();
-		return bmn;
-		
-		
+
+		return list;
+
 	}
-	
-	public ArrayList<Employee> updateViewConsolidated(int employeeid, String firstname) throws SQLException {
+
+	public ArrayList<Employee> updateViewConsolidated(int employeeid,
+			String firstname) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ArrayList<Employee> list = new ArrayList<Employee>();
-	
-		
+
 		connection = dataSource.getConnection();
-		ps = connection.prepareStatement("UPDATE employees SET firstname=? WHERE employeeId=?");
+		ps = connection
+				.prepareStatement("UPDATE employees SET firstname=? WHERE employeeId=?");
 		ps.setString(1, firstname);
 		ps.setInt(2, employeeid);
 		ps.executeUpdate();
 		ps.close();
-		
+
 		ps = connection.prepareStatement("SELECT * FROM employees");
 		ResultSet resultSet = ps.executeQuery();
-		
-			while (resultSet.next()) {
-				final int employeeidupdated = resultSet.getInt(2);
-				final String firstnameupdated = resultSet.getString(3);
-				
-				
-				Employee employee = new Employee();
-				employee.setEmployeeId(employeeidupdated);
-				employee.setFirstname(firstnameupdated);
-				
-				list.add(employee);
-			}
-			resultSet.close();
-			
-			connection.close();
-			return list;
-			
-		
 
-}
-	
-	
-	public ArrayList<String> getEmployeeById(int employeeId) throws SQLException {
-		
-		ArrayList<String> listofemployee = new ArrayList<String>();
-		
-		Connection connection = null;
-		PreparedStatement ps = null;
+		while (resultSet.next()) {
+			final int employeeidupdated = resultSet.getInt(2);
+			final String firstnameupdated = resultSet.getString(3);
 
-		connection = dataSource.getConnection();
-		ps = connection.prepareStatement("SELECT * FROM employees WHERE employeeId=?");
-		ps.setInt(1, employeeId);
-				
-		ResultSet resultSet = ps.executeQuery();
-			while(resultSet.next()) {
-				final int employeeid = resultSet.getInt("employeeId");
-				final String firstname = resultSet.getString("firstname");
-				final String middlename = resultSet.getString("middlename");
-				final String lastname = resultSet.getString("lastname");
-				final String email = resultSet.getString("email");
-				
-				
-				Employee employee = new Employee();
-				employee.setEmployeeId(employeeid);
-				employee.setFirstname(firstname);
-				employee.setMiddlename(middlename);
-				employee.setLastname(lastname);
-				employee.setEmail(email);
-				
-				//System.out.println(employeeid + "<>" + firstname + "<>" + middlename + "<>" +lastname+ "<>" + email);
-			}
-			
-			connection.close();	
-		return listofemployee;
-		
+			Employee employee = new Employee();
+			employee.setEmployeeId(employeeidupdated);
+			employee.setFirstname(firstnameupdated);
+
+			list.add(employee);
+		}
+		resultSet.close();
+
+		connection.close();
+		return list;
+
 	}
 
 	public void consolidateTimeSheetPhase1() {
@@ -298,7 +283,7 @@ public class ConsolidationDao {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("INSERT INTO CONSOLIDATIONS (employeeId_FK, timelogId_FK, date) SELECT employeeId_FK, id, dateIn FROM timelogs");
+					.prepareStatement("INSERT INTO consolidations (employeeId, timelogId, date) SELECT employeeId, id, date FROM timelogs");
 
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
@@ -306,12 +291,13 @@ public class ConsolidationDao {
 		} catch (SQLException e) {
 			// TODO Create Custom Exception
 			System.out.println("Error in Consolidation Phase1");
+			e.printStackTrace();
 		} finally {
 			if (connection != null) {
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					
+
 				}
 			}
 		}
@@ -319,17 +305,17 @@ public class ConsolidationDao {
 	}
 
 	public void consolidateTimeSheetPhase2(ArrayList<TimeLogging> list) {
-		
+
 		try {
 			connection = dataSource.getConnection();
 			System.out.println("Phase 2");
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("UPDATE consolidations SET mantisId_FK = " +
-							"(SELECT id FROM mantises WHERE employeeId = ? AND startDate = ?) WHERE" +
-							" employeeId_FK = ? AND date = ?");
+					.prepareStatement("UPDATE consolidations SET mantisId = "
+							+ "(SELECT id FROM mantises WHERE employeeId = ? AND startDate = ?) WHERE"
+							+ " employeeId = ? AND date = ?");
 
-			for (TimeLogging timeLog: list) {
-//				System.out.println("empID:["+timeLog.getEmployeeId()+"] date:["+timeLog.getDate()+"]");
+			for (TimeLogging timeLog : list) {
+
 				preparedStatement.setInt(1, timeLog.getEmployeeId());
 				preparedStatement.setString(2, timeLog.getDate());
 				preparedStatement.setInt(3, timeLog.getEmployeeId());
@@ -340,6 +326,7 @@ public class ConsolidationDao {
 			preparedStatement.close();
 
 		} catch (SQLException e) {
+			e.printStackTrace();
 			System.out.println("Error in Consolidation Phase2");
 
 		} finally {
@@ -347,24 +334,24 @@ public class ConsolidationDao {
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					
+
 				}
 			}
 		}
 
 	}
-	
+
 	public void consolidateTimeSheetPhase3(ArrayList<TimeLogging> list) {
-		
+
 		try {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("UPDATE consolidations SET nt3Id_FK = " +
-							"(SELECT id FROM nt3s WHERE employeeId = ? AND startDate = ?) WHERE" +
-							" employeeId_FK = ? AND date = ?");
+					.prepareStatement("UPDATE consolidations SET nt3Id = "
+							+ "(SELECT id FROM nt3s WHERE employeeId = ? AND startDate = ?) WHERE"
+							+ " employeeId = ? AND date = ?");
 
-			for (TimeLogging timeLog: list) {
+			for (TimeLogging timeLog : list) {
 				preparedStatement.setInt(1, timeLog.getEmployeeId());
 				preparedStatement.setString(2, timeLog.getDate());
 				preparedStatement.setInt(3, timeLog.getEmployeeId());
@@ -382,12 +369,11 @@ public class ConsolidationDao {
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					
+
 				}
 			}
 		}
 
 	}
-	
-	
+
 }

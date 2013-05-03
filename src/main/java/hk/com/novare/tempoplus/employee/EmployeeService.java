@@ -21,14 +21,12 @@ public class EmployeeService {
 
 	public void readData(CommonsMultipartFile[] file) {
 
-		ArrayList<Employee> list = new ArrayList<Employee>();
-		Employee emp = null;
+		ArrayList<EmployeeDetails> list = new ArrayList<EmployeeDetails>();
+		EmployeeDetails employeeDetails = null;
 
 		Sheet sheet = excelWorkbookUtility.getExcelWorkbook(file);
-		int ctr=0;
 		for (Row row : sheet) {
-			++ctr;
-			emp = new Employee();
+			employeeDetails = new EmployeeDetails();
 			for (int col = 1; col < row.getLastCellNum(); col++) {
 
 				Cell cell = row.getCell(col, Row.CREATE_NULL_AS_BLANK);
@@ -36,76 +34,76 @@ public class EmployeeService {
 				switch (col) {
 				case 1: {
 					cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-					emp.setBiometricId((int) cell.getNumericCellValue());
+					employeeDetails.setBiometricId((int) cell
+							.getNumericCellValue());
 					break;
 				}
 				case 2: {
-					String[] name = cell.getStringCellValue().split(",");				
-					emp.setFirstname(name[1]);
-					emp.setLastname(name[0]);
-					emp.setMiddlename(name[2]);
+					employeeDetails.setFullName(cell.getStringCellValue());
 					break;
 				}
 				case 3: {
-					emp.setDepartmentId(1);
+					employeeDetails.setDepartment(cell.getStringCellValue());
 					break;
 				}
 				case 5: {
-					emp.setShiftId(1);
+					employeeDetails.setShift(cell.getStringCellValue());
 					break;
 				}
 				case 6: {
-					emp.setEmployeeId((int) cell.getNumericCellValue());
+					employeeDetails.setEmployeeId((int) cell
+							.getNumericCellValue());
 					break;
 				}
 				case 7: {
-					emp.setPositionId(1);
+					employeeDetails.setPosition(cell.getStringCellValue());
 					break;
 				}
 				case 8: {
-					emp.setLevel(1);
+					employeeDetails.setLevel((int) cell.getNumericCellValue());
 					break;
 				}
 				case 9: {
 					String dateFormat = null;
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					dateFormat = sdf.format(cell.getDateCellValue());
-					emp.setHireDate(dateFormat);
+					employeeDetails.setHireDate(dateFormat);
 					break;
 				}
 				case 10: {
 					String dateFormat = null;
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					dateFormat = sdf.format(cell.getDateCellValue());
-					emp.setRegularizationDate(dateFormat);
+					employeeDetails.setRegularizationDate(dateFormat);
 					break;
 				}
 				case 11: {
-					System.out.println(cell.getCellType());
-					if(cell.getCellType() != Cell.CELL_TYPE_BLANK && cell.getCellType() != Cell.CELL_TYPE_ERROR){
-						System.out.println("In " + cell.getCellType());
-					String dateFormat = null;
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					dateFormat = sdf.format(cell.getDateCellValue());
-					emp.setResignationDate(dateFormat);
+					if (cell.getCellType() != Cell.CELL_TYPE_BLANK
+							&& cell.getCellType() != Cell.CELL_TYPE_ERROR) {
+						String dateFormat = null;
+						SimpleDateFormat sdf = new SimpleDateFormat(
+								"yyyy-MM-dd");
+						dateFormat = sdf.format(cell.getDateCellValue());
+						employeeDetails.setResignationDate(dateFormat);
 					}
 					break;
 				}
 				case 12: {
-					emp.setEmail(cell.getStringCellValue());
+					employeeDetails.setEmail(cell.getStringCellValue());
 					break;
 				}
-				case 13: {
-					emp.setSupervisorId(1);
+				case 14: {
+					employeeDetails.setSupervisorEmail(cell
+							.getStringCellValue());
 					break;
 				}
 				}
 			}
-			list.add(emp);
+			list.add(employeeDetails);
 
 		}
 
-		employeeDao.addEmployeeData(list);
+		employeeDao.insertEmployeeData(list);
 
 	}
 }

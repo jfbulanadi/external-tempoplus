@@ -17,7 +17,6 @@ public class TimeLogging {
 	private String timeIn;
 	private String timeOut;
 	private String duration;
-
 	public int getId() {
 		return id;
 	}
@@ -33,7 +32,6 @@ public class TimeLogging {
 	public void setEmployeeId(int employeeId) {
 		this.employeeId = employeeId;
 	}
-
 	public String getDate() {
 		return date;
 	}

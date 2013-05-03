@@ -1,12 +1,15 @@
 package hk.com.novare.tempoplus.useraccount.user;
 
 import hk.com.novare.tempoplus.employee.Employee;
+import hk.com.novare.tempoplus.timelogging.DataAccessException;
+import java.sql.SQLException;
 
 import java.sql.SQLException;
 
-import java.util.List;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingService;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +49,7 @@ public class UserController {
 			HttpSession session,
 			ModelMap modelMap,
 			@RequestParam(value = "userName")String userEmail,
-			@RequestParam(value = "password") String password) {
+			@RequestParam(value = "password") String password) throws DataAccessException {
 		
 		String redirect = "";
 		if(userEmail.equals("") || password.equals("")){
@@ -134,5 +137,4 @@ public class UserController {
 		
 		return "redirect:index";
 	}
-	
 }

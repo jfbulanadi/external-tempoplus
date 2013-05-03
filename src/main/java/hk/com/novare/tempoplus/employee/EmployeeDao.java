@@ -13,16 +13,16 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class EmployeeDao {
-	
+
 	@Inject
 	DataSource dataSource;
-	
+
 	private Connection connection = null;
 
 	public ArrayList<Integer> retrieveEmployeeIds() {
-		
+
 		ArrayList<Integer> idList = new ArrayList<Integer>();
-		
+
 		try {
 			connection = dataSource.getConnection();
 
@@ -38,39 +38,65 @@ public class EmployeeDao {
 			e.printStackTrace();
 		}
 		return idList;
-		
+
 	}
-	
-	public void addEmployeeData(ArrayList<Employee> list) {
-		
+
+	public void insertEmployeeData(ArrayList<EmployeeDetails> list) {
+
 		try {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("INSERT INTO employees (employeeId, lastname, firstname, middlename, email, " +
-							"hireDate, regularizationDate, resignationDate, positionId, supervisorId, biometricId) " +
-							"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					.prepareStatement("INSERT INTO employees (employeeId, lastname, firstname, middlename, email, "
+							+ "hireDate, regularizationDate, resignationDate, positionId, biometricId, shiftId, departmentId, level, supervisorId) "
+							+ "values (?, ?, ?, ?, ?, ?, ?, ?, (SELECT id FROM positions WHERE description = ?), ?,"
+							+ "(SELECT id FROM shifts WHERE description = ?), (SELECT id FROM departments WHERE name = ?), ?, ?)");
 
-			for (Employee employee : list) {
-				preparedStatement.setInt(1, employee.getEmployeeId());
-				preparedStatement.setString(2, employee.getLastname());
-				preparedStatement.setString(3, employee.getFirstname());
-				preparedStatement.setString(4, employee.getMiddlename());
-				preparedStatement.setString(5, employee.getEmail());
-				preparedStatement.setString(6, employee.getHireDate());
-				preparedStatement.setString(7, employee.getRegularizationDate());
-				preparedStatement.setString(8, employee.getResignationDate());
-				preparedStatement.setInt(9, employee.getPositionId());
-				preparedStatement.setInt(10, employee.getSupervisorId());
-				preparedStatement.setInt(11, employee.getBiometricId());
+			for (EmployeeDetails employeeDetails : list) {
+
+				String[] employeeName = employeeDetails.getFullName()
+						.split(",");
+
+				preparedStatement.setInt(1, employeeDetails.getEmployeeId());
+				preparedStatement.setString(2, employeeName[0]);
+				preparedStatement.setString(3, employeeName[1]);
+				preparedStatement.setString(4, employeeName[2]);
+				preparedStatement.setString(5, employeeDetails.getEmail());
+				preparedStatement.setString(6, employeeDetails.getHireDate());
+				preparedStatement.setString(7,
+						employeeDetails.getRegularizationDate());
+				preparedStatement.setString(8,
+						employeeDetails.getResignationDate());
+				preparedStatement.setString(9, employeeDetails.getPosition());
+				// preparedStatement.setString(10,
+				// employeeDetails.getSupervisorEmail());
+				preparedStatement.setInt(10, employeeDetails.getBiometricId());
+				preparedStatement.setString(11, employeeDetails.getShift());
+				preparedStatement
+						.setString(12, employeeDetails.getDepartment());
+				preparedStatement.setInt(13, employeeDetails.getLevel());
+				preparedStatement.setInt(14, 0);
 				preparedStatement.addBatch();
 			}
 
 			preparedStatement.executeBatch();
+			
+			
+			preparedStatement = connection
+					.prepareStatement("UPDATE employees AS e1, (SELECT employeeId FROM employees WHERE email = ?) " +
+							"AS e2 SET e1.supervisorId = e2.employeeId WHERE e1.employeeId = ?");
+			
+			for (EmployeeDetails employeeDetails : list) {							
+				preparedStatement.setString(1, employeeDetails.getSupervisorEmail());
+				preparedStatement.setInt(2, employeeDetails.getEmployeeId());
+				preparedStatement.addBatch();
+			}
+			
+			preparedStatement.executeBatch();
 			preparedStatement.close();
 
 		} catch (SQLException e) {
-
+			e.printStackTrace();
 		} finally {
 			if (connection != null) {
 				try {
@@ -80,7 +106,7 @@ public class EmployeeDao {
 				}
 			}
 		}
-		
+
 	}
 
 }

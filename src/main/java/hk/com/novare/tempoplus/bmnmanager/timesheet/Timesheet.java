@@ -1,28 +1,30 @@
 package hk.com.novare.tempoplus.bmnmanager.timesheet;
 
+import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDetails;
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
-import hk.com.novare.tempoplus.employee.Employee;
+import hk.com.novare.tempoplus.employee.EmployeeDetails;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 
 public class Timesheet {
 
 	private int id;
-	private Employee employee;
+	private EmployeeDetails employeeDetails;
 	private TimeLogging timelog;
 	private Mantis mantis;
 	private Nt3 nt3;
-
+	private BiometricDetails dailyBiometric;
+	
 	public TimeLogging getTimelog() {
 		return timelog;
 	}
 
-	public Employee getEmployee() {
-		return employee;
+	public EmployeeDetails getEmployeeDetails() {
+		return employeeDetails;
 	}
 
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
+	public void setEmployeeDetails(EmployeeDetails employeeDetails) {
+		this.employeeDetails = employeeDetails;
 	}
 
 	public int getId() {
@@ -57,4 +59,13 @@ public class Timesheet {
 		this.nt3 = nt3;
 	}
 
+	public BiometricDetails getDailyBiometric() {
+		return dailyBiometric;
+	}
+
+	public void setDailyBiometric(BiometricDetails dailyBiometric) {
+		this.dailyBiometric = dailyBiometric;
+	}
+
+	
 }
