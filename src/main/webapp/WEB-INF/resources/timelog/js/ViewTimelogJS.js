@@ -306,6 +306,7 @@ function SearchTimeLog()
 					}
 				else if(view == "manager")
 					{
+					
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
 						 $.ajax(

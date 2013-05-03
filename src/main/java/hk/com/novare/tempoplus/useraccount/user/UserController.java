@@ -117,11 +117,7 @@ public class UserController {
 	public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest,@ModelAttribute(value="timelogs") TimeLogging timelogs) throws ParseException{
 		httpServletRequest.getSession().invalidate();
 		modelMap.clear();
-		try {
 			timelogService.logTimeOut(timelogs);
-		} catch (DataAccessException e) {
-			e.printStackTrace();
-		}
 		List<User> userList = userService.retrieveUserInformation(user.getEmail());
 		List<Employee> supervisorList = userService.retrieveSupervisorInformation(user.getSupervisorId());
 		userList.clear();
