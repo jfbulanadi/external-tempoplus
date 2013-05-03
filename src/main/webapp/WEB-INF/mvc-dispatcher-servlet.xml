@@ -32,7 +32,7 @@
 	<!-- Bean for Data Source with Connection Pool -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://localhost:3306/tempoplus"/>
+		<property name="url" value="jdbc:mysql://localhost:3307/tempoplus"/>
 		<property name="username" value="root"/>
 		<property name="password" value="dreamer"/>
 	</bean>
@@ -74,6 +74,11 @@
 	<bean id="user" class="hk.com.novare.tempoplus.useraccount.user.User"/>
 	<bean id="userDao" class="hk.com.novare.tempoplus.useraccount.user.UserDao"/>
 	<bean id="userService" class="hk.com.novare.tempoplus.useraccount.user.UserService"/>
+	
+	<!-- Employee Manager Beans -->
+	<bean id="employeeManager" class="hk.com.novare.tempoplus.accountsystem.employeemanager.EmployeeManager"/>
+	<bean id="employeeManagerService" class="hk.com.novare.tempoplus.accountsystem.employeemanager.EmployeeManagerService"/>
+	<bean id="employeeManagerDao" class="hk.com.novare.tempoplus.accountsystem.employeemanager.EmployeeManagerDAO"/>
 	
 	<!-- Utility Beans -->
 	<bean id="excelWorkbookUtility" class="hk.com.novare.tempoplus.utilities.ExcelWorkbookUtility"/>

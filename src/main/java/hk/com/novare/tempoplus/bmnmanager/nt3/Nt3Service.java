@@ -88,7 +88,6 @@ public class Nt3Service {
 						cell.setCellType(Cell.CELL_TYPE_STRING);
 						nt3.setDescription(cell.getStringCellValue());
 					} catch (Exception e) {
-						System.out.println(cell.getCellType());
 						continue outerLoop;
 					}
 					break;
@@ -106,7 +105,6 @@ public class Nt3Service {
 			list.add(nt3);
 
 		}
-		System.out.println(list.size());
 		nt3Dao.addNt3Data(list);
 		
 	}

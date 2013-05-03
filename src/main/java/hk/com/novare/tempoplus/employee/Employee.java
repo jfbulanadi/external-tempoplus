@@ -1,44 +1,50 @@
 package hk.com.novare.tempoplus.employee;
 
 public class Employee {
-
+	
+	private int id;
 	private int employeeId;
 	private int biometricId;
-	
 	private String lastname;
 	private String firstname;
 	private String secondname;
 	private String middlename;
-	
+	private int shiftId;
 	private String email;
-	private String password; 
-	
 	private String hireDate;
 	private String regularizationDate;
 	private String resignationDate;
-	
 	private int departmentId;
 	private int positionId;
 	private int level;
-	private int shiftId;
-	
 	private int supervisorId;
-	private int isSupervisor;
 	private int flag;
+	private int isSupervisor;
 
-	/*
-	 * getters and setters for user details
-	 */
-	
-	//IDs
-	public int getEmployeeId() {
-		return employeeId;
+	public int getId() {
+		return id;
 	}
 
-	public void setEmployeeId(int employeeId) {
-		this.employeeId = employeeId;
+	public void setId(int id) {
+		this.id = id;
 	}
-	
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	public int getShiftId() {
+		return shiftId;
+	}
+
+	public void setShiftId(int shiftId) {
+		this.shiftId = shiftId;
+	}
+
 	public int getBiometricId() {
 		return biometricId;
 	}
@@ -46,9 +52,23 @@ public class Employee {
 	public void setBiometricId(int biometricId) {
 		this.biometricId = biometricId;
 	}
-	
-	
-	//employee name
+
+	public int getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(int departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public int getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(int employeeId) {
+		this.employeeId = employeeId;
+	}
+
 	public String getLastname() {
 		return lastname;
 	}
@@ -81,8 +101,6 @@ public class Employee {
 		this.middlename = middlename;
 	}
 
-	
-	//login details
 	public String getEmail() {
 		return email;
 	}
@@ -90,17 +108,7 @@ public class Employee {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	public String getPassword() {
-		return password;
-	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	
-	
 	public String getHireDate() {
 		return hireDate;
 	}
@@ -124,16 +132,6 @@ public class Employee {
 	public void setResignationDate(String resignationDate) {
 		this.resignationDate = resignationDate;
 	}
-	
-	
-	//work details
-	public int getDepartmentId() {
-		return departmentId;
-	}
-
-	public void setDepartmentId(int departmentId) {
-		this.departmentId = departmentId;
-	}
 
 	public int getPositionId() {
 		return positionId;
@@ -142,25 +140,7 @@ public class Employee {
 	public void setPositionId(int positionId) {
 		this.positionId = positionId;
 	}
-	
-	public int getLevel() {
-		return level;
-	}
 
-	public void setLevel(int level) {
-		this.level = level;
-	}
-
-	public int getShiftId() {
-		return shiftId;
-	}
-
-	public void setShiftId(int shiftId) {
-		this.shiftId = shiftId;
-	}
-	
-	
-	//Employee's supervisor
 	public int getSupervisorId() {
 		return supervisorId;
 	}
@@ -168,21 +148,21 @@ public class Employee {
 	public void setSupervisorId(int supervisorId) {
 		this.supervisorId = supervisorId;
 	}
-	
-	public int getIsSupervisor() {
-		return isSupervisor;
-	}
 
-	public void setIsSupervisor(int isSupervisor) {
-		this.isSupervisor = isSupervisor;
-	}
-	
 	public int getFlag() {
 		return flag;
 	}
 
 	public void setFlag(int flag) {
 		this.flag = flag;
+	}
+
+	public int getIsSupervisor() {
+		return isSupervisor;
+	}
+
+	public void setIsSupervisor(int isSupervisor) {
+		this.isSupervisor = isSupervisor;
 	}
 
 }

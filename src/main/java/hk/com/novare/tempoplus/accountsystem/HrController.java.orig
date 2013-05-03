@@ -22,8 +22,13 @@ public class HrController {
 	@Qualifier("hrService")
 	HrService hrService;
 	
+<<<<<<< HEAD
+	/*@Autowired
+	SingleFileUploadForm singleFileUploadForm;*/
+=======
 	@Autowired
 	SingleFileUploadForm singleFileUploadForm;
+>>>>>>> 31143c62c27e6342862138038bb3cf10c41c57f4
 	
 	
 	
@@ -146,7 +151,11 @@ public class HrController {
 		return hrService.retieveSupervisor(departmentId);
 	}
 	
+<<<<<<< HEAD
 	/*@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
+=======
+	@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
+>>>>>>> 31143c62c27e6342862138038bb3cf10c41c57f4
 	public String getFileUpload(
 			@ModelAttribute("uploadForm") SingleFileUploadForm uploadForm,
 			ModelMap modelMap) {
@@ -163,6 +172,10 @@ public class HrController {
 		//modelMap.addAttribute("employeeList", hrService.retieveAllEmployee());
 		return "ViewHr";
 
+<<<<<<< HEAD
 	}*/
+=======
+	}
+>>>>>>> 31143c62c27e6342862138038bb3cf10c41c57f4
 	
 }

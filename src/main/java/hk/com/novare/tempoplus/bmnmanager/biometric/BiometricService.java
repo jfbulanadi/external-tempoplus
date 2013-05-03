@@ -1,5 +1,6 @@
 package hk.com.novare.tempoplus.bmnmanager.biometric;
 
+import hk.com.novare.tempoplus.timelogging.TimeLoggingDao;
 import hk.com.novare.tempoplus.utilities.ExcelWorkbookUtility;
 
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 public class BiometricService {
 	
 	@Inject	BiometricDao biometricDao;
+	@Inject TimeLoggingDao timelogDAO;
 	@Inject	ExcelWorkbookUtility excelWorkbookUtility;
 
 	public void readData(CommonsMultipartFile[] file) {
@@ -33,7 +35,7 @@ public class BiometricService {
 
 				switch (col) {
 				case 0: {
-					bio.setBiometricsId((int) cell.getNumericCellValue());
+					bio.setBiometricId((int) cell.getNumericCellValue());
 					break;
 				}
 				case 1: {
@@ -45,7 +47,7 @@ public class BiometricService {
 				}
 				case 2: {
 					String timeFormat = null;
-					SimpleDateFormat sdf = new SimpleDateFormat("h:mm");
+					SimpleDateFormat sdf = new SimpleDateFormat("k:mm");
 					timeFormat = sdf.format(cell.getDateCellValue());
 					bio.setTime(timeFormat);
 					break;
@@ -68,10 +70,18 @@ public class BiometricService {
 
 	}
 	
-	public void updateTimelog() {
+	public ArrayList<BiometricDetails> retrieveBiometricRecordsPerDay() {
 		
-		ArrayList<Biometric> list = biometricDao.retrieveAllBiometricData();
+		ArrayList<BiometricDetails> list = new ArrayList<BiometricDetails>();
 		
+		
+		
+		return list;
+	}
+	
+	public void updateTimelog() {		
+//		timelogDAO.updateTimeLoggingDataPhase1(biometricDao.retrieveTimeInData());
+//		timelogDAO.updateTimeLoggingDataPhase2(biometricDao.retrieveTimeOutData());		
 		
 	}
 
