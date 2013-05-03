@@ -217,12 +217,6 @@ public class ConsolidationDao {
 					String timeOut = resultSet.getString("bioTimeOut");
 					String date = resultSet.getString("date");
 					
-					//			String email = resultSet.getString("email");
-					//String position = resultSet.getString("position");
-					
-//					String timeIn = resultSet.getString("timeIn");
-//					String timeOut = resultSet.getString("timeOut");
-//					
 					final ConsolidationDTO consolidations = new ConsolidationDTO();
 					
 					consolidations.setEmployeeId(employeeId);
@@ -235,9 +229,6 @@ public class ConsolidationDao {
 					consolidations.setDate(date);
 					consolidations.setTimeIn(timeIn);
 					consolidations.setTimeOut(timeOut);
-				
-					
-			//		consolidations.setEmail(email);
 					
 					
 					list.add(consolidations);
