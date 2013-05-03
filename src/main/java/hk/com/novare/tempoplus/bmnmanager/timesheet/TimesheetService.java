@@ -286,7 +286,7 @@ public class TimesheetService {
 						cell.setCellValue(employeeDetails.getEmail());
 						break;
 					case 10:
-						cell.setCellValue("Supervisor's Email");
+						cell.setCellValue(employeeDetails.getSupervisorEmail());
 						break;
 					case 11:
 						cell.setCellValue(timelog.getDate());

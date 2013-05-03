@@ -326,6 +326,7 @@ public class ConsolidationDao {
 			preparedStatement.close();
 
 		} catch (SQLException e) {
+			e.printStackTrace();
 			System.out.println("Error in Consolidation Phase2");
 
 		} finally {

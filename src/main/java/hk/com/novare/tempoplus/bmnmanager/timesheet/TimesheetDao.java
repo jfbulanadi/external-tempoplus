@@ -3,7 +3,6 @@ package hk.com.novare.tempoplus.bmnmanager.timesheet;
 import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDetails;
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
-import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.employee.EmployeeDetails;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 
@@ -41,7 +40,7 @@ public class TimesheetDao {
 
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("SELECT e.employeeId, e.id, e.biometricId, CONCAT_WS(', ' , e.lastname, e.firstname) AS fullName, e.hiredate, e.regularizationdate, "
-							+ "(SELECT CONCAT_WS(', ' , e.lastname, e.firstname) AS fullName FROM employees WHERE employeeId = e.supervisorId) AS supervisorName"
+							+ "(SELECT CONCAT_WS(', ' , lastname, firstname) AS fullName FROM employees WHERE employeeId = e.supervisorId) AS supervisor, "
 							+ "t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, "
 							+ "m.category, m.status, n.startDate, n.endDate, n.duration, n.absenceType, n.absenceStatus, "
 							+ "(SELECT MIN(bIn.logTime) FROM biometrics AS bIn WHERE log = 0 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeIn, "
@@ -69,7 +68,7 @@ public class TimesheetDao {
 				employeeDetails.setHireDate(resultSet.getString("e.hiredate"));
 				employeeDetails.setRegularizationDate(resultSet
 						.getString("e.regularizationdate"));
-				employeeDetails.setSupervisor(resultSet.getString("supervisorName"));
+				employeeDetails.setSupervisor(resultSet.getString("supervisor"));
 	
 				biometricDetails.setTimeIn(resultSet.getString("bioTimeIn"));
 				biometricDetails.setTimeOut(resultSet.getString("bioTimeOut"));
