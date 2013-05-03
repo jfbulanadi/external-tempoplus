@@ -71,8 +71,8 @@ public class BiometricService {
 	}
 	
 	public void updateTimelog() {		
-		timelogDAO.updateTimeLoggingDataPhase1(biometricDao.retrieveTimeInData());
-		timelogDAO.updateTimeLoggingDataPhase2(biometricDao.retrieveTimeOutData());		
+//		timelogDAO.updateTimeLoggingDataPhase1(biometricDao.retrieveTimeInData());
+//		timelogDAO.updateTimeLoggingDataPhase2(biometricDao.retrieveTimeOutData());		
 		
 	}
 

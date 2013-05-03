@@ -58,8 +58,8 @@ public class ConsolidationService {
 	
 	public void consolidateTimesheet() {		
 		consolidationDao.consolidateTimeSheetPhase1();
-		consolidationDao.consolidateTimeSheetPhase2(timelogDao.retrieveTimeLogs());
-		consolidationDao.consolidateTimeSheetPhase3(timelogDao.retrieveTimeLogs());
+//		consolidationDao.consolidateTimeSheetPhase2(timelogDao.retrieveTimeLogs());
+//		consolidationDao.consolidateTimeSheetPhase3(timelogDao.retrieveTimeLogs());
 	}
 
 }
