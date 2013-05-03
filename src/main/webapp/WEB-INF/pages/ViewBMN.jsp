@@ -32,65 +32,71 @@ font-size: 62.5%;
 </style>
 
 <script>
-$(document).ready(function() {
-	
-	
-	var pagerOptions = {
-		container: $(".pager"),
-		output: '{startRow} - {endRow} / {filteredRows} ({totalRows})',
-		fixedHeight: true,
-		removeRows: false,
-		cssGoto:   '.gotoPage',		
-	};
-	$("table").tablesorter({
-		widgets: ['zebra', 'filter'],
-		headers: { 0: '1px' }
-	}).
-	tablesorterPager(pagerOptions);	
+	$(document)
+			.ready(
+					function() {
 
-	
-	$("#btnUpdate").click(function() {
-		var firstName = $("#txtfirstname").val();
-		var employeeId = $("#txtemployeeid").val();
-		var timeIn = $("#txttimein").val();
-		var timeOut = $("#txttimeout").val();
-		
-		//Still on going
-		//var date = $("#txtdate")
-		console.log(timeIn + "<>" + timeOut);
-		$.ajax({
-			type: "POST",
-			url: "/tempoplus/consolidation/update",
-			data: {
-				firstName: firstName,
-				employeeId: employeeId,
-				timeIn : timeIn,
-				timeOut: timeOut
-			},
-			success: function() {
-				console.log(timeIn);
-				console.log(timeOut);
-				console.log(employeeId);
-				console.log("succeeded update");
-				//window.location.replace("/tempoplus/consolidation/view");
-			}
-		});
-	});
-	
-	
-	$("button:contains(Destroy)").click(function(){
-		var $t = $(this);
-		 if (/Destroy/.test( $t.text() )){
-		        $('table').trigger('destroy.pager');
-		        $t.text('Restore Pager');
-		      } else {
-		        $('table').tablesorterPager(pagerOptions);
-		        $t.text('Destroy Pager');
-		      }
-		
-	});
-	
-});
+						var htmlstr = null;
+						var pagerOptions = {
+							container : $(".pager"),
+							output : '{startRow} - {endRow} / {filteredRows} ({totalRows})',
+							fixedHeight : true,
+							removeRows : false,
+							cssGoto : '.gotoPage',
+						};
+
+						$("#tablesorter").tablesorter({
+							widgets : [ 'zebra', 'filter' ]
+						}).tablesorterPager(pagerOptions);
+
+						$
+								.ajax(
+										{
+											type : "GET",
+											url : "<c:url value="/consolidation/ajaxFetchEmployees"/>",
+											success : function(data) {
+											
+												$.each(data, function(keys,
+														values) {
+													htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "' onclick=showToForm(this)>";
+													htmlstr += "<td>" + values.employeeId + "</td>";
+													htmlstr += "<td>" + values.biometricId +"</td>";
+													htmlstr += "<td>" + values.firstname + "</td>";
+													htmlstr += "<td>" + values.middlename + "</td>";
+													htmlstr += "<td>" + values.lastname + "</td>";
+													htmlstr += "<td>" + values.email + "</td>";
+													htmlstr += "<td>" + values.position + "</td>";
+													htmlstr += "<td>" + values.timeIn + "</td>";
+													htmlstr += "<td>" + values.timeOut + "</td>";
+													htmlstr += "</tr>";
+														
+												});
+
+											}
+
+										}).done(function() {
+
+									$("#tablesorter").append(htmlstr);
+									var resort = true;
+									$("#tablesorter").trigger("update", [ resort ]);
+									var sorting = [ [ 0, 0 ], [ 0, 0 ] ];
+									$("table").trigger("sorton", [ sorting ]);
+
+								});
+
+						$("button:contains(Destroy)").click(function() {
+							var $t = $(this);
+							if (/Destroy/.test($t.text())) {
+								$('table').trigger('destroy.pager');
+								$t.text('Restore Pager');
+							} else {
+								$("#tablesorter").tablesorterPager(pagerOptions);
+								$t.text('Destroy Pager');
+							}
+
+						});
+
+					});
 </script>
 <script>
 function showToForm(myId) {
@@ -107,24 +113,23 @@ function showToForm(myId) {
 	var timeout = null;
 	console.log(trId);
 	 
+	
+	
 	  var delimited = trId.split(",");
 	  trId = delimited[0];
 	  firstname = delimited[1];
 	  middlename = delimited[2];
 	  lastname = delimited[3];
 	  timein = delimited[4];
-	  	console.log(timein);
-	  	var delimitTimein = timein.split(" ");
 	  timeout = delimited[5];
-	  	var delimitTimeout = timeout.split(" ");
-		
+	  	
 	//console.log(trId);
 	//console.log(firstname);
 	
 	 $("#txtemployeeid").val(trId);
 	 $("#txtfirstname").val(firstname + " " + middlename + " " + lastname);
-	 $("#txttimein").val(delimitTimein[1]);
-	 $("#txttimeout").val(delimitTimeout[1]);
+	 $("#txttimein").val(timein);
+	 $("#txttimeout").val(timeout);
 }
 </script>
 
@@ -178,10 +183,27 @@ function showToForm(myId) {
 		<option>2</option>
 	</select>
 	<button>Select</button>
-	
 	<hr />
-	<div class="pager" align="right">
-		<button>Destroy</button>	
+	<table id="tablesorter" class="tablesorter">
+		<thead>
+			<th>Employee ID</th>
+			<th>Biometric ID</th>
+			<th>First name</th>
+			<th>Middle name</th>
+			<th>Last name</th>
+			<th>Email</th>
+			<th>Position</th>
+			<th>Time in</th>
+			<th>TIme out</th>
+			
+			
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+	<div>
+	<button>Destroy</button>
+	<div class="pager">
 		<img src="../resources/bmn/css/images/first.png" class="first" /> <img
 			src="../resources/bmn/css/images/prev.png" class="prev" /> <span
 			class="pagedisplay"></span>
@@ -189,48 +211,13 @@ function showToForm(myId) {
 		<img src="../resources/bmn/css/images/next.png" class="next" /> <img
 			src="../resources/bmn/css/images/last.png" class="last" /> <select
 			class="pagesize">
-			<option value="2">2</option>
-			<option value="5">5</option>
 			<option value="10" selected="selected">10</option>
+			<option value="30">30</option>
+			<option value="50">50</option>
 		</select>
 	</div>
-	<hr />
-	<table class="tablesorter">
-		<thead>
-			<tr>
-				<th>Emp ID</th>
-				<th>Bio ID</th>
-				<th>First name</th>
-				<th>Middle name</th>
-				<th>Last name</th>
-				<th>Email</th>
-				<th>Date</th>
-				<th>Time in</th>
-				<th>Time out</th>
-				<th>Duration</th>
-			</tr>
-		</thead>
-		<tbody>
-		
-			<c:forEach items="${content}" var="timesheet">	
-		  	<tr id="${timesheet.employee.employeeId},${timesheet.employee.firstname},${timesheet.employee.middlename},${timesheet.employee.lastname},${timesheet.timelog.timeIn},${timesheet.timelog.timeOut}" onclick=showToForm(this)>
-					<td>${timesheet.employee.employeeId}</td>
-					<td>${timesheet.employee.biometricId}</td>
-					<td>${timesheet.employee.firstname}</td>
-					<td>${timesheet.employee.middlename}</td>
-					<td>${timesheet.employee.lastname}</td>
-					<td>${timesheet.employee.email}</td>
-					<td>${timesheet.timelog.date}</td>
-					<td>${timesheet.timelog.timeIn}</td>
-					<td>${timesheet.timelog.timeOut}</td>
-					<td>${timesheet.timelog.duration}</td>
-				</tr>
-			</c:forEach>
-		
-
-		</tbody>
-	</table>
-<hr/>	
+	</div>
+	<hr/>	
 	<div>
 	<form:form method="post" action="uploadfile"
 		modelAttribute="uploadForm" enctype="multipart/form-data">

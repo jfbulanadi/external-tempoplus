@@ -6,6 +6,7 @@ import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.employee.EmployeeDao;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingDao;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -36,9 +37,9 @@ public class ConsolidationService {
 				periodEnd);
 	}
 
-
-	public ArrayList<Timesheet> viewConsolidated() throws SQLException {
-		return consolidationDao.viewConsolidated();
+	public ArrayList<ConsolidationDTO> viewConsolidation() {
+		return consolidationDao.viewConsolidation();
+		
 	}
 
 	public ArrayList<Employee> updateViewConsolidated(int employeeId,

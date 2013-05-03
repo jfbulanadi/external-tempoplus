@@ -1,5 +1,6 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
+import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.employee.Employee;
 
 import java.sql.SQLException;
@@ -38,17 +39,15 @@ public class ConsolidationController {
 //		return consolidationService.isReadyForConsolidation(id);
 //	}
 	
-	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public String viewConsolidated(ModelMap modelMap) throws SQLException {
-	modelMap.addAttribute("content", consolidationService.viewConsolidated());
-	return "ViewBMN";
+	@RequestMapping(value = "/ajaxFetchEmployees", method=RequestMethod.GET)
+	public @ResponseBody ArrayList<ConsolidationDTO> fetchEmployees(ModelMap modelMap)  {
+		return consolidationService.viewConsolidation();
 	}
 	
-	/*@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public @ResponseBody ArrayList<Timesheet>viewConsolidated(ModelMap modelMap) throws SQLException {
-	modelMap.addAttribute("content", consolidationService.viewConsolidated());
-	return consolidationService.viewConsolidated();
-	}*/
+	@RequestMapping(value = "/view", method = RequestMethod.GET)
+	public String viewConsolidated() throws SQLException {
+	return "ViewBMN";
+	}
 	
 	@RequestMapping(value = "/mail", method = RequestMethod.GET)
 	public String mailTimeSheet() {
