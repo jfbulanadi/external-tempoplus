@@ -11,7 +11,9 @@ $(document).ready(function() {
 		}).tablesorterPager(pagerOptions);
 
 		$("#create-user").click(function() {
-			
+			$('#selectPosition option').remove();
+			$('#selectSupervisorName option').remove();
+
 			$("#dialog-form").dialog({
 
 				maxWidth : 550,
@@ -207,9 +209,26 @@ $(function() {
 })
 
 function showToForm(empInfo) {
+	
 	var employeeId = empInfo.id;
 	console.log(empInfo.id);
-	
+	var d ={firstName:$("#editfirstName").val(),
+			middleName:$("#editMiddleName").val(),
+			lastName:$("#editLastName").val(),
+			employeeId:$("#editEmployeeId").val(),
+			biometrics:$("#editBiometrics").val(),
+			department:$("#editDepartment").val(),
+			position:$("#editPosition").val(),
+			shift:$("#editShift").val(),
+			level:$("#editLevel").val(),
+			hireDate:$("#editHiredDate").val(),
+			regularizationDate:$("#editRegularizationDate").val(),
+			resignationDate:$("#editResignationDate").val(),
+			supervisorName:$("#editSupervisorName").val(),
+			supervisorEmail:$("#editSupervisorEmail").val(),
+			locAssign:$("#editLocAssign").val(),
+			employeeEmail:$("#editEmployeeEmail").val(),
+			};
 	$("#dialog-formFullInformation").dialog({
 		maxWidth : 550,
 		maxHeight : 600,
@@ -217,24 +236,17 @@ function showToForm(empInfo) {
 		height : 600,
 		modal : true,
 		buttons: {
+			"Save" : function() {
+				disabledInput();
+				$.ajax({
+					url: '../hr/saveEditEmployee',
+					type: 'POST',
+					data: d
+				})
+			},
 			"Edit Profile" : function() {
 				enableInput();
-				var d = {firstName:$("#editfirstName").val(),
-						middleName:$("#editMiddleName").val(),
-						lastName:$("#editLastName").val(),
-						employeeId:$("#editEmployeeId").val(),
-						biometrics:$("#editBiometrics").val(),
-						department:$("#editDepartment").val(),
-						shift:$("#editShift").val(),
-						level:$("#editLevel").val(),
-						hireDate:$("#editHiredDate").val(),
-						regularizationDate:$("#editRegularizationDate").val(),
-						resignationDate:$("#editResignationDate").val(),
-						supervisorName:$("#editSupervisorName").val(),
-						supervisorEmail:$("#editSupervisorEmail").val(),
-						locAssign:$("#editLocAssign").val(),
-						employeeEmail:$("#editEmployeeEmail").val(),
-						};
+				
 				var json = JSON.stringify(d);
 				console.log(json);
 			},
@@ -244,7 +256,7 @@ function showToForm(empInfo) {
 		},
 		close: function() {
 			alert("closing formFullInformation");
-			disabledInput();
+			disabledInput(); 
 			$("#editBtn").attr('value', 'Edit');
 			$("#exitBtn").attr('value', 'Exit');
             $(this).dialog("close");
@@ -346,6 +358,26 @@ $(function() {
 
 
 $(function() {
+	var details = '';
+	$.ajax({
+		url: "../hr/selectAllJSON",
+		success: function(response) {
+			$.each(response, function(index, employee) {
+				details += '<tr id='+employee.employeeId+' onClick=showToForm(this)>'
+				details +='<td> ' + employee.biometrics + '</td>'
+				details +='<td> ' + employee.employeeId + '</td>'
+				details +='<td> ' + employee.firstName + '</td>'
+				details +='<td> ' + employee.middleName + '</td>'
+				details +='<td> ' + employee.lastName + '</td>'
+				details +='<td> ' + employee.department + '</td>'
+				details += '</tr>'
+			});
+			$('#employeeTbl').append(details);
+		}
+	})
+});
+
+$(function() {
 	var department = '';
 	$.ajax({
 		url: "../hr/retrieveDepartmentJSON",
@@ -362,6 +394,7 @@ $(function() {
 $(function() {
 	$("#selectDepartment").click(function() {
 		$('#selectPosition option').remove();
+		$('#selectSupervisorName option').remove();
 		var data = {department: $("#selectDepartment").val()};
 		
 		var json = JSON.stringify(data);
@@ -375,6 +408,19 @@ $(function() {
 				position +='<option value=' + key +'> ' + value + '</option>';
 			});
 			$('#selectPosition').append(position);
+		}
+	})
+	
+	var supervisor = '';
+	
+	$.ajax({
+		url:"../hr/retrieveSupervisorJSON",
+		data:data,
+		success: function(response) {
+			$.each(response, function(key, value) {
+				supervisor +='<option value=' + key +'> ' + value + '</option>';
+			});
+			$('#selectSupervisorName').append(supervisor);
 		}
 	})
 	});

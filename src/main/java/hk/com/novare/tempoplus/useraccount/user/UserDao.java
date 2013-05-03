@@ -129,7 +129,7 @@ public class UserDao {
 					final String resignationDate = rs.getString("resignationDate");
 												
 					final int supervisorId = rs.getInt("supervisorId");
-					
+					final int isSupervisor = rs.getInt("isSupervisor");
 					
 					//save details to object
 					
@@ -147,7 +147,7 @@ public class UserDao {
 					 				  
 					  user.setDepartment(findDepartmentName(departmentId));
 					  user.setPosition(findPositionName(positionId));
-					  
+					  user.setIsSupervisor(isSupervisor);
 					  
 					user.setHireDate(hireDate);
 					user.setRegularizationDate(regularizationDate);

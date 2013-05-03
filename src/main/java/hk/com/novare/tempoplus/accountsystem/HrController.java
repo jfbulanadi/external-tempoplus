@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("hr")
@@ -20,20 +22,21 @@ public class HrController {
 	@Qualifier("hrService")
 	HrService hrService;
 	
+	/*@Autowired
+	SingleFileUploadForm singleFileUploadForm;*/
+	
 	
 	
 	@RequestMapping(value = "/employeemanager")
-	public String subPage(ModelMap modelMap) {
-		
-		modelMap.addAttribute("employeeList", hrService.retieveAllEmployee());
-		
+	public String subPage(ModelMap modelMap) {		
+		modelMap.addAttribute("employeeList", hrService.retrieveAllEmployee());
 		return "ViewHr";
 	}
-	
+
 	@RequestMapping(value = "/selectAllJSON")
 	public @ResponseBody
 	List<EmployeePartialInfoDTO> subPage() {
-		return hrService.retieveAllEmployee();
+		return hrService.retrieveAllEmployee();
 
 	}
 	
@@ -118,11 +121,6 @@ public class HrController {
 		employeeFullInfoDTO.setSupervisorEmail(supervisorEmail);
 		employeeFullInfoDTO.setSupervisorName(supervisorName);
 		employeeFullInfoDTO.setEmployeeEmail(employeeEmail);
-		
-		System.out.println(employeeFullInfoDTO.getFirstName());
-		System.out.println(employeeFullInfoDTO.getDepartmentId());
-		System.out.println(employeeFullInfoDTO.getPositionId());
-		
 		hrService.createEmployeeDetail(employeeFullInfoDTO);
 		
 		return "ViewHr";
@@ -137,8 +135,34 @@ public class HrController {
 	@RequestMapping(value = "/retrievePositionJSON")
 	public @ResponseBody
 	Map<Integer, String> retrievePosition(
-			@RequestParam(value = "department") int departmentId) {
-		System.out.println(departmentId);
+			@RequestParam(value = "department") int departmentId) {		
 		return hrService.retievePosition(departmentId);
 	}
+	
+	@RequestMapping(value = "/retrieveSupervisorJSON")
+	public @ResponseBody
+	Map<Integer, String> retrieveSupervisor(
+			@RequestParam(value = "department") int departmentId) {		
+		return hrService.retieveSupervisor(departmentId);
+	}
+	
+	/*@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
+	public String getFileUpload(
+			@ModelAttribute("uploadForm") SingleFileUploadForm uploadForm,
+			ModelMap modelMap) {
+
+		// upload file
+		final MultipartFile files = uploadForm.getFile();
+
+		// transform to direct category userDb
+		TransformFile tf;
+		tf = new UserDb();
+		List<EmployeeFullInfoDTO> pList = tf.toExcel(files);
+
+		// pass to add_profile.jsp
+		//modelMap.addAttribute("employeeList", hrService.retieveAllEmployee());
+		return "ViewHr";
+
+	}*/
+	
 }
