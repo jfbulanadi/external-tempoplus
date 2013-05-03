@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -20,41 +22,59 @@ public class HrDAO implements HrModel {
 	DataSource dataSource;
 
 	@Override
-	public List<Employee> selectAll() {
+	public List<HumanResource> selectAll() {
 		Connection connection = null;
-		final ArrayList<Employee> employeesList = new ArrayList<Employee>();
+		final ArrayList<HumanResource> employeesList = new ArrayList<HumanResource>();
 
 		try {
 			connection = dataSource.getConnection();
 			final PreparedStatement ps = connection
-					.prepareStatement("SELECT * FROM employees");
+					.prepareStatement("SELECT employees.firstname, employees.middlename, employees.lastname, "
+							+ "employees.biometricId, employees.employeeId, employees.email, "
+							+ "employees.hireDate, employees.regularizationDate, "
+							+ "employees.resignationDate, "
+							+ "departments.name, employees.level, positions.description "
+							+ "FROM tempoplus.employees, departments, positions "
+							+ "WHERE employees.departmentId = departments.id "
+							+ "and positions.id = employees.positionId ");
 			final ResultSet resultSet = ps.executeQuery();
 
 			while (resultSet.next()) {
-				final String firstName = resultSet.getString("FIRST_NAME");
-				final String middleName = resultSet.getString("MIDDLE_NAME");
-				final String lastName = resultSet.getString("LAST_NAME");
+				final String firstName = resultSet
+						.getString("employees.firstname");
+				final String middleName = resultSet
+						.getString("employees.middlename");
+				final String lastName = resultSet
+						.getString("employees.lastname");
 				final String biometricsNo = resultSet
-						.getString("BIOMETRICS_ID");
-				final String employeeId = resultSet.getString("EMPLOYEE_ID");
+						.getString("employees.biometricId");
+				final String employeeId = resultSet
+						.getString("employees.employeeId");
 				final String employeeEmail = resultSet
-						.getString("EMPLOYEE_EMAIL");
-				final String hiredDate = resultSet.getString("HIRE_DATE");
+						.getString("employees.email");
+				final String hiredDate = resultSet
+						.getString("employees.hireDate");
 				final String regularizationDate = resultSet
-						.getString("REGULARIZATION_DATE");
+						.getString("employees.regularizationDate");
 				final String resignationDate = resultSet
-						.getString("RESIGNATION_DATE");
+						.getString("employees.resignationDate");
 				final String departmentName = resultSet
-						.getString("DEPARTMENT_NAME");
-				final String level = resultSet.getString("LEVEL");
-				final String position = resultSet.getString("POSITION");
-				final String supervisorName = resultSet
-						.getString("SUPERVISOR_NAME");
-				final String supervisorEmail = resultSet
-						.getString("SUPERVISOR_EMAIL");
+						.getString("departments.name");
+				final String level = resultSet.getString("employees.level");
+				final String position = resultSet
+						.getString("positions.description");
+				
+
+
+				// todo-- supervisor
+				/*
+				 * final String supervisorName = resultSet
+				 * .getString("SUPERVISOR_NAME"); final String supervisorEmail =
+				 * resultSet .getString("SUPERVISOR_EMAIL");
+				 */
 
 				// Store in an object
-				final Employee employeeFullInfo = new Employee();
+				final HumanResource employeeFullInfo = new HumanResource();
 				employeeFullInfo.setFirstName(firstName);
 				employeeFullInfo.setMiddleName(middleName);
 				employeeFullInfo.setLastName(lastName);
@@ -67,8 +87,10 @@ public class HrDAO implements HrModel {
 				employeeFullInfo.setDepartment(departmentName);
 				employeeFullInfo.setLevel(level);
 				employeeFullInfo.setPosition(position);
-				employeeFullInfo.setSupervisorName(supervisorName);
-				employeeFullInfo.setSupervisorEmail(supervisorEmail);
+				/*
+				 * employeeFullInfo.setSupervisorName(supervisorName);
+				 * employeeFullInfo.setSupervisorEmail(supervisorEmail);
+				 */
 
 				employeesList.add(employeeFullInfo);
 
@@ -93,18 +115,23 @@ public class HrDAO implements HrModel {
 	}
 
 	@Override
-	public void addEmployee(Employee employee) throws HrDataAccessException {
+	public void addEmployee(HumanResource employee) {
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			// ? are placeholders for the parameters
+			/*final PreparedStatement ps = connection
+					.prepareStatement("INSERT INTO employees (firstname, middlename, lastname, biometricId,"
+							+ " employeeId, email, hireDate, "
+							+ "departmentId, positionId, level, supervisorId) values (?, ?,"
+							+ " ?, ?, ?, ?, ?, ?, ?, ?, ? )");*/
+			
+			
 			final PreparedStatement ps = connection
-					.prepareStatement("INSERT INTO employee_table (FIRST_NAME, MIDDLE_NAME, LAST_NAME, BIOMETRICS_ID,"
-							+ " EMPLOYEE_ID, EMPLOYEE_EMAIL, HIRE_DATE, "
-							+ "DEPARTMENT_NAME, LEVEL, POSITION, SUPERVISOR_NAME, SUPERVISOR_EMAIL    ) values (?, ?,"
-							+ " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					.prepareStatement("INSERT INTO employees (firstname, lastname, middlename, biometricId, employeeId, email, hireDate, positionId, departmentId, supervisorId, level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 			// Convert object to a row
+			
 			ps.setString(1, employee.getFirstName());
 			ps.setString(2, employee.getMiddleName());
 			ps.setString(3, employee.getLastName());
@@ -112,20 +139,15 @@ public class HrDAO implements HrModel {
 			ps.setString(5, employee.getEmployeeId());
 			ps.setString(6, employee.getEmployeeEmail());
 			ps.setString(7, employee.getHiredDate());
-			ps.setString(8, employee.getDepartment());
-			ps.setString(9, employee.getLevel());
-			ps.setString(10, employee.getPosition());
-			ps.setString(11, employee.getSupervisorName());
-			ps.setString(12, employee.getSupervisorName());
-
-			final int rowCount = ps.executeUpdate();
-
-			if (rowCount != 1) {
-				throw new HrDataAccessException("unknown row count: "
-						+ rowCount);
-			}
+			ps.setInt(8, employee.getPositionId());
+			ps.setInt(9, employee.getDepartmentId());
+			ps.setInt(10, 1);
+			ps.setString(11, employee.getLevel());
+			
+			ps.executeUpdate();
+			
 		} catch (SQLException e) {
-			throw new HrDataAccessException(e);
+			
 
 		} finally {
 			// Always close the connection. Error or not.
@@ -140,42 +162,46 @@ public class HrDAO implements HrModel {
 	}
 
 	@Override
-	public List<Employee> search(String searchString, String category) {
+	public HumanResource search(String searchString, String category) {
 
 		Connection connection = null;
-		final ArrayList<Employee> employeesList = new ArrayList<Employee>();
+		final HumanResource employee = new HumanResource();
+
 		try {
 			connection = dataSource.getConnection();
 			final Statement st = connection.createStatement();
 			final ResultSet resultSet = st
-					.executeQuery("SELECT * FROM employees WHERE " + category
-							+ " like '" + searchString + "%'");
+					.executeQuery("SELECT * FROM tempoplus.employees, departments, positions  "
+							+ "WHERE employees.employeeId = "
+							+ searchString
+							+ " and "
+							+ "positions.id = employees.positionId and departments.id = employees.departmentId;");
 
 			while (resultSet.next()) {
-				final String firstName = resultSet.getString("FIRST_NAME");
-				final String middleName = resultSet.getString("MIDDLE_NAME");
-				final String lastName = resultSet.getString("LAST_NAME");
-				final String biometricsNo = resultSet
-						.getString("BIOMETRICS_ID");
-				final String employeeId = resultSet.getString("EMPLOYEE_ID");
-				final String employeeEmail = resultSet
-						.getString("EMPLOYEE_EMAIL");
-				final String hiredDate = resultSet.getString("HIRE_DATE");
+				final String firstName = resultSet.getString("firstname");
+				final String middleName = resultSet.getString("middlename");
+				final String lastName = resultSet.getString("lastname");
+				final String biometricsNo = resultSet.getString("biometricId");
+				final String employeeId = resultSet.getString("employeeId");
+				final String employeeEmail = resultSet.getString("email");
+				final String hiredDate = resultSet.getString("hireDate");
 				final String regularizationDate = resultSet
-						.getString("REGULARIZATION_DATE");
+						.getString("employees.regularizationDate");
 				final String resignationDate = resultSet
-						.getString("RESIGNATION_DATE");
+						.getString("employees.resignationDate");
 				final String departmentName = resultSet
-						.getString("DEPARTMENT_NAME");
-				final String level = resultSet.getString("LEVEL");
-				final String position = resultSet.getString("POSITION");
-				final String supervisorName = resultSet
-						.getString("SUPERVISOR_NAME");
-				final String supervisorEmail = resultSet
-						.getString("SUPERVISOR_EMAIL");
+						.getString("departments.name");
+				final String level = resultSet.getString("employees.level");
+				final String position = resultSet
+						.getString("positions.description");
+				/*
+				 * final String supervisorName = resultSet
+				 * .getString("SUPERVISOR_NAME"); final String supervisorEmail =
+				 * resultSet .getString("SUPERVISOR_EMAIL");
+				 */
 
 				// Store in an object
-				final Employee employee = new Employee();
+
 				employee.setFirstName(firstName);
 				employee.setMiddleName(middleName);
 				employee.setLastName(lastName);
@@ -188,80 +214,12 @@ public class HrDAO implements HrModel {
 				employee.setDepartment(departmentName);
 				employee.setLevel(level);
 				employee.setPosition(position);
-				employee.setSupervisorName(supervisorName);
-				employee.setSupervisorEmail(supervisorEmail);
+				/*
+				 * employee.setSupervisorName(supervisorName);
+				 * employee.setSupervisorEmail(supervisorEmail);
+				 */
 
-				employeesList.add(employee);
 			}
-			resultSet.close();
-
-		} catch (SQLException e) {
-			// Throw a nested exception
-			// Encapsulation of exceptions
-			e.printStackTrace();
-		} finally {
-			// Always close the connection. Error or not.
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return employeesList;
-	}
-
-	public Employee searchByEmployee(String searchString) {
-
-		Connection connection = null;
-		final Employee employee = new Employee();
-		try {
-			connection = dataSource.getConnection();
-			final Statement st = connection.createStatement();
-			final ResultSet resultSet = st
-					.executeQuery("SELECT * FROM employees WHERE EMPLOYEE_ID = '"
-							+ searchString + "'");
-
-			final String firstName = resultSet.getString("FIRST_NAME");
-			final String middleName = resultSet.getString("MIDDLE_NAME");
-			final String lastName = resultSet.getString("LAST_NAME");
-			final String biometricsNo = resultSet.getString("BIOMETRICS_ID");
-			final String employeeId = resultSet.getString("EMPLOYEE_ID");
-			final String employeeEmail = resultSet.getString("EMPLOYEE_EMAIL");
-			final String hiredDate = resultSet.getString("HIRE_DATE");
-			final String regularizationDate = resultSet
-					.getString("REGULARIZATION_DATE");
-			final String resignationDate = resultSet
-					.getString("RESIGNATION_DATE");
-			final String departmentName = resultSet
-					.getString("DEPARTMENT_NAME");
-			final String level = resultSet.getString("LEVEL");
-			final String position = resultSet.getString("POSITION");
-			final String supervisorName = resultSet
-					.getString("SUPERVISOR_NAME");
-			final String supervisorEmail = resultSet
-					.getString("SUPERVISOR_EMAIL");
-
-			// Store in an object
-
-			employee.setFirstName(firstName);
-			employee.setMiddleName(middleName);
-			employee.setLastName(lastName);
-			employee.setBiometrics(biometricsNo);
-			employee.setEmployeeId(employeeId);
-			employee.setEmployeeEmail(employeeEmail);
-			employee.setHiredDate(hiredDate);
-			employee.setRegularizationDate(regularizationDate);
-			employee.setResignationDate(resignationDate);
-			employee.setDepartment(departmentName);
-			employee.setLevel(level);
-			employee.setPosition(position);
-			employee.setSupervisorName(supervisorName);
-			employee.setSupervisorEmail(supervisorEmail);
-
-			System.out.println(employee.getFirstName());
-
 			resultSet.close();
 
 		} catch (SQLException e) {
@@ -280,16 +238,200 @@ public class HrDAO implements HrModel {
 		}
 		return employee;
 	}
+	 
+	public int retrieveDepartmentId(String department) {
+		Connection connection = null;
+		int departmentId = 0;
 
-	public void save(Employee employee) {
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st
+					.executeQuery("SELECT id FROM tempoplus.departments " +
+							"where departments.name = '"+ department +"'");
+
+			while (resultSet.next()) {
+				departmentId = resultSet.getInt("id");
+			
+				// Store in an object
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return departmentId;
+	}
+	
+	public Map<Integer, String> retrieveDepartment() {
+		Connection connection = null;
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st
+					.executeQuery("SELECT * FROM tempoplus.departments ");
+
+			while (resultSet.next()) {
+				int id = resultSet.getInt("id");
+				String name = resultSet.getString("name");
+				// Store in an object
+				map.put(id, name);
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return map;
+	}
+	
+	public Map<Integer, String> retrievePosition(int departmentId) {
+		Connection connection = null;
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st
+					.executeQuery("SELECT positions.id, description FROM tempoplus.positions " +
+							"WHERE positions.departmentId = "+ departmentId);
+			
+			while (resultSet.next()) {
+				int id = resultSet.getInt("id");
+				String name = resultSet.getString("description");
+				// Store in an object
+				map.put(id, name);
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return map;
+	}
+	
+	public int retrievePositionId(String position) {
+		Connection connection = null;
+		int positionId = 0;
+
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st
+					.executeQuery("SELECT id FROM tempoplus.positions " +
+							"where positions.description = '"+ position +"'");
+
+			while (resultSet.next()) {
+				positionId = resultSet.getInt("id");
+			
+				// Store in an object
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return positionId;
+	}
+	
+	public Map<Integer, String> retrieveSupervisor(int departmentId) {
+		Connection connection = null;
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st
+					.executeQuery("SELECT firstname, lastname, employees.employeeId FROM tempoplus.employees, " +
+							"departments, positions WHERE isSupervisor like 'true' " +
+							"AND employees.departmentId = departments.id AND employees.positionId = positions.id " +
+							"AND departments.id = " + departmentId);
+			
+			while (resultSet.next()) {
+
+				int employeeId = resultSet.getInt("employees.employeeId");
+				String firstName = resultSet.getString("firstname");
+				String lastName = resultSet.getString("lastname");
+				String name = firstName + " " + lastName;
+				
+				// Store in an object
+				map.put(employeeId, name);
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return map;
+	}
+	
+
+	public void save(HumanResource employee) {
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			// ? are placeholders for the parameters
 			final PreparedStatement ps = connection
-					.prepareStatement("UPDATE employees SET FIRST_NAME = ?, MIDDLE_NAME = ?, LAST_NAME = ?, BIOMETRICS_ID = ?,"
-							+ "EMPLOYEE_ID = ?, EMPLOYEE_EMAIL = ?, HIRE_DATE = ?, DEPARTMENT_NAME = ?, LEVEL = ?, "
-							+ "POSITION = ?, SUPERVISOR_NAME = ?, SUPERVISOR_EMAIL = ?  WHERE EMPLOYEE_ID = '"
+					.prepareStatement("UPDATE employees SET firstname= ?, middlename = ?, lastname = ?, biometricId = ?,"
+							+ "employeeId = ?, email = ?, hireDate = ?, departmentId = ?, positionId = ?, "
+							+ "level = ?  WHERE employeeId = '"
 							+ employee.getEmployeeId() + "'");
 
 			// Convert object to a row
@@ -300,11 +442,9 @@ public class HrDAO implements HrModel {
 			ps.setString(5, employee.getEmployeeId());
 			ps.setString(6, employee.getEmployeeEmail());
 			ps.setString(7, employee.getHiredDate());
-			ps.setString(8, employee.getDepartment());
-			ps.setString(9, employee.getLevel());
-			ps.setString(10, employee.getPosition());
-			ps.setString(11, employee.getSupervisorName());
-			ps.setString(12, employee.getSupervisorEmail());
+			ps.setInt(8, employee.getDepartmentId());
+			ps.setInt(9, employee.getPositionId());
+			ps.setString(10, employee.getLevel());
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
@@ -321,5 +461,30 @@ public class HrDAO implements HrModel {
 		}
 
 	}
+	
+	public void createAccount(int employeeId){
+        Connection connection = null;
+       
+        try {
+            connection = dataSource.getConnection();
+            final PreparedStatement createUserStatement =
+                    connection.prepareStatement("INSERT INTO users (employeeId_FK, password) " +
+                            "values (?,?)");
+            createUserStatement.setInt(1, employeeId);
+            createUserStatement.setString(2, "MD5(default)");
+            createUserStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+       
+       
+    }
 
 }

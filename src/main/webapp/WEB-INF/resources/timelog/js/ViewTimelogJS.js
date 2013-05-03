@@ -282,7 +282,7 @@ function SearchTimeLog()
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										
@@ -320,7 +320,7 @@ function SearchTimeLog()
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										
@@ -357,7 +357,7 @@ function SearchTimeLog()
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										

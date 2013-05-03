@@ -2,14 +2,36 @@ package hk.com.novare.tempoplus.timelogging;
 
 /**
  * POJO
+ * 
  * @author C2NZGV1
- *
+ * 
  */
 public class TimeLogging {
-	
-	private String date,timeIn,timeOut,duration;
-	private int userId;
 
+	/**
+	 * pojo
+	 */
+	private int id;
+	private int employeeId;
+	private String date;
+	private String timeIn;
+	private String timeOut;
+	private String duration;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}		
+
+	public int getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(int employeeId) {
+		this.employeeId = employeeId;
+	}
 	public String getDate() {
 		return date;
 	}
@@ -40,14 +62,6 @@ public class TimeLogging {
 
 	public void setDuration(String duration) {
 		this.duration = duration;
-	}
-
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
 	}
 
 }
