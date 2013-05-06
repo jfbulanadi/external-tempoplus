@@ -19,7 +19,7 @@ public class BiometricService {
 	@Inject TimeLoggingDao timelogDAO;
 	@Inject	ExcelWorkbookUtility excelWorkbookUtility;
 
-	public void readData(CommonsMultipartFile[] file) {
+	public ArrayList<Biometric> readData(CommonsMultipartFile[] file) {
 
 		ArrayList<Biometric> list = new ArrayList<Biometric>();
 		Biometric bio = null;
@@ -66,22 +66,22 @@ public class BiometricService {
 
 		}
 
-		biometricDao.addBiometricData(list);
+		return list;
 
 	}
-	
-	public ArrayList<BiometricDetails> retrieveBiometricRecordsPerDay() {
+
+	public void insertBiometricData(ArrayList<Biometric> list) {
+		int listSize = list.size();
+		int[] successCount = biometricDao.addBiometricData(list);
 		
-		ArrayList<BiometricDetails> list = new ArrayList<BiometricDetails>();
-		
-		
-		
-		return list;
+		if(successCount.length >= 0) {
+			System.out.println(successCount.length + "/" + listSize + " inserted in Database.");
+		} 
 	}
-	
+
 	public void updateTimelog() {		
-//		timelogDAO.updateTimeLoggingDataPhase1(biometricDao.retrieveTimeInData());
-//		timelogDAO.updateTimeLoggingDataPhase2(biometricDao.retrieveTimeOutData());		
+		timelogDAO.updateTimeLoggingDataPhase1(biometricDao.retrieveTimeInData());
+		timelogDAO.updateTimeLoggingDataPhase2(biometricDao.retrieveTimeOutData());		
 		
 	}
 

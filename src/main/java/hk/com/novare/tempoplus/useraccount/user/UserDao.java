@@ -31,7 +31,6 @@ public class UserDao {
 		Connection connection = null;
 
 		try {
-
 			connection = dataSource.getConnection();
 			final PreparedStatement searchUserStatement = connection
 					.prepareStatement("select employeeId, email from "
