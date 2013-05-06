@@ -42,10 +42,10 @@ public class ConsolidationService {
 		
 	}
 
-	public ArrayList<Employee> updateViewConsolidated(int employeeId,
-			String timeIn, String timeOut, String date) throws SQLException {
-		return consolidationDao.updateViewConsolidated(employeeId, timeIn, timeOut, date);
-
+	public Boolean updateConsolidations(String employeeId,
+			String timeIn, String timeOut, String date)  {
+		 consolidationDao.updateConsolidations(employeeId, timeIn, timeOut, date);
+		 return true;
 	}
 
 	/*

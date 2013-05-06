@@ -51,16 +51,19 @@ public class ConsolidationController {
 	return "ViewSendMail";
 	}
 	
-	@RequestMapping(value = "/ajaxUpdate", method = RequestMethod.POST)
-	public @ResponseBody ArrayList<Employee> updateViewContent(@RequestParam(value="employeeId") int employeeId, 
-			@RequestParam(value = "timeIn") String timeIn,
-			@RequestParam(value = "timeOut") String timeOut,
-			@RequestParam(value = "firstName") String firstName,
-			@RequestParam(value = "date") String date) throws SQLException {
+	@RequestMapping(value = "/ajaxUpdateConsolidations", method = RequestMethod.POST)
+	public @ResponseBody Boolean updateConsolidations(@RequestParam String timeIn,
+			@RequestParam String timeOut,
+			@RequestParam String employeeId,
+			@RequestParam String date) {
+		System.out.println("here at controller");
+		consolidationService.updateConsolidations(employeeId, timeIn, timeOut, date);
 		
-			return consolidationService.updateViewConsolidated(employeeId, timeIn, timeOut, date);
-		
+		return true;
 	}
+	
+	
+	
 	
 
 	

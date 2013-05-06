@@ -28,14 +28,16 @@
 <style>
 div#dialog {
 display: none;
-font-size: 62.5%;   
+font-size: 68.5%;   
+font-family : Arial, Helvetica, sans-serif;
+}
 </style>
 
 <script>
 	$(document)
 			.ready(
 					function() {
-
+						var ctr = null;
 						var htmlstr = null;
 						var pagerOptions = {
 							container : $(".pager"),
@@ -58,20 +60,20 @@ font-size: 62.5%;
 											
 												$.each(data, function(keys,
 														values) {
-													
+													ctr = ctr + 1;
 													if(values.timeIn==null && values.timeOut!=null) {
 														values.timeIn = "&nbsp";
 													} else  if(values.timeOut==null && values.timeIn!=null) {
 														values.timeOut = "&nbsp";
 													} else if(values.timeIn==null && values.timeOut==null) {
-														console.log("I HAVE NULL VALUES");
+														
 														values.timeIn = "&nbsp";
 														values.timeOut = "&nbsp";
 													} else {
 														//has timein and timeout
 													}
 													// onclick=showToForm(this)
-													htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "'  onclick=showToForm(this)>";
+													htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "," + values.date + "," + ctr +"' onclick=showToForm(this) >";
 													htmlstr += "<td>" + values.employeeId + "</td>";
 													htmlstr += "<td>" + values.biometricId +"</td>";
 													htmlstr += "<td>" + values.firstname + "</td>";
@@ -80,8 +82,11 @@ font-size: 62.5%;
 													htmlstr += "<td>" + values.email + "</td>";
 													htmlstr += "<td>" + values.position + "</td>";
 													htmlstr += "<td>" + values.date + "</td>";
-													htmlstr += "<td id='mytd' class='timein'>" + values.timeIn + "</td>";
-													htmlstr += "<td>" + values.timeOut + "</td>";
+													console.log(ctr + " " +values.firstname + values.timeIn);
+													htmlstr += '<td id="tdTimeIn'+ ctr +'">' + values.timeIn + '</td>';
+													htmlstr += '<td id="tdTimeOut'+ ctr +'">' + values.timeOut + '</td>';
+													htmlstr += '<td align="center"><img src = "../resources/bmn/css/images/red.png" /></td>';
+													htmlstr += '<td align="center"><img src = "../resources/bmn/css/images/green.png" /></td>';
 													htmlstr += "</tr>";
 														
 												});
@@ -112,40 +117,53 @@ font-size: 62.5%;
 						
 						});
 						
-						 $("#mytd").click(function() {
-							
-							console.log("TD CLICKED");	
-							var resort ="",
-							timein = "haha",
-							callback = function(table) { };
-							$(this).text(timein);
-							
-							$("#tablesorter").trigger("updateCell", [this, resort, callback]);
 						
-						});
-		
+						
+					
+					
+						
+						
+						
+
 						
 
 					});
+	
+	
+	
 </script>
 <script>
 
 
-function showToForm(myId) {
+ function showToForm(myId) {
+	
+	 
 	$("#dialog").dialog({
-		width:330,
-		height:280
+		width:450,
+		height:500,
+		modal: true,
+		close: function() {
+			var trId = null;
+			var tdId = null;
+			var firstname = null;
+			var middlename = null;
+			var lastname = null;
+			var timein = null;
+			var timeout = null;
+			var date = null;
+		}
 		
 	});
-	var trId = myId.id;
-	var firstname = null;
-	var middlename = null;
-	var lastname = null;
-	var timein = null;
-	var timeout = null;
-	console.log(trId);
-	 
 	
+	
+	 $("#tabs").tabs();
+	 
+	 
+	var trId = myId.id;
+	
+	
+//	console.log(trId);
+
 	
 	  var delimited = trId.split(",");
 	  trId = delimited[0];
@@ -154,7 +172,10 @@ function showToForm(myId) {
 	  lastname = delimited[3];
 	  timein = delimited[4];
 	  timeout = delimited[5];
+	  date = delimited[6];
+	  tdId = delimited[7];
 	  	
+	console.log(tdId);
 	//console.log(trId);
 	//console.log(firstname);
 	
@@ -162,35 +183,105 @@ function showToForm(myId) {
 	 $("#txtfirstname").val(firstname + " " + middlename + " " + lastname);
 	 $("#txttimein").val(timein);
 	 $("#txttimeout").val(timeout);
-}
+	 $("#txtdate").val(date);
+	 
+	 
+	 $("#btnUpdate").click(function() {
+		var timeIn = null;
+		var timeOut = null;
+		var employeeId = null;
+		var date = null;
+		
+		timeIn = $("#txttimein").val();
+		timeOut = $("#txttimeout").val();
+		employeeId = $("#txtemployeeid").val();
+		date = $("#txtdate").val();
+		
+		
+			 
+		console.log(timeIn + " " + timeOut);
+		
+	 	  $.ajax({
+			 type : "POST",
+			 url : "<c:url value="/consolidation/ajaxUpdateConsolidations"/>",
+		     data: {
+		    	 timeIn: timeIn,
+		    	 timeOut: timeOut,
+		    	 employeeId : employeeId,
+		    	 date: date
+		     },
+			 success: function(data) {
+				 
+				 console.log(tdId);
+				 $('#tdTimeIn' + tdId + '').text(timeIn)
+				 $('#tdTimeOut' + tdId + '').text(timeOut)
+			 	
+			 }
+		    	 
+		 }); 
+	 
+		 
+		 	
+			
+			 
+			
+		});
+
+	 
+} 
 </script>
 </head>
 <body>
 	<!-- FORM IS HIDDEN BY DIALOG -->
+	
+
+	
 	<div id="dialog" title="Update time">
+	<h3>Employee timelog details</h3>
 		<hr/>
 		<div>Employee ID</div>
 		<div>
-			<input type="text" id="txtemployeeid" size="8" disabled class="text ui-widget-content ui-corner-all" />
+			<input type="text" id="txtemployeeid" size="8" disabled />
 		</div>
 
-		<div>Full name:</div>
+		<div>Full name</div>
 		<div>
-			<input type="text" id="txtfirstname" size="45" disabled class="text ui-widget-content ui-corner-all" />
+			<input type="text" id="txtfirstname" size="45" disabled  />
 		</div>
-
+		
+		<div>Date</div>
+		<div>
+			<input type="text" id="txtdate"  disabled />
+		</div>
+		
 		<div>Time in</div>
 		<div>
-			<input type="text" id="txttimein" class="text ui-widget-content ui-corner-all" />
+			<input type="text" id="txttimein"  />
 		</div>
 
 		<div>Time out</div>
 		<div>
-			<input type="text" id="txttimeout" class="text ui-widget-content ui-corner-all" />
+			<input type="text" id="txttimeout"  />
 		</div>
 		<hr/>
 		<button id="btnUpdate">Update</button>
 		<hr/>
+		
+		<h3>Tickets filed</h3>
+		<hr/>
+		<div id="tabs">
+			 <ul>
+		    	<li><a href="#tab1">Mantis</a></li>
+		    	<li><a href="#tab2">NT3</a></li>
+		 	 </ul>
+		 	 <div id="tab1">
+		 	 	No records to display.
+		 	 </div>
+		 	 <div id="tab2">
+		 	 	No records to display.
+		 	 </div>
+		</div>
+		
 	</div>
 	<!-- FORM IS HIDDEN BY DIALOG -->
 	<hr/>
@@ -222,8 +313,8 @@ function showToForm(myId) {
 			<th>Date</th>
 			<th>Time in</th>
 			<th>Time out</th>
-			
-			
+			<th>Mantis</th>
+			<th>NT3</th>
 		</thead>
 		<tbody>
 		</tbody>

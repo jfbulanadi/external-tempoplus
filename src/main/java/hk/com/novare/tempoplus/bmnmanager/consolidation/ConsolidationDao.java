@@ -187,6 +187,8 @@ public class ConsolidationDao {
 		Connection connection = null;
 		PreparedStatement ps = null;
 
+		
+		
 		final ArrayList<ConsolidationDTO> list = new ArrayList<ConsolidationDTO>();
 		
 		try {
@@ -212,7 +214,7 @@ public class ConsolidationDao {
 					String middlename = resultSet.getString("middlename");
 					String lastname = resultSet.getString("lastname");
 					String position = resultSet.getString("position");
-					String email = resultSet.getString("email") + "@novare.com.hk";
+					String email = resultSet.getString("email");
 					String timeIn = resultSet.getString("bioTimeIn");
 					String timeOut = resultSet.getString("bioTimeOut");
 					String date = resultSet.getString("date");
@@ -243,30 +245,22 @@ public class ConsolidationDao {
 		
 	}
 
-	public ArrayList<Employee> updateViewConsolidated(int employeeId,
-			String timeIn, String timeOut, String date) throws SQLException {
-		Connection connection = null;
-		PreparedStatement ps = null;
-		TimeLoggingDao timelog = new TimeLoggingDao();
-		ArrayList<Employee> list = new ArrayList<Employee>();
-		timeOut = "2014-05-31 00:00:00.0";
-		timeIn = "2014-05-31 " + timeIn;
-	
-		System.out.println(employeeId + "<>" + timeIn + "<>" + timeOut);
-		connection = dataSource.getConnection();
-		ps = connection
-				.prepareStatement("UPDATE timelogs SET timeIn = ?, timeOut = ? WHERE employeeId = ? and date= ?");
-		ps.setString(1, timeIn);
-		ps.setString(2, timeOut);
-		ps.setInt(3, employeeId);
-		ps.setString(4, date);
-		ps.executeUpdate();
-
-		ps.close();
-
-		connection.close();
-		return list;
-
+	public void updateConsolidations(String employeeId,
+			String timeIn, String timeOut, String date)  {
+		
+			System.out.println("employee id :" + employeeId);
+			System.out.println("time in :" + timeIn);
+			System.out.println("time out :" + timeOut);
+			System.out.println("date :" + date);
+			
+			Connection connection = null;
+			PreparedStatement ps = null;
+			
+			//connection = dataSource.getConnection();
+			//ps = connection.prepareStatement("UPDATE");
+			//ps.executeUpdate();
+			
+			
 	}
 	
 	
