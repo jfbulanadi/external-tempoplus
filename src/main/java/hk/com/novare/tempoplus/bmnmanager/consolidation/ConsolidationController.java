@@ -36,30 +36,34 @@ public class ConsolidationController {
 //		return consolidationService.isReadyForConsolidation(id);
 //	}
 	
-	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public String viewConsolidated(ModelMap modelMap) throws SQLException {
-	modelMap.addAttribute("content", consolidationService.viewConsolidated());
-	return "ViewBMN";
+	@RequestMapping(value = "/ajaxFetchConsolidations", method=RequestMethod.GET)
+	public @ResponseBody ArrayList<ConsolidationDTO> fetchConsolidations(ModelMap modelMap)  {
+		return consolidationService.viewConsolidation();
 	}
 	
-	/*@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public @ResponseBody ArrayList<Timesheet>viewConsolidated(ModelMap modelMap) throws SQLException {
-	modelMap.addAttribute("content", consolidationService.viewConsolidated());
-	return consolidationService.viewConsolidated();
-	}*/
+	@RequestMapping(value = "/view", method = RequestMethod.GET)
+	public String viewConsolidated() throws SQLException {
+	return "ViewBMN";
+	}
 	
 	@RequestMapping(value = "/mail", method = RequestMethod.GET)
 	public String mailTimeSheet() {
 	return "ViewSendMail";
 	}
 	
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public @ResponseBody ArrayList<Employee> updateViewContent(@RequestParam(value="employeeid") int employeeid, 
-			@RequestParam(value="firstname") String firstname) throws SQLException {
+	@RequestMapping(value = "/ajaxUpdateConsolidations", method = RequestMethod.POST)
+	public @ResponseBody Boolean updateConsolidations(@RequestParam String timeIn,
+			@RequestParam String timeOut,
+			@RequestParam String employeeId,
+			@RequestParam String date) {
+		System.out.println("here at controller");
+		consolidationService.updateConsolidations(employeeId, timeIn, timeOut, date);
 		
-			return consolidationService.updateViewConsolidated(employeeid, firstname);
-		
+		return true;
 	}
+	
+	
+	
 	
 
 	
