@@ -53,7 +53,7 @@ font-size: 62.5%;
 								.ajax(
 										{
 											type : "GET",
-											url : "<c:url value="/consolidation/ajaxFetchEmployees"/>",
+											url : "<c:url value="/consolidation/ajaxFetchConsolidations"/>",
 											success : function(data) {
 											
 												$.each(data, function(keys,
@@ -70,8 +70,8 @@ font-size: 62.5%;
 													} else {
 														//has timein and timeout
 													}
-													
-													htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "' onclick=showToForm(this)>";
+													// onclick=showToForm(this)
+													htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "'  onclick=showToForm(this)>";
 													htmlstr += "<td>" + values.employeeId + "</td>";
 													htmlstr += "<td>" + values.biometricId +"</td>";
 													htmlstr += "<td>" + values.firstname + "</td>";
@@ -80,7 +80,7 @@ font-size: 62.5%;
 													htmlstr += "<td>" + values.email + "</td>";
 													htmlstr += "<td>" + values.position + "</td>";
 													htmlstr += "<td>" + values.date + "</td>";
-													htmlstr += "<td>" + values.timeIn + "</td>";
+													htmlstr += "<td id='mytd' class='timein'>" + values.timeIn + "</td>";
 													htmlstr += "<td>" + values.timeOut + "</td>";
 													htmlstr += "</tr>";
 														
@@ -94,25 +94,43 @@ font-size: 62.5%;
 									var resort = true;
 									$("#tablesorter").trigger("update", [ resort ]);
 									var sorting = [ [ 2, 0 ], [7, 0] ];
-									$("table").trigger("sorton", [ sorting ]);
+									$("#tablesorter").trigger("sorton", [ sorting ]);
 
 								});
 
 						$("button:contains(Destroy)").click(function() {
 							var $t = $(this);
 							if (/Destroy/.test($t.text())) {
-								$('table').trigger('destroy.pager');
+								$('#tablesorter').trigger('destroy.pager');
 								$t.text('Restore Pager');
 							} else {
 								$("#tablesorter").tablesorterPager(pagerOptions);
 								$t.text('Destroy Pager');
 							}
 
+											
+						
 						});
+						
+						 $("#mytd").click(function() {
+							
+							console.log("TD CLICKED");	
+							var resort ="",
+							timein = "haha",
+							callback = function(table) { };
+							$(this).text(timein);
+							
+							$("#tablesorter").trigger("updateCell", [this, resort, callback]);
+						
+						});
+		
+						
 
 					});
 </script>
 <script>
+
+
 function showToForm(myId) {
 	$("#dialog").dialog({
 		width:330,

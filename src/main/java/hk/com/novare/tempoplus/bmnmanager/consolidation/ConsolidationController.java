@@ -39,8 +39,8 @@ public class ConsolidationController {
 //		return consolidationService.isReadyForConsolidation(id);
 //	}
 	
-	@RequestMapping(value = "/ajaxFetchEmployees", method=RequestMethod.GET)
-	public @ResponseBody ArrayList<ConsolidationDTO> fetchEmployees(ModelMap modelMap)  {
+	@RequestMapping(value = "/ajaxFetchConsolidations", method=RequestMethod.GET)
+	public @ResponseBody ArrayList<ConsolidationDTO> fetchConsolidations(ModelMap modelMap)  {
 		return consolidationService.viewConsolidation();
 	}
 	
@@ -54,7 +54,7 @@ public class ConsolidationController {
 	return "ViewSendMail";
 	}
 	
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@RequestMapping(value = "/ajaxUpdate", method = RequestMethod.POST)
 	public @ResponseBody ArrayList<Employee> updateViewContent(@RequestParam(value="employeeId") int employeeId, 
 			@RequestParam(value = "timeIn") String timeIn,
 			@RequestParam(value = "timeOut") String timeOut,
