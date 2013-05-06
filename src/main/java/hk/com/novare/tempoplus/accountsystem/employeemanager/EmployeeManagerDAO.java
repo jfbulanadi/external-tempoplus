@@ -18,6 +18,8 @@ import javax.sql.DataSource;
 public class EmployeeManagerDAO {
 	
 	@Inject DataSource dataSource;
+	Connection connection = null;
+	boolean hasFound = false;
 	
 	public List<EmployeeManager> searchSubordinates(int supervisorId){
 		List<EmployeeManager> subordinatesList = new ArrayList<EmployeeManager>();
@@ -132,6 +134,63 @@ public class EmployeeManagerDAO {
 					}
 				}
 				return position;
+		}
+		
+	//-----------------------search for add subordinates-----------------
+		
+		public List<EmployeeManager> searchToAddSubordinates(String employeeName){
+			List<EmployeeManager> subordinatesList = new ArrayList<EmployeeManager>();
+			
+
+			try {
+				connection = dataSource.getConnection();
+				
+				final PreparedStatement searchSubordinatesStatement =
+						connection.prepareStatement("SELECT * FROM employees WHERE " +
+								"lastname LIKE '%" + employeeName + "%' OR firstname LIKE '%" +
+								employeeName + "%'");
+				ResultSet resultSet = searchSubordinatesStatement.executeQuery();
+				System.out.println("[ @ search ]" + employeeName);
+				
+				while(resultSet.next()){
+					System.out.println("[ @ result set ]" + employeeName);
+					hasFound = true;
+					
+					EmployeeManager subordinate = new EmployeeManager();
+					
+					final int subEmployeeId = resultSet.getInt("employeeId");
+					final String subLastName = resultSet.getString("lastname");
+					final String subFirstName = resultSet.getString("firstname");
+					final String subMiddleName = resultSet.getString("middlename");
+					final int subDepartmentId = resultSet.getInt("departmentId");
+					final int subPositionId = resultSet.getInt("positionId");
+					
+					subordinate.setEmployeeId(subEmployeeId);
+					subordinate.setLastName(subLastName);
+					subordinate.setFirstName(subFirstName);
+					subordinate.setMiddleName(subMiddleName);
+					subordinate.setDepartmentId(subDepartmentId);
+					subordinate.setPositionId(subPositionId);
+					subordinate.setDepartment(findDepartmentName(subDepartmentId));
+					subordinate.setPosition(findPositionName(subPositionId));
+					
+					subordinatesList.add(subordinate);
+					}
+				resultSet.close();
+				
+			} catch (SQLException e) {
+			}finally{
+				try {
+					connection.close();
+				} catch (SQLException e) {
+				}
+			}
+
+			return subordinatesList;
+		}
+		
+		public boolean employeeIsFound(){
+			return hasFound;
 		}
 		
 

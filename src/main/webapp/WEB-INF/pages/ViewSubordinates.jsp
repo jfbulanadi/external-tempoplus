@@ -24,26 +24,12 @@
 	src="../resources/account/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.pager.min.js"></script>
 <script src="../resources/account/js/viewhr.js"></script>
-<!-- <script src="../resources/account/js/addManagerSubordinate.js"></script> -->
+<script src="../resources/account/js/addManagerSubordinate.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Subordinate's List</title>
 
-<script>
-$(function(){
-	$("#addSubordinates").button().click(function(){
-		 $( "#AddSubordinateForm" ).dialog({
-				maxWidth : 300,
-				maxHeight : 300,
-				width : 300,
-				height : 300,
-				modal: true
-			});
-	});
-});
 
-
-</script>
 </head>
 <body>
 	<!-- Table viewer -->
@@ -99,19 +85,27 @@ $(function(){
 		</select>
 	</div>
 	
-	<div id="AddSubordinateForm" title="Add Subordinate">
-		<form method="POST" action="/searchSubordinateEmployeeId" >
+	<div id="AddSubordinateForm" title="Add Subordinate" style = "display:none">
+		
 			<table>
 				<tr>
-					<td>Search Employee Id  </td>
-					<td><input size="12" id="searchEmployeeId" /></td>
-				</tr>
-					
-				<tr>
+					<td>Search Employee</td>
+					<td><input size="12" id="employeeName" /></td>
+					<td><button id = "searchEmployee" >Search Employee Name</button></td>
 				</tr>
 				
 			</table>
-		</form>
+				<div id = "foundEmployeeDiv">
+					<table id ="foundEmployeeTable" class = "tablesorter" align = "center">
+										
+					</table>
+
+					<button id = "addNewSubordinates">Add Subordinate/s</button>
+
+				</div>
+				
+			
+			
 	</div>
 </body>
 </html>

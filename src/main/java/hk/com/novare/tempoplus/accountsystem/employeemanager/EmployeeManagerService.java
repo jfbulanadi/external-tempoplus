@@ -12,7 +12,13 @@ public class EmployeeManagerService {
 		return employeeManagerDao.searchSubordinates(supervisorId);
 	}
 	
-	public List<EmployeeManager> retrieveEmployeeDetails(int employeeId){
-		return employeeManagerDao.searchSubordinates(employeeId);
+	public List<EmployeeManager> retrieveAddSubordinatesDetails(String employeeName){
+		System.out.println("[ @ retrieve service ");
+		return employeeManagerDao.searchToAddSubordinates(employeeName);
+	}
+	
+	public boolean hasEmployeeRecord(){
+		System.out.println("[ @ found service ");
+		return employeeManagerDao.employeeIsFound();
 	}
 }
