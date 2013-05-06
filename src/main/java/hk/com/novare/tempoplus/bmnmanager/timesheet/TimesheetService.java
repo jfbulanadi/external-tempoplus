@@ -2,6 +2,7 @@ package hk.com.novare.tempoplus.bmnmanager.timesheet;
 
 import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDao;
 import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDetails;
+import hk.com.novare.tempoplus.bmnmanager.consolidation.ConsolidationDao;
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
 import hk.com.novare.tempoplus.employee.EmployeeDetails;
@@ -13,7 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +32,8 @@ public class TimesheetService {
 	private TimesheetDao timesheetDao;
 	@Inject
 	private BiometricDao biometricDao;
+	@Inject
+	private ConsolidationDao consolidationDao;
 
 	public void createTimesheetSummary() {
 
@@ -41,7 +43,7 @@ public class TimesheetService {
 		EmployeeDetails employeeDetails;
 		Nt3 nt3;
 		Mantis mantis;
-		BiometricDetails dailyBiometric;
+		BiometricDetails biometricDetails;
 
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet("Sample sheet");
@@ -52,7 +54,7 @@ public class TimesheetService {
 			timelog = timesheet.getTimelog();
 			nt3 = timesheet.getNt3();
 			mantis = timesheet.getMantis();
-			dailyBiometric = timesheet.getDailyBiometric();
+			biometricDetails = timesheet.getBiometricDetails();
 
 			Row row = sheet.createRow(rowCounter);
 
@@ -557,11 +559,11 @@ public class TimesheetService {
 						break;
 					case 51:
 						// TODO
-						cell.setCellValue(dailyBiometric.getTimeIn());
+						cell.setCellValue(biometricDetails.getTimeIn());
 						break;
 					case 52:
 						// TODO
-						cell.setCellValue(dailyBiometric.getTimeOut());
+						cell.setCellValue(biometricDetails.getTimeOut());
 						break;
 					case 53:
 						if (null != mantis.getCategory()
@@ -654,8 +656,19 @@ public class TimesheetService {
 		return list;
 	}
 	
-	public void updateTimesheetRecord(String description) {
-		
-		timesheetDao.updateTimesheetRecord(description);
+	public void updateTimeLogTimesheetRecord(String description) {
+		timesheetDao.updateTimeLogTimesheetRecord(description);
 	}
+	
+	public void updateMantisTimesheetRecord(String description) {
+		timesheetDao.updateMantisTimesheetRecord(description);
+	}
+	
+	public void updateNt3TimesheetRecord(String description) {
+		timesheetDao.updateNt3TimesheetRecord(description);
+	}
+	public void checkTimesheet(String name) {
+		consolidationDao.isReadyForConsolidation(name);
+	}
+	
 }
