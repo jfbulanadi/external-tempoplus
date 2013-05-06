@@ -5,6 +5,7 @@ import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.employee.EmployeeDao;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingDao;
+import hk.com.novare.tempoplus.utilities.TimeFormatConverter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,8 +21,8 @@ public class ConsolidationService {
 	@Inject ConsolidationDao consolidationDao;
 	@Inject EmployeeDao employeeDao;
 	@Inject BiometricDao biometricDao;
-	@Inject TimeLoggingDao timelogDao;;
-
+	@Inject TimeLoggingDao timelogDao;
+	@Inject TimeFormatConverter timeFormatConverter;
 	// public boolean isReadyForConsolidation(int id) {
 	//
 	// Consolidation consolidation =
@@ -51,19 +52,16 @@ public class ConsolidationService {
 	/*
 	 * Jeffrey's Methods
 	 */
-	public void createConsolidatedTimeSheet() {
-
-		HSSFWorkbook workbook = new HSSFWorkbook();
-		HSSFSheet sheet = workbook.createSheet();
-
-	}
 	
-	public void consolidateTimesheet() {	
-		timelogDao.updateTimeLoggingDataPhase1(biometricDao.retrieveTimeInData());
-		timelogDao.updateTimeLoggingDataPhase2(biometricDao.retrieveTimeOutData());
-		consolidationDao.consolidateTimeSheetPhase1();
-		consolidationDao.consolidateTimeSheetPhase2(timelogDao.retrieveTimeLogs());
-		consolidationDao.consolidateTimeSheetPhase3(timelogDao.retrieveTimeLogs());
+	public void consolidateTimesheet() {
+		
+		
+		timelogDao.updateTimeLoggingDataPhase1(timeFormatConverter.convertToDateTime(biometricDao.retrieveTimeInData()));
+		timelogDao.updateTimeLoggingDataPhase2(timeFormatConverter.convertToDateTime(biometricDao.retrieveTimeOutData()));
+		
+		consolidationDao.consolidateTimeSheetTimeLog();
+		consolidationDao.consolidateTimeSheetMantis(timelogDao.retrieveTimeLogs());
+		consolidationDao.consolidateTimeSheetNt3(timelogDao.retrieveTimeLogs());
 	}
 
 }

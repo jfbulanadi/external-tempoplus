@@ -1163,23 +1163,26 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		 * Jeffrey's Methods
 		 */
 		
-		public void updateTimeLoggingDataPhase1(ArrayList<Biometric> list) {
+		public int[] updateTimeLoggingDataPhase1(ArrayList<Biometric> list) {
 			Connection connection = null;
+			int[] rows = null;
 			try {
 				connection = dataSource.getConnection();
 
 				PreparedStatement preparedStatement = connection
-						.prepareStatement("INSERT INTO timelogs (employeeId, date, timeIn)"
-								+ " values ((SELECT employeeId FROM employees WHERE biometricId = ?), ?, ?)");
-
+//						.prepareStatement("UPDATE timelogs SET timeIn=? WHERE employeeId = "
+//								+ "(SELECT employeeId FROM employees WHERE biometricId = ?) AND date=?");
+						.prepareStatement("INSERT INTO timelogs (employeeId, timeIn, date) VALUES" +
+								"((SELECT employeeId FROM employees WHERE biometricId = ?), ?, ?)");
+						
 				for (Biometric biometric : list) {
+					preparedStatement.setString(2, biometric.getTime());
 					preparedStatement.setInt(1, biometric.getBiometricId());
-					preparedStatement.setString(2, biometric.getDate());
-					preparedStatement.setString(3, biometric.getTime());
+					preparedStatement.setString(3, biometric.getDate());			
 					preparedStatement.addBatch();
 				}
 
-				preparedStatement.executeBatch();
+				rows = preparedStatement.executeBatch();
 				preparedStatement.close();
 
 			} catch (SQLException e) {
@@ -1193,12 +1196,15 @@ public class TimeLoggingDao implements TimelogDAOInt {
 					}
 				}
 			}
+			
+			return rows;
 
 		}
 
 		// Not yet DONE
-		public void updateTimeLoggingDataPhase2(ArrayList<Biometric> list) {
+		public int[] updateTimeLoggingDataPhase2(ArrayList<Biometric> list) {
 			Connection connection = null;
+			int[] rows = null;
 			try {
 				connection = dataSource.getConnection();
 
@@ -1208,13 +1214,12 @@ public class TimeLoggingDao implements TimelogDAOInt {
 
 				for (Biometric biometric : list) {
 					preparedStatement.setString(1, biometric.getTime());
-					// preparedStatement.setString(2, biometric.getDate());
 					preparedStatement.setInt(2, biometric.getBiometricId());
 					preparedStatement.setString(3, biometric.getDate());
 					preparedStatement.addBatch();
 				}
 
-				preparedStatement.executeBatch();
+				rows = preparedStatement.executeBatch();
 				preparedStatement.close();
 
 			} catch (SQLException e) {
@@ -1228,7 +1233,8 @@ public class TimeLoggingDao implements TimelogDAOInt {
 					}
 				}
 			}
-
+			
+			return rows;
 		}
 
 		public ArrayList<TimeLogging> retrieveTimeLogs() {

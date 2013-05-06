@@ -18,7 +18,7 @@ public class BiometricDao {
 
 	private Connection connection = null;
 
-	public int[] addBiometricData(ArrayList<Biometric> list) {
+	public int[] insertBiometricData(ArrayList<Biometric> list) {
 		int[] rows = null;
 		try {
 			connection = dataSource.getConnection();
