@@ -8,8 +8,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>BMN Manager</title>
+<link rel="stylesheet" type="text/css" href="../resources/bmn/css/theme.default.css" />
+<link rel="stylesheet" type="text/css" href="../resources/bmn/css/jquery.tablesorter.pager.css" />
+<link rel="stylesheet" type="text/css" href="../resources/bmn/css/jquery-ui.css" />
 
- 
+
 <script src="../resources/bmn/js/jquery-1.9.1.js"></script>
 <script src="../resources/bmn/js/jquery-ui.js"></script>
 <script src="../resources/bmn/js/jquery.tablesorter.min.js"></script>
@@ -20,7 +23,7 @@
 <style>
 div#dialog {
 display: none;
-font-size: 68.5%;   
+font-size: 70.5%;   
 font-family : Arial, Helvetica, sans-serif;
 }
 </style>
