@@ -25,8 +25,7 @@ public class HrController {
 	@Autowired
 	SingleFileUploadForm singleFileUploadForm;
 	
-	
-	
+
 	@RequestMapping(value = "/employeemanager")
 	public String subPage(ModelMap modelMap) {		
 		modelMap.addAttribute("employeeList", hrService.retrieveAllEmployee());
