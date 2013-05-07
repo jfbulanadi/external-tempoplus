@@ -108,7 +108,6 @@ function fetch(d){
 }
 function mylog()
 {	
-	alert("leo");
 	$("#data").css({display: "none"});
 	$("#SearchBox").css({display: "none"});
 	$("#SearchSub").css({display: "none"});
