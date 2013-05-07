@@ -3,7 +3,6 @@ var Employee_Id = 0; //for hr
 var view =""
 var id;
 $(document).ready(function() {
-		
 		$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
 		$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
 		$( "#SearchTimeLog" ).click(SearchTimeLog); 
@@ -282,7 +281,7 @@ function SearchTimeLog()
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										
@@ -320,7 +319,7 @@ function SearchTimeLog()
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										
@@ -357,7 +356,7 @@ function SearchTimeLog()
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										

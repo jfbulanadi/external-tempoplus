@@ -8,6 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface TransformFile {
 
-	List<EmployeeFullInfoDTO> toExcel(MultipartFile multipartFile);
+	List<HumanResourceDTO> toExcel(MultipartFile multipartFile);
 
 }

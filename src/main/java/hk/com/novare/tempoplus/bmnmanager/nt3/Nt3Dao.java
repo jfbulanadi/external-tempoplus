@@ -14,8 +14,8 @@ public class Nt3Dao {
 
 	private Connection connection = null;
 
-	public void addNt3Data(ArrayList<Nt3> list) {
-
+	public int[] insertNt3Data(ArrayList<Nt3> list) {
+		int[] rows = null;
 		try {
 			connection = dataSource.getConnection();
 
@@ -35,7 +35,7 @@ public class Nt3Dao {
 				preparedStatement.addBatch();
 			}
 
-			preparedStatement.executeBatch();
+			rows = preparedStatement.executeBatch();
 			preparedStatement.close();
 
 		} catch (SQLException e) {
@@ -49,5 +49,8 @@ public class Nt3Dao {
 				}
 			}
 		}
+		
+		return rows;
 	}
+
 }
