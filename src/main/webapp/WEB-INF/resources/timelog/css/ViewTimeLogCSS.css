@@ -36,5 +36,10 @@ border-radius: 6px;
 {
 width:250%;
 }
-
+.label{
+border:solid 0px;
+background-color:transparent;
+height:20px;
+width:300px;
+}
 

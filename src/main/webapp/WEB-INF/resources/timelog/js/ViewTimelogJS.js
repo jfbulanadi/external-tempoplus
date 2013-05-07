@@ -1,7 +1,8 @@
 var user = "";
-var Employee_Id = 123; //for hr
+var Employee_Id = 0; //for hr
 var view ="";
 var id = 0;
+
 $(document).ready(function() {
 		id = idExternal;
 		$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
@@ -15,6 +16,7 @@ function SearchButton() {
 		var empname = $('#empName').val();
 				$.ajax({
 					type: "POST",
+					action: '<c:url value="/timelog/searchEmployee"/>',
 			        url: "/tempoplus/timelog/searchEmployee",
 			    	data: {'empName': empname},
 			    	success: function(response){
@@ -96,14 +98,6 @@ function fetch(d){
 	
 	
 	$('#employee').val(lastname +", " +firstname);
-	
-	var rows = $('#tblSearch tbody tr');
-	var length = $('#tblSearch tbody tr').length;
-	for(var i= 0; i< length; i++){
-		rows[i].style.background = "";
-	}
-			
-			d.style.background="gray";
 }
 function mylog()
 {	
@@ -132,7 +126,7 @@ function mylog()
 	var rponse ="";
 	
 	$.ajaxSetup({async:false});
-	 $.ajax(
+	$.ajax(
 	    		{
 	        type: "POST",
 	        url: "/tempoplus/timelog/checkUser",
@@ -251,7 +245,7 @@ function SearchTimeLog()
 			name = id;
 			}
 		$.ajaxSetup({async:false});
-		 $.ajax(
+		$.ajax(
 		    		{
 		        type: "POST",
 		        url: "/tempoplus/timelog/validateInput",
@@ -273,13 +267,13 @@ function SearchTimeLog()
 					{
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveMylog",
 						        data: {'id': id , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
@@ -313,13 +307,13 @@ function SearchTimeLog()
 					
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveTimelog",
 						        data: {'name': name , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
@@ -351,13 +345,13 @@ function SearchTimeLog()
 					{ 
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveMylog",
 						        data: {'id': idd , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
@@ -381,7 +375,7 @@ function SearchTimeLog()
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
-							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,output : '{page} / {totalPages}'});
+							    		.tablesorterPager({container:$(".pagers"),positionFixed: false,output : '{page} / {totalPages}'});
 							    		$("#tblTimeLog").trigger('update');
 							    	});
 					}
@@ -401,4 +395,4 @@ function SearchTimeLog()
 			
 			}
 	}
-/*mylog();*/
+

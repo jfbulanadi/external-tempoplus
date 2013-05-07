@@ -15,7 +15,9 @@
 <link rel="stylesheet"
 	href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
 
-<script src="../resources/account/js/jquery-1.9.1.js"></script>
+<!-- <script src="../resources/account/js/jquery-1.9.1.js"></script> -->
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+
 <script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.min.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.widgets.min.js"></script>

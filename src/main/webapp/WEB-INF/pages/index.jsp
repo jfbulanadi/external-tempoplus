@@ -6,7 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>View Time Log</title>
-<link href="../resources/timelog/css/jPages.css" rel="stylesheet">
+<!-- <link href="../resources/timelog/css/jPages.css" rel="stylesheet">
 	<link href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" rel="stylesheet">
 	
 	<link rel="styleshet" href="../resources/timelog/css/style1.css" type="text/css" />
@@ -17,7 +17,7 @@
 	<script src="../resources/timelog/js/jPages.js"></script>
 	
 	<script type="text/javascript" src="../resources/timelog/js/jquery-1.3.1.min.js"></script>
-	<script>var my_jQuery3 = jQuery.noConflict();</script>
+	<script>var my_jQuery3 = jQuery.noConflict();</script> -->
 
 <title>TempoPlus Login</title>
 </head>
