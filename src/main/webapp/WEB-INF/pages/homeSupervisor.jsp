@@ -25,7 +25,7 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 <body>
 <div id ="employeeAccess">
 	<div align = "right"> 
-		<table>
+		<table>  
 			<tr>
 			<td>Hi ${userFirstName}!</td>
 			</tr>

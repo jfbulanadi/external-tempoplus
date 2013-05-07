@@ -18,7 +18,7 @@ import javax.sql.DataSource;
 public class EmployeeManagerDAO {
 	
 	@Inject DataSource dataSource;
-	Connection connection = null;
+
 	boolean hasFound = false;
 	
 	public List<EmployeeManager> searchSubordinates(int supervisorId){
@@ -140,7 +140,7 @@ public class EmployeeManagerDAO {
 		
 		public List<EmployeeManager> searchToAddSubordinates(String employeeName){
 			List<EmployeeManager> subordinatesList = new ArrayList<EmployeeManager>();
-			
+			Connection connection = null;
 
 			try {
 				connection = dataSource.getConnection();
@@ -191,6 +191,49 @@ public class EmployeeManagerDAO {
 		
 		public boolean employeeIsFound(){
 			return hasFound;
+		}
+		
+		//-------------change employee/s supervisor------------------
+		public boolean changeEmployeeSupervisor(int supervisorId, ArrayList<Integer> subordinateIds){
+			boolean updated = false;
+			
+			
+			for(int id: subordinateIds){
+				Connection connection = null;
+				try {
+					
+						
+						System.out.println("DAO: [ @ Change Supervisor DAO]");
+						System.out.println(id);
+						System.out.println(supervisorId);
+						
+					connection = dataSource.getConnection();
+					System.out.println("DAO: [ @ after connection");
+					PreparedStatement updateSupervisorStatement = 
+							connection.prepareStatement("UPDATE employees SET supervisorId = ? WHERE employeeId = ? ");
+					System.out.println("DAO: [ @ after preparedStatement");
+							updateSupervisorStatement.setInt(1, supervisorId);
+							updateSupervisorStatement.setInt(2, id);
+							System.out.println("DAO: [ @ after set");
+							updateSupervisorStatement.executeUpdate();
+							System.out.println("DAO: [ @ after execute");
+							updated = true;
+							System.out.println("DAO: updated? [" + updated + "]");
+					
+					
+				} catch (SQLException e) {
+					
+				}finally{
+					try {
+						connection.close();
+					} catch (SQLException e) {
+						
+					}
+				}
+			}
+			
+			
+			return updated;
 		}
 		
 
