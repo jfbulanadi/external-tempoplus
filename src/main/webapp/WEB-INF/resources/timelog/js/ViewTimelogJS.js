@@ -1,15 +1,16 @@
 var user = "";
-var Employee_Id = 123; //for hr
+var Employee_Id = 0; //for hr
 var view ="";
-var id = 0;
+var id = 123;
 $(document).ready(function() {
-		id = idExternal;
-		$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
-		$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
-		$( "#SearchTimeLog" ).click(SearchTimeLog); 
-		$( "#SearchButton" ).click(SearchButton);		
-		mylog();
+	id = idExternal;
+	$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
+	$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
+	$( "#SearchButton" ).click(SearchButton);
+	$( "#SearchTimeLog" ).click(SearchTimeLog);
+	mylog();
 });	
+
 function SearchButton() {
 		var newresponse = null;
 		var empname = $('#empName').val();
@@ -107,6 +108,7 @@ function fetch(d){
 }
 function mylog()
 {	
+	alert("leo");
 	$("#data").css({display: "none"});
 	$("#SearchBox").css({display: "none"});
 	$("#SearchSub").css({display: "none"});
@@ -132,7 +134,7 @@ function mylog()
 	var rponse ="";
 	
 	$.ajaxSetup({async:false});
-	 $.ajax(
+	$.ajax(
 	    		{
 	        type: "POST",
 	        url: "/tempoplus/timelog/checkUser",
@@ -251,7 +253,7 @@ function SearchTimeLog()
 			name = id;
 			}
 		$.ajaxSetup({async:false});
-		 $.ajax(
+		$.ajax(
 		    		{
 		        type: "POST",
 		        url: "/tempoplus/timelog/validateInput",
@@ -273,13 +275,13 @@ function SearchTimeLog()
 					{
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveMylog",
 						        data: {'id': id , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
@@ -304,8 +306,9 @@ function SearchTimeLog()
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
-							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,output : '{page} / {totalPages}'}); 
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'}); 
 							    		$("#tblTimeLog").trigger('update');
+							   
 							    	});
 					}
 				else if(view == "manager")
@@ -313,13 +316,13 @@ function SearchTimeLog()
 					
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveTimelog",
 						        data: {'name': name , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
@@ -343,7 +346,7 @@ function SearchTimeLog()
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
-							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,output : '{page} / {totalPages}'});
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
 							    		$("#tblTimeLog").trigger('update');
 							    	});
 					}
@@ -351,13 +354,13 @@ function SearchTimeLog()
 					{ 
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveMylog",
 						        data: {'id': idd , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
@@ -381,7 +384,7 @@ function SearchTimeLog()
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
-							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,output : '{page} / {totalPages}'});
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
 							    		$("#tblTimeLog").trigger('update');
 							    	});
 					}
@@ -393,7 +396,7 @@ function SearchTimeLog()
 				$('#tblTimeLog tbody').remove();
 				$("#data").css({display: "block"});
 				}
-			else
+			elses
 				{
 				$('#tblTimeLog tbody').remove();
 				alert(rponse);
