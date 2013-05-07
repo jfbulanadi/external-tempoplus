@@ -6,25 +6,30 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>View Time Log</title>
-<link href="../resources/timelog/css/ViewTimeLogCSS.css" rel="stylesheet"/>
 <link rel="stylesheet" href="../resources/timelog/css/style1.css" type="text/css" />	
 <link rel="stylesheet" type="text/css" href="../resources/timelog/css/jquery.tablesorter.pager.css"></link>
 <link rel="stylesheet" type="text/css" href="../resources/timelog/css/theme.default.css"></link>
 <link rel="stylesheet" href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
 
-	<script src="../resources/timelog/js/jquery-1.9.1.js"></script> 
+	<!-- <script src="../resources/timelog/js/jquery-1.9.1.js"></script> -->
+	
+	
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+	
+	<script type="text/javascript">var idExternal =${id}</script>
+	
+	<script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
+	
 	<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>
 	<script src="../resources/timelog/js/jquery.tablesorter.min.js"></script>
 	<script src="../resources/timelog/js/jquery.tablesorter.widgets.min.js"></script>
-	<!-- <script src="../resources/timelog/js/jquery-ui.js"></script>
+	<!-- <script src="../resources/timelog/js/jquery-ui.js"></script> -->
 	<script src="../resources/timelog/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
 	<script src="../resources/timelog/js/jquery.tablesorter.pager.min.js"></script> -->
 	
-	<!-- <script src="../resources/timelog/js/jPages.js"></script> -->
 
 	<!-- <script type="text/javascript">var idExternal =${id}</script> -->
-	<script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
-
 	</head>
 <body>
 
@@ -60,7 +65,6 @@ Lastname/Firstname: <input type="text" id="empName" /> <button id="SearchButton"
 		</div>
 		</td>
 		</tr>
-		
 		<tr>
 		<td>
 		<div id = "result">

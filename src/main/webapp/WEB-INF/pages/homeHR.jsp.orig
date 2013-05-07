@@ -51,7 +51,8 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 		<li><a href = "#AccountSettings">Account Settings</a></li>
 		<li><a href = "#Administration">Administration</a></li>
 	</ul>
-
+<<<<<<< HEAD
+	
 	<div id = "ViewTimelog">
 		<table id = "tblNav">
 			<tr>
@@ -160,7 +161,10 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 			</tr>
 			
 		</table>
+	</div>
 		
+=======
+>>>>>>> f5c0a82a7be465d0b00d957e68e1bf620e08c894
 
 	<div id = "MyProfile">
 		<table>

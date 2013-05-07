@@ -1,8 +1,12 @@
 var user = "";
 var Employee_Id = 0; //for hr
 var view ="";
+<<<<<<< HEAD
 var id = 0;
 
+=======
+var id = 123;
+>>>>>>> f5c0a82a7be465d0b00d957e68e1bf620e08c894
 $(document).ready(function() {
 	id = idExternal;
 	$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
@@ -102,6 +106,7 @@ function fetch(d){
 }
 function mylog()
 {	
+	alert("leo");
 	$("#data").css({display: "none"});
 	$("#SearchBox").css({display: "none"});
 	$("#SearchSub").css({display: "none"});
@@ -377,7 +382,11 @@ function SearchTimeLog()
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
+<<<<<<< HEAD
+							    		.tablesorterPager({container:$(".pagers"),positionFixed: false,output : '{page} / {totalPages}'});
+=======
 							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
+>>>>>>> f5c0a82a7be465d0b00d957e68e1bf620e08c894
 							    		$("#tblTimeLog").trigger('update');
 							    	});
 					}
