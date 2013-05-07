@@ -195,7 +195,7 @@ public class ConsolidationDao {
 				connection = dataSource.getConnection();
 				ps = connection.prepareStatement("SELECT e.employeeId, e.id, e.biometricId, e.firstname, e.middlename, e.lastname, e.email, p.description AS position, CONCAT_WS(', ' , e.lastname, e.firstname) AS fullName, e.hiredate, e.regularizationdate, "
        + "(SELECT CONCAT_WS(', ' , lastname, firstname) AS fullName FROM employees WHERE employeeId = e.supervisorId) AS supervisor, "
-       + "t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, "
+       + "c.mantisId, c.nt3Id, t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, "
        + "m.category, m.status, n.startDate, n.endDate, n.duration, n.absenceType, n.absenceStatus, "
        + "(SELECT MIN(bIn.logTime) FROM biometrics AS bIn WHERE log = 0 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeIn, "
        + "(SELECT MAX(bOut.logTime)  FROM biometrics AS bOut WHERE log = 1 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeOut "
@@ -218,6 +218,8 @@ public class ConsolidationDao {
 					String timeIn = resultSet.getString("bioTimeIn");
 					String timeOut = resultSet.getString("bioTimeOut");
 					String date = resultSet.getString("date");
+					String mantisId = resultSet.getString("mantisId");
+					String nt3Id = resultSet.getString("nt3Id");
 					
 					final ConsolidationDTO consolidations = new ConsolidationDTO();
 					
@@ -231,6 +233,8 @@ public class ConsolidationDao {
 					consolidations.setDate(date);
 					consolidations.setTimeIn(timeIn);
 					consolidations.setTimeOut(timeOut);
+					consolidations.setMantisId(mantisId);
+					consolidations.setNt3Id(nt3Id);
 					
 					
 					list.add(consolidations);

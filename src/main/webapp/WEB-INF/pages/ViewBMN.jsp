@@ -85,8 +85,19 @@ font-family : Arial, Helvetica, sans-serif;
 													console.log(ctr + " " +values.firstname + values.timeIn);
 													htmlstr += '<td id="tdTimeIn'+ ctr +'">' + values.timeIn + '</td>';
 													htmlstr += '<td id="tdTimeOut'+ ctr +'">' + values.timeOut + '</td>';
-													htmlstr += '<td align="center"><img src = "../resources/bmn/css/images/red.png" /></td>';
-													htmlstr += '<td align="center"><img src = "../resources/bmn/css/images/green.png" /></td>';
+													
+													if(values.mantisId!=null) {
+													htmlstr += '<td align="center">Check mantis:<img src = "../resources/bmn/css/images/green.png" /></td>';
+													} else {
+														htmlstr += "<td>&nbsp;</td>";
+													}
+													
+													if(values.nt3Id!=null){
+													htmlstr += '<td align="center">Check Nt3: <img src = "../resources/bmn/css/images/green.png" />0</td>';													
+													} else {
+														htmlstr += "<td>&nbsp;</td>";
+													}
+													
 													htmlstr += "</tr>";
 														
 												});
@@ -117,19 +128,7 @@ font-family : Arial, Helvetica, sans-serif;
 						
 						});
 						
-						
-						
-					
-					
-						
-						
-						
-
-						
-
 					});
-	
-	
 	
 </script>
 <script>
