@@ -250,7 +250,8 @@ public class HrDAO implements HrModel {
 				final int supervisorId = resultSet.getInt("supervisorId");
 				final String shift = resultSet.getString("shifts.description");
 				final int departmentId = resultSet.getInt("departmentId");
-
+				final int shiftId = resultSet.getInt("shiftId");
+				final int positionId = resultSet.getInt("positionId");
 				// Store in an object
 
 				employee.setFirstName(firstName);
@@ -269,6 +270,8 @@ public class HrDAO implements HrModel {
 				employee.setSupervisorId(supervisorId);
 				employee.setShift(shift);
 				employee.setDepartmentId(departmentId);
+				employee.setShiftId(shiftId);
+				employee.setPositionId(positionId);
 
 			}
 			resultSet.close();
@@ -405,6 +408,41 @@ public class HrDAO implements HrModel {
 			final ResultSet resultSet = st
 					.executeQuery("SELECT positions.id, description FROM tempoplus.positions " +
 							"WHERE positions.departmentId = "+ departmentId);
+			
+			while (resultSet.next()) {
+				int id = resultSet.getInt("id");
+				String name = resultSet.getString("description");
+				// Store in an object
+				map.put(id, name);
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return map;
+	}
+	
+	public Map<Integer, String> retrieveAllPosition() {
+		Connection connection = null;
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st
+					.executeQuery("SELECT positions.id, description FROM tempoplus.positions");
 			
 			while (resultSet.next()) {
 				int id = resultSet.getInt("id");
