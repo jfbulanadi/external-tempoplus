@@ -46,11 +46,9 @@ public class MantisService {
 					dateFormat = sdf.format(cell.getDateCellValue());
 					mantis.setStartDate(dateFormat);
 					//Set time format
-					System.out.println("TimeFormat");
 					sdf = new SimpleDateFormat("h:mm");
 					dateFormat = sdf.format(cell.getDateCellValue());
 					mantis.setStartTime(dateFormat);
-					System.out.println(dateFormat);
 					break;
 				}
 				case 2: {

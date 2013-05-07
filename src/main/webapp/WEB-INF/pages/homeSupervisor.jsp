@@ -150,7 +150,7 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 	<div id = "Administration">
 	<div id="adminTab">
   			<ul>
-			    <li><a href="../hr/employeemanager">Employee Manager</a></li>
+			    <li><a href="../manager/viewSubordinates">Employee Manager</a></li>
 			    <li><a href="#ShiftManager">Shift Manager</a></li>
 			  
   			</ul>

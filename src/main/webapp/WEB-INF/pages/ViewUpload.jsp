@@ -18,6 +18,15 @@
 
 		<input id="addFile" type="button" value="Add File" />
 		<table id="fileTable">
+		<tr>
+			<td><select name = "category">
+			<option value=1>Biometric</option>
+			<option value=2>Mantis</option>
+			<option value=3>Nt3</option>
+			<option value=4>Employees</option>
+			<option value=5>Consolidate Timesheet</option>
+			</select></td>
+		</tr>
 			<tr>
 				<td><input name="file" type="file" /></td>
 			</tr>

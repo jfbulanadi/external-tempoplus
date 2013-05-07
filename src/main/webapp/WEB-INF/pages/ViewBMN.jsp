@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -68,6 +69,8 @@ $(document).ready(function() {
 function showToForm(myId) {
 	var trId = myId.id;
 	var firstname = null;
+	var middlename = null;
+	var lastname = null;
 	var timein = null;
 	var timeout = null;
 	console.log(trId);
@@ -75,17 +78,21 @@ function showToForm(myId) {
 	  var delimited = trId.split(",");
 	  trId = delimited[0];
 	  firstname = delimited[1];
-	  timein = delimited[2];
-	  timeout = delimited[3];
-	  
+	  middlename = delimited[2];
+	  lastname = delimited[3];
+	  timein = delimited[4];
+	  	console.log(timein);
+	  	var delimitTimein = timein.split(" ");
+	  timeout = delimited[5];
+	  	var delimitTimeout = timeout.split(" ");
 		
-	console.log(trId);
-	console.log(firstname);
+	//console.log(trId);
+	//console.log(firstname);
 	
 	 $("#txtemployeeid").val(trId);
-	 $("#txtfirstname").val(firstname);
-	 $("#txttimein").val(timein);
-	 $("#txttimeout").val(timeout);
+	 $("#txtfirstname").val(firstname + " " + middlename + " " + lastname);
+	 $("#txttimein").val(delimitTimein[1]);
+	 $("#txttimeout").val(delimitTimeout[1]);
 }
 </script>
 
@@ -98,12 +105,12 @@ function showToForm(myId) {
 
 		<div>Employee ID</div>
 		<div>
-			<input type="text" id="txtemployeeid" />
+			<input type="text" id="txtemployeeid" size="8" disabled />
 		</div>
 
-		<div>First name:</div>
+		<div>Full name:</div>
 		<div>
-			<input type="text" id="txtfirstname" />
+			<input type="text" id="txtfirstname" size="45" disabled />
 		</div>
 
 		<div>Time in</div>
@@ -139,42 +146,64 @@ function showToForm(myId) {
 	<table class="tablesorter">
 		<thead>
 			<tr>
-				<th>Employee ID</th>
-				<th>Biometric ID</th>
+				<th>Emp ID</th>
+				<th>Bio ID</th>
 				<th>First name</th>
 				<th>Middle name</th>
 				<th>Last name</th>
-				<th>Level</th>
-				<th>Position</th>
-				<th>Department</th>
 				<th>Email</th>
+				<th>Date</th>
 				<th>Time in</th>
 				<th>Time out</th>
+				<th>Duration</th>
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${content}" var="tableConsolidated_contents">
-				<tr
-					id="${tableConsolidated_contents.employeeId},${tableConsolidated_contents.firstname},7:00,10:00"
-					onClick=showToForm(this)>
-					<td>${tableConsolidated_contents.employeeId}</td>
-					<td>100</td>
-					<td>${tableConsolidated_contents.firstname}</td>
-					<td>${tableConsolidated_contents.middlename}</td>
-					<td>${tableConsolidated_contents.lastname}</td>
-					<td>1</td>
-					<td>SE1</td>
-					<td>SEG</td>
-					<td>${tableConsolidated_contents.firstname}@novare.com.hk</td>
-					<td>7:00</td>
-					<td>10:00</td>
+		
+			<c:forEach items="${content}" var="timesheet">
+				<tr id="${timesheet.employee.employeeId},${timesheet.employee.firstname},${timesheet.employee.middlename},${timesheet.employee.lastname},${timesheet.timelog.timeIn},${timesheet.timelog.timeOut}" onclick=showToForm(this)>
+					<td>${timesheet.employee.employeeId}</td>
+					<td>${timesheet.employee.biometricId}</td>
+					<td>${timesheet.employee.firstname}</td>
+					<td>${timesheet.employee.middlename}</td>
+					<td>${timesheet.employee.lastname}</td>
+					<td>${timesheet.employee.email}</td>
+					<td>${timesheet.timelog.date}</td>
+					<td>${timesheet.timelog.timeIn}</td>
+					<td>${timesheet.timelog.timeOut}</td>
+					<td>${timesheet.timelog.duration}</td>
 				</tr>
 			</c:forEach>
-
+		
 
 		</tbody>
 	</table>
+	
+	<div>
+	<form:form method="post" action="uploadfile"
+		modelAttribute="uploadForm" enctype="multipart/form-data">
 
+		<p>Select File to Upload</p>
+
+		<input id="addFile" type="button" value="Add File" />
+		<table id="fileTable">
+		<tr>
+			<td><select name = "category">
+			<option value=1>Biometric</option>
+			<option value=2>Mantis</option>
+			<option value=3>Nt3</option>
+			<option value=4>Employees</option>
+			<option value=5>Consolidate Timesheet</option>
+			</select></td>
+		</tr>
+			<tr>
+				<td><input name="file" type="file" /></td>
+			</tr>
+		</table>
+		<br />
+		<input type="submit" value="Upload" />
+	</form:form>
+	</div>
 	
 
 
