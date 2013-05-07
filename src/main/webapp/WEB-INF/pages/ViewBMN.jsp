@@ -46,7 +46,7 @@ font-family : Arial, Helvetica, sans-serif;
 							removeRows : false,
 							cssGoto : '.gotoPage',
 						};
-
+						//$("#mantistable").remove();
 						$("#tablesorter").tablesorter({
 							widgets : [ 'zebra', 'filter' ]
 						}).tablesorterPager(pagerOptions);
@@ -73,7 +73,7 @@ font-family : Arial, Helvetica, sans-serif;
 														//has timein and timeout
 													}
 													// onclick=showToForm(this)
-													htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "," + values.date + "," + ctr +"' onclick=showToForm(this) >";
+													htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "," + values.date + "," + values.mantisId + "," + values.nt3Id + "," + ctr + "' onclick=showToForm(this) >";
 													htmlstr += "<td>" + values.employeeId + "</td>";
 													htmlstr += "<td>" + values.biometricId +"</td>";
 													htmlstr += "<td>" + values.firstname + "</td>";
@@ -87,15 +87,15 @@ font-family : Arial, Helvetica, sans-serif;
 													htmlstr += '<td id="tdTimeOut'+ ctr +'">' + values.timeOut + '</td>';
 													
 													if(values.mantisId!=null) {
-													htmlstr += '<td align="center">Check mantis:<img src = "../resources/bmn/css/images/green.png" /></td>';
+													htmlstr += '<td>'+values.mantisId+'</td>';
 													} else {
-														htmlstr += "<td>&nbsp;</td>";
+														htmlstr += "<td>No tickets filed.</td>";
 													}
 													
 													if(values.nt3Id!=null){
-													htmlstr += '<td align="center">Check Nt3: <img src = "../resources/bmn/css/images/green.png" />0</td>';													
+													htmlstr += '<td>'+values.nt3Id+'</td>';													
 													} else {
-														htmlstr += "<td>&nbsp;</td>";
+														htmlstr += "<td>No tickets filed.</td>";
 													}
 													
 													htmlstr += "</tr>";
@@ -127,42 +127,57 @@ font-family : Arial, Helvetica, sans-serif;
 											
 						
 						});
-						
+							
 					});
 	
 </script>
+
 <script>
 
 
+
+</script>
+
+<script>
  function showToForm(myId) {
 	
-	 
-	$("#dialog").dialog({
-		width:450,
-		height:500,
-		modal: true,
-		close: function() {
-			var trId = null;
-			var tdId = null;
-			var firstname = null;
-			var middlename = null;
-			var lastname = null;
-			var timein = null;
-			var timeout = null;
-			var date = null;
-		}
-		
-	});
+	var trId;
+	var tdId;
+	var firstname;
+	var middlename;
+	var lastname;
+	var timein;
+	var timeout;
+	var date; 
+	var htmlstr;
 	
-	
-	 $("#tabs").tabs();
-	 
-	 
-	var trId = myId.id;
-	
-	
-//	console.log(trId);
+	trId = myId.id;
 
+	
+	//initializes dialog form 
+	$("#dialog").dialog({
+	width:450,
+	height:500,
+	modal: true,
+	 close: function() {
+		trId = null;
+		tdId = null;
+		firstname = null;
+		middlename = null;
+		lastname = null;
+		timein = null;
+		timeout = null;
+		date = null;
+		htmlstr = null;
+
+		console.log("closed");
+		
+	} 
+	
+	});
+
+	
+	
 	
 	  var delimited = trId.split(",");
 	  trId = delimited[0];
@@ -173,10 +188,8 @@ font-family : Arial, Helvetica, sans-serif;
 	  timeout = delimited[5];
 	  date = delimited[6];
 	  tdId = delimited[7];
-	  	
-	console.log(tdId);
-	//console.log(trId);
-	//console.log(firstname);
+	  
+	  
 	
 	 $("#txtemployeeid").val(trId);
 	 $("#txtfirstname").val(firstname + " " + middlename + " " + lastname);
@@ -184,49 +197,31 @@ font-family : Arial, Helvetica, sans-serif;
 	 $("#txttimeout").val(timeout);
 	 $("#txtdate").val(date);
 	 
-	 
-	 $("#btnUpdate").click(function() {
-		var timeIn = null;
-		var timeOut = null;
-		var employeeId = null;
-		var date = null;
-		
-		timeIn = $("#txttimein").val();
-		timeOut = $("#txttimeout").val();
-		employeeId = $("#txtemployeeid").val();
-		date = $("#txtdate").val();
-		
-		
-			 
-		console.log(timeIn + " " + timeOut);
-		
-	 	  $.ajax({
-			 type : "POST",
-			 url : "<c:url value="/consolidation/ajaxUpdateConsolidations"/>",
-		     data: {
-		    	 timeIn: timeIn,
-		    	 timeOut: timeOut,
-		    	 employeeId : employeeId,
-		    	 date: date
-		     },
-			 success: function(data) {
-				 
-				 console.log(tdId);
-				 $('#tdTimeIn' + tdId + '').text(timeIn)
-				 $('#tdTimeOut' + tdId + '').text(timeOut)
-			 	
-			 }
-		    	 
-		 }); 
-	 
-		 
-		 	
+	 $.ajax({
+			type: "POST",
+			url: "/tempoplus/consolidation/ajaxFetchTickets",
+			data: {
+				employeeId : trId
+			},
+			success: function(data) {
+				console.log("ajax succeeded");
+				
+				$.each(data, function(keys,values) {
+					htmlstr+= "<tr>";
+					htmlstr+= "<td>" + values.category + "|" + values.ticketId + "|" + values.status + "|" +values.timeIn+ "|" + values.timeOut + "</td>";
+					//htmlstr+= "<td>adada</td>";
+					htmlstr+= "</tr>";
+				
+				});
+				
+				$("table tbody.mantis").append(htmlstr);
+				
+			}
 			
-			 
-			
-		});
-
-	 
+				
+	 });
+	
+	
 } 
 </script>
 </head>
@@ -268,18 +263,7 @@ font-family : Arial, Helvetica, sans-serif;
 		
 		<h3>Tickets filed</h3>
 		<hr/>
-		<div id="tabs">
-			 <ul>
-		    	<li><a href="#tab1">Mantis</a></li>
-		    	<li><a href="#tab2">NT3</a></li>
-		 	 </ul>
-		 	 <div id="tab1">
-		 	 	No records to display.
-		 	 </div>
-		 	 <div id="tab2">
-		 	 	No records to display.
-		 	 </div>
-		</div>
+		
 		
 	</div>
 	<!-- FORM IS HIDDEN BY DIALOG -->

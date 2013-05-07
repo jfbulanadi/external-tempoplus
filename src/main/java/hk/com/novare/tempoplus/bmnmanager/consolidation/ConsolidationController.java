@@ -1,5 +1,6 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
+import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.employee.Employee;
 
 import java.sql.SQLException;
@@ -60,6 +61,15 @@ public class ConsolidationController {
 		consolidationService.updateConsolidations(employeeId, timeIn, timeOut, date);
 		
 		return true;
+	}
+	
+	@RequestMapping(value = "/ajaxFetchTickets", method = RequestMethod.POST)
+	public @ResponseBody ArrayList<Mantis> fetchTicketDetails(
+			@RequestParam String employeeId) {
+		
+		System.out.println("@ajaxfetchtickets");
+		return consolidationService.fetchTicket(employeeId);
+		
 	}
 	
 	

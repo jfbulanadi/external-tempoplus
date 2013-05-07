@@ -1,5 +1,6 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
+import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
@@ -260,10 +261,11 @@ public class ConsolidationDao {
 					consolidations.setEmail(email);
 					consolidations.setDate(date);
 					consolidations.setTimeIn(timeIn);
-					consolidations.setTimeOut(timeOut);
+					consolidations.setTimeOut(timeOut); 
 					consolidations.setMantisId(mantisId);
 					consolidations.setNt3Id(nt3Id);
 					
+
 					
 					list.add(consolidations);
 				}
@@ -293,6 +295,63 @@ public class ConsolidationDao {
 			//ps.executeUpdate();
 			
 			
+	}
+	
+	public ArrayList<Mantis> fetchMantisTickets(String employeeId) {
+		System.out.println("@dao");
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet resultSet = null;
+		ArrayList<Mantis> list = new ArrayList<Mantis>();
+		
+
+		try {
+			
+			connection = dataSource.getConnection();
+			ps = connection.prepareStatement("SELECT ticketId, employeeId, dateSubmitted, startDate, endDate, category, timeIn, timeOut, status FROM mantises WHERE employeeId = ?");
+			ps.setString(1, employeeId);	
+			resultSet = ps.executeQuery();
+			
+			
+			while(resultSet.next()) {
+				final int ticketId = resultSet.getInt("ticketId");
+				final String dateSubmitted = resultSet.getString("dateSubmitted");
+				final String startDate = resultSet.getString("startDate");
+				final String endDate = resultSet.getString("endDate");
+				final String category = resultSet.getString("category");
+				final String timeIn = resultSet.getString("timeIn");
+				final String timeOut = resultSet.getString("timeOut");
+				final String status = resultSet.getString("status");
+				
+				
+				
+				final Mantis mantis = new Mantis();
+				mantis.setTicketId(ticketId);
+				mantis.setDateSubmitted(dateSubmitted);
+				mantis.setStartDate(startDate);
+				mantis.setEndDate(endDate);
+				mantis.setCategory(category);
+				mantis.setStartTime(timeIn);
+				mantis.setEndTime(timeOut);
+				mantis.setStatus(status);
+				
+				
+				list.add(mantis);
+				}
+			
+		} catch (SQLException e) {
+			
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		return list;
 	}
 	
 	

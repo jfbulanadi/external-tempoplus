@@ -1,15 +1,22 @@
-package hk.com.novare.tempoplus.bmnmanager.sendMail;
+package hk.com.novare.tempoplus.bmnmanager.sendmail;
 
-import org.springframework.stereotype.Repository;
 
-@Repository("mailPojo")
 public class MailPojo {
+
 	private String msgTitle;
 	private String msgBody;
 	private String fileUrl;
 	private String fileName;
 	private String fromUsername;
+	private String emailRecipient;
 
+	public String getEmailRecipient() {
+		return emailRecipient;
+	}
+
+	public void setEmailRecipient(String emailRecepient) {
+		this.emailRecipient = emailRecepient;
+	}
 
 	public String getFromUsername() {
 		return fromUsername;

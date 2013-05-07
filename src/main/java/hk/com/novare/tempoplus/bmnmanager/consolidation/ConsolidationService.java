@@ -1,6 +1,7 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
 import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDao;
+import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.employee.EmployeeDao;
@@ -47,6 +48,16 @@ public class ConsolidationService {
 			String timeIn, String timeOut, String date)  {
 		 consolidationDao.updateConsolidations(employeeId, timeIn, timeOut, date);
 		 return true;
+	}
+	
+	public ArrayList<Mantis> fetchTicket(String employeeId) {
+		
+		System.out.println("@service");
+
+		System.out.println(employeeId);
+		
+		
+		return consolidationDao.fetchMantisTickets(employeeId);
 	}
 
 	/*

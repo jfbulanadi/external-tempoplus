@@ -1,15 +1,35 @@
-package hk.com.novare.tempoplus.bmnmanager.sendMail;
+package hk.com.novare.tempoplus.bmnmanager.sendmail;
 
+import java.io.File;
+import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.AddressException;
+import javax.mail.Message;
 
 public interface SendEmailInterface {
 
-	ResultSet getEmail(String department) throws SQLException, ClassNotFoundException;
-	void sendEmail(ArrayList<String> email, MailPojo mailPojo, Session session) throws AddressException, MessagingException;
+	void setConnection(Connection connection);
+	
+	void closeConnection();
+	
+	void sendMail(boolean isByDepartment, String logsRow, Message message);
+	
+	void executeLog();
+	
+	void setLogQueryByDep();
+	
+	
+	ResultSet getEmail(String department);
+	
+	ResultSet getDateLogs();
+	
+	ResultSet getLogs(String date);
+	
+	ResultSet getNames();
+	
+	ResultSet getSingleRecipient(String email);
+	
+	ResultSet getDepartments();
+	
+	File[] getFiles(File folderName);
 }

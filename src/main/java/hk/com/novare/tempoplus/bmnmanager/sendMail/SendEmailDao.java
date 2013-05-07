@@ -1,120 +1,255 @@
-package hk.com.novare.tempoplus.bmnmanager.sendMail;
+package hk.com.novare.tempoplus.bmnmanager.sendmail;
 
-
+import java.io.File;
+import java.io.FilenameFilter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.sql.DriverManager;
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.inject.Inject;
-import javax.mail.BodyPart;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 @Repository("sendEmailDao")
-public class SendEmailDao implements SendEmailInterface {
+public class SendEmailDAO implements SendEmailInterface {
 
-	@Inject
-	DataSource dataSource;
-	
+	private Connection connection;
+	private PreparedStatement statusQuery;
+	private PreparedStatement ps = null;
+	private ResultSet resultSet = null;
+
+	private final String LOGGING_QUERY = "insert into emaillogs(date,recipient,status) values(?,?,?)";
+	private final String GET_EMAIL_QUERY = "SELECT * FROM employees";
+	private final String GET_LOGS_QUERY = "SELECT date, recipient, status FROM emaillogs where date='";
+	private final String GET_EMPLOYEES_NAME_QUERY = "SELECT firstname,lastname,email FROM employees ORDER BY firstname ASC";
+	private final String GET_EMPLOYEE_NAME = "SELECT * FROM employees where email ='";
+	private final String GET_DEPARTMENTS = "SELECT DISTINCT departmentId FROM employees";
+
+	private final Logger logger = Logger.getLogger(SendEmailDAO.class);
 
 	
 	@Override
-	public ResultSet getEmail(String department) throws SQLException,
-			ClassNotFoundException {
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+		logger.info("Logger");
+	}
+	
+	
+	@Override
+	public void closeConnection(){
+		try {
 		
-		Connection connection = null;
-		PreparedStatement ps = null;
+			logger.info("Closing SQL Connection");
+			this.connection.close();
+			logger.info("SQL Connection Closed");
+			
+		} catch (SQLException e) {
+			logger.info("Cant Close SQLConnection, Error: " + e.toString());
+		}
+	}
+
+	@Override
+	public void setLogQueryByDep() {
+		try {
+			statusQuery = connection.prepareStatement(LOGGING_QUERY);
+		} catch (SQLException e) {
+
+			logger.info("Error On Preparing Statement of Logging Query");
+		}
+	}
+
+	@Override
+	public ResultSet getEmail(String department) {
+
+		if (department.equals("ALL")) {
+			try {
+				ps = connection.prepareStatement(GET_EMAIL_QUERY);
+			} catch (SQLException e) {
+				logger.info("Error on Getting All Email ");
+			}
+		} else {
+			try {
+				ps = connection.prepareStatement(GET_EMAIL_QUERY
+						+ " where departmentId='" + department + "'");
+			} catch (SQLException e) {
+				logger.info("Error on Getting Email By: " + department);
+			}
+		}
 
 		try {
-		//	connection = dataSource.getConnection();
-			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection(
-					"jdbc:mysql://localhost/employees", "root", "dreamer");
-			System.out.println("Successed loading driver");
-		} catch (Exception e) {
-			System.out.println("Cant Load Driver");
-		}
+			resultSet = (ResultSet) ps.executeQuery();
+		} catch (SQLException e) {
 
-		
-		if(department.equals("ALL")){
-		ps = connection
-				.prepareStatement("SELECT * FROM employees");
-		} else{
-			ps = connection.prepareStatement("SELECT * FROM employees where department='"+department+"'");
+			logger.info("Error on Executing Query of getting Emails");
 		}
-			
-		
-			ResultSet resultSet = (ResultSet) ps.executeQuery();
-		System.out.println("QueryExecuted");
-
 
 		return resultSet;
 	}
 
 	@Override
-	public void sendEmail(ArrayList<String> email, MailPojo mailPojo, Session session) throws AddressException, MessagingException {
-	
+	public ResultSet getDateLogs() {
+
+		logger.info("Getting Dates");
 
 		try {
-			for (String emailRecipient : email) {
-				System.out.println("Sending To: "+emailRecipient);
-				Message message = new MimeMessage(session);
-				message.setFrom(new InternetAddress(mailPojo.getFromUsername()));
-				message.setRecipients(Message.RecipientType.TO,
-						InternetAddress.parse(emailRecipient));
-				message.setSubject(mailPojo.getMsgTitle());
+		
+			ps = connection
+					.prepareStatement("SELECT DISTINCT date FROM emaillogs");
+			
+			resultSet = (ResultSet) ps.executeQuery();
+	
+		} catch (SQLException e) {
+			logger.info("Error on Getting Date Logs SQL");
+		}
+
+		return resultSet;
+	}
+
+	@Override
+	public void sendMail(boolean isByDepartment, String logsRow, Message message) {
+
+		// Initialize the Logs Status Attributes
+		String status = "Failed Sending TimeSheet";
+		String recipient = null;
+
+		try {
+
+			recipient = message.getRecipients(Message.RecipientType.TO)[0]
+					.toString();
+
+			logger.info("NOW SENDING MESSAGE TO: " + recipient);
+
+			Transport.send(message);
+
+			status = "Successed Sending TimeSheet";
+
+			logger.info(status + " TO: " + recipient);
+
+		} catch (MessagingException e1) {
+
+			logger.info("Error On Transporting Message: " + e1.toString());
+			status = "Failed Sending TimeSheet";
+			logger.info(status + " TO: " + recipient);
+		}
+
+		if (isByDepartment) {
+
+			try {
 				
+				statusQuery.setString(1, logsRow);
 
+				statusQuery.setString(2, recipient);
 
-				 // Create the message part 
-		         BodyPart messageBodyPart = new MimeBodyPart();
+				statusQuery.setString(3, status);
 
-		         // Fill the message
-		         messageBodyPart.setContent(mailPojo.getMsgBody(), "text/html; charset=utf-8");
-		         
-		         // Create a multipar message
-		         Multipart multipart = new MimeMultipart();
+				statusQuery.addBatch();
+			} catch (SQLException e) {
 
-		         // Set text message part
-		         multipart.addBodyPart(messageBodyPart);
-
-		         // Part two is attachment
-		         messageBodyPart = new MimeBodyPart();
-		        
-		         FileDataSource source = new FileDataSource(mailPojo.getFileUrl());
-		         messageBodyPart.setDataHandler(new DataHandler(source));
-		         messageBodyPart.setFileName(mailPojo.getFileName());
-		         multipart.addBodyPart(messageBodyPart);
-
-		         // Send the complete message parts
-		         message.setContent(multipart );
-				
-				
-				
-				Transport.send(message);
-				System.out.println("Message Sent: " + emailRecipient);
+				System.out
+						.println("Error on Preparing the parameters of Log Query: " + e.toString());
 			}
-		} catch (MessagingException e) {
-			System.out.println(e.toString());
+
+		}
+	}
+
+	@Override
+	public ResultSet getLogs(String date) {
+
+		try {
+			ps = connection.prepareStatement(GET_LOGS_QUERY + date + "'");
+			resultSet = (ResultSet) ps.executeQuery();
+		} catch (SQLException e) {
+			logger.info("Error on Getting Logs Query");
+		}
+
+		logger.info("getting Logs Query Executed");
+
+		return resultSet;
+	}
+
+	@Override
+	public ResultSet getNames() {
+
+		try {
+
+			ps = connection.prepareStatement(GET_EMPLOYEES_NAME_QUERY);
+			resultSet = (ResultSet) ps.executeQuery();
+
+		} catch (SQLException e) {
+			logger.info("Error on Getting Employee Names SQL");
+		}
+
+		return resultSet;
+	}
+
+	@Override
+	public void executeLog() {
+		try {
+			logger.info("Setting Auto Commit to False");
+			connection.setAutoCommit(false);
+
+			logger.info("Executing Batch Query");
+			statusQuery.executeBatch();
+
+			logger.info("Committing");
+			connection.commit();
+
+		} catch (SQLException e) {
+			logger.info("Error on Executing Log Query By Batch");
 		}
 
 	}
 
-}
+	@Override
+	public ResultSet getSingleRecipient(String email) {
 
+		try {
+			logger.info("Getting Employee Name");
+
+			ps = connection.prepareStatement(GET_EMPLOYEE_NAME + email + "'");
+
+			logger.info("now getting the resultset");
+
+			resultSet = (ResultSet) ps.executeQuery();
+
+			logger.info("QueryExecuted");
+		} catch (SQLException e) {
+			logger.info("Error on Getting Employee Name");
+		}
+		return resultSet;
+	}
+
+	@Override
+	public File[] getFiles(File folderName) {
+
+		final File directory = folderName;
+
+		return directory.listFiles(new FilenameFilter() {
+
+			public boolean accept(File dir, String filename) {
+
+				return filename.endsWith(".xls");
+
+			}
+		});
+	}
+
+	@Override
+	public ResultSet getDepartments() {
+
+		try {
+ 
+			ps = connection.prepareStatement(GET_DEPARTMENTS);
+			resultSet = (ResultSet) ps.executeQuery();
+
+		} catch (SQLException e) {
+			logger.info("Error on Getting Departments");
+		}
+		return resultSet;
+	}
+
+}
