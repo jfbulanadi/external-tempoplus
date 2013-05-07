@@ -22,7 +22,17 @@ public class HumanResourceFullInfoDTO {
 	private String active;
 	private int departmentId;
 	private int positionId;
+	private int shiftId;
 	
+	
+	
+	
+	public int getShiftId() {
+		return shiftId;
+	}
+	public void setShiftId(int shiftId) {
+		this.shiftId = shiftId;
+	}
 	public int getDepartmentId() {
 		return departmentId;
 	}

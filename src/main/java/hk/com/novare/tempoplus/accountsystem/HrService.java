@@ -85,7 +85,7 @@ public class HrService {
 		employee.setSupervisorEmail(employeeFullInfoDTO.getSupervisorEmail());
 		employee.setDepartmentId(employeeFullInfoDTO.getDepartmentId());
 		employee.setPositionId(employeeFullInfoDTO.getPositionId());
-		employee.setShift(employeeFullInfoDTO.getShift());
+		employee.setShiftId(employeeFullInfoDTO.getShiftId());
 		employee.setLocAssign(employeeFullInfoDTO.getLocAssign());
 		return employee;
 	}
@@ -107,7 +107,7 @@ public class HrService {
 	}
 	
 	/**
-	 * 
+	 * r
 	 * @param employeeFullInfoDTO
 	 * save the edited employee, 
 	 * convert department name to departmentId
@@ -138,22 +138,32 @@ public class HrService {
 		if(humanResourceDTO.getResignationDate().length() == 0) {
 			String ResignationDate = null;
 			humanResourceDTO.setResignationDate(ResignationDate);
-			System.out.println("hrservice resignationdate" + humanResourceDTO.getResignationDate());
+
 		}
-		System.out.println("dept " +departmentId);
-		System.out.println("position " +positionId);
-		System.out.println("shift " + shiftId);
-		System.out.println("superviso r" + supervisorId);
-		System.out.println("shift from object " + humanResourceDTO.getShift());
-		
 		hrDAO.updateEmployee(humanResourceDTO);
 
 	}
 	
-	public void createEmployeeDetail(HumanResourceFullInfoDTO employeeFullInfoDTO) {
-		HumanResource humanResource = contructEmployee(employeeFullInfoDTO);
-		hrDAO.createEmployee(humanResource);
-		int employeeId = Integer.parseInt(humanResource.getEmployeeId());
+	
+	public void createEmployeeDetail(HumanResourceFullInfoDTO employeeDTO) {
+		
+		HumanResourceDTO humanResourceDTO = contructEmployeeFromEdited(employeeDTO);
+		
+		//int shiftId = hrDAO.retrieveShiftId(humanResourceDTO.getShift());
+		//humanResourceDTO.setShiftId(shiftId);
+		
+		if(humanResourceDTO.getHiredDate().length() == 0) {
+			String hiredDate = null;
+			humanResourceDTO.setHiredDate(hiredDate);
+		} 
+		
+		if(humanResourceDTO.getLevel() > 3) {
+			humanResourceDTO.setIsSupervisor("true");
+		}
+		
+		hrDAO.createEmployee(humanResourceDTO);
+		
+		int employeeId = Integer.parseInt(employeeDTO.getEmployeeId());
 		hrDAO.createAccount(employeeId);
 	}
 
@@ -202,6 +212,7 @@ public class HrService {
 				humanResource2.setIsSupervisor("true");
 			}
 			hrDAO.createEmployeeFromUpload(humanResource2);
+			hrDAO.createAccount(humanResource2.getEmployeeId());
 		}
 		
 		//PHASE II - assigned designated supervisor using supervisor email
@@ -213,6 +224,10 @@ public class HrService {
 			hrDAO.updateSupervisorId(humanResourceDTO);
 		}
 		
+	}
+	
+	public Map<Integer, String> retrieveShifts() {
+		return hrDAO.retrieveShifts();
 	}
 	
 }

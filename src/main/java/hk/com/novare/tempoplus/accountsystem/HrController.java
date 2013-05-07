@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("hr")
@@ -85,6 +84,8 @@ public class HrController {
 		
 		hrService.saveEditedEmployeeDetail(employeeFullInfoDTO);
 		
+		System.out.println(employeeFullInfoDTO.getBiometrics());
+		
 		return "ViewHr";
 	}
 	
@@ -99,7 +100,7 @@ public class HrController {
 			@RequestParam(value = "biometrics") String biometrics,
 			@RequestParam(value = "department") int departmentId,
 			@RequestParam(value = "position") int positionId,
-			@RequestParam(value = "shift") String shift,
+			@RequestParam(value = "shift") int shift,
 			@RequestParam(value = "level") String level,
 			@RequestParam(value = "hireDate") String hireDate,
 			@RequestParam(value = "supervisorName") String supervisorName,
@@ -114,7 +115,7 @@ public class HrController {
 		employeeFullInfoDTO.setBiometrics(biometrics);
 		employeeFullInfoDTO.setDepartmentId(departmentId);
 		employeeFullInfoDTO.setPositionId(positionId);
-		employeeFullInfoDTO.setShift(shift);
+		employeeFullInfoDTO.setShiftId(shift);
 		employeeFullInfoDTO.setLevel(level);
 		employeeFullInfoDTO.setHiredDate(hireDate);
 		employeeFullInfoDTO.setSupervisorName(supervisorName);
@@ -144,7 +145,13 @@ public class HrController {
 		return hrService.retieveSupervisor(departmentId);
 	}
 	
-	/*@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
+	@RequestMapping(value = "/retrieveShiftJSON")
+	public @ResponseBody
+	Map<Integer, String> retrieveSupervisor() {		
+		return hrService.retrieveShifts();
+	}
+	
+	@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
 	public String getFileUpload(
 			@ModelAttribute("uploadForm") SingleFileUploadForm uploadForm,
 			ModelMap modelMap) {
@@ -154,6 +161,8 @@ public class HrController {
 		
 		return "redirect:employeemanager";
 
-	}*/
+	}
+	
+	
 	
 }

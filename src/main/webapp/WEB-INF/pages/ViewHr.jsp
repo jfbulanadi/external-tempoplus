@@ -70,7 +70,7 @@
 		</tbody>
 	</table>
 	<div class="pager" align="right">
-	
+
 		<img src="../resources/bmn/css/images/first.png" class="first" /> <img
 			src="../resources/bmn/css/images/prev.png" class="prev" /> <span
 			class="pagedisplay"></span>
@@ -126,7 +126,7 @@
 				<tr>
 					<td>Department :</td>
 					<td><select class="department" id=selectDepartment>
-						
+
 					</select>
 				</tr>
 				<tr>
@@ -135,7 +135,9 @@
 				</tr>
 				<tr>
 					<td>Shift :</td>
-					<td><input size="20" id="shift" /></td>
+					<td><select id=selectShift>
+
+					</select></td>
 				</tr>
 				<tr>
 					<td>Employee ID :</td>
@@ -143,7 +145,7 @@
 				</tr>
 				<tr>
 					<td>Position :</td>
-					<td><select id ="selectPosition">
+					<td><select id="selectPosition">
 
 					</select></td>
 				</tr>
@@ -157,11 +159,11 @@
 				</tr>
 				<tr>
 					<td>Hired Date :</td>
-					<td><input class = "datepicker" size="50" id="hiredDate" /></td>
+					<td><input class="datepicker" size="50" id="hiredDate" /></td>
 				</tr>
 				<tr>
 					<td>Supervisor Name :</td>
-					<td><select id ="selectSupervisorName">
+					<td><select id="selectSupervisorName">
 
 					</select></td>
 				</tr>
@@ -172,92 +174,89 @@
 	<!-- popup view -->
 	<div id="dialog-formFullInformation" title="Employee Full Information"
 		style="display: none">
-		<table>
-			<tr>
-				<td>First Name :</td>
-				<td><input size="50" id="editfirstName" name="firstname"
-					disabled /></td>
-			</tr>
-			<tr>
-				<td>Middle Name :</td>
-				<td><input size="50" id="editMiddleName" disabled /></td>
-			</tr>
-			<tr>
-				<td>Last Name :</td>
-				<td><input size="50" id="editLastName" disabled /></td>
-			</tr>
-			<tr>
-				<td>Department :</td>
-				<td><input size="50" id="editDepartment" disabled /></td>
-			</tr>
-			<tr>
-				<td>Biometrics :</td>
-				<td><input size="10" id="editBiometrics" disabled /></td>
-			</tr>
-			<tr>
-				<td>Shift :</td>
-				<td><input size="20" id="editShift" disabled /></td>
-			</tr>
-			<tr>
-				<td>Employee ID :</td>
-				<td><input size="10" id="editEmployeeId" disabled /></td>
-			</tr>
-			<tr>
-				<td>Position :</td>
-				<td><input size="50" id="editPosition" disabled /></td>
-			</tr>
-			<tr>
-				<td>Level :</td>
-				<td><input size="2" id="editLevel" disabled /></td>
-			</tr>
-			<tr>
-				<td>Employee Email :</td>
-				<td><input size="50" id="editEmployeeEmail" disabled /></td>
-			</tr>
-			<tr>
-				<td>Hired Date :</td>
-				<td><input size="50" id="editHiredDate" disabled /></td>
-			</tr>
-			<tr>
-				<td>Regularization Date :</td>
-				<td><input size="50" id="editRegularizationDate" disabled /></td>
-			</tr>
-			<tr>
-				<td>Resignation Date :</td>
-				<td><input size="50" id="editResignationDate" disabled /></td>
-			</tr>
-			<tr>
-				<td>Supervisor in NT3 :</td>
-				<td><input size="50" id="editSupervisorName" disabled /></td>
-			</tr>
-			<tr>
-				<td>Supervisor email :</td>
-				<td><input size="50" id="editSupervisorEmail" disabled /></td>
-			</tr>
-			<tr>
-				<td>Location Assignment :</td>
-				<td><input size="50" id="editLocAssign" disabled /></td>
-			</tr>
-		</table>
-		<div id="buttons">
-				<div class="button_n">
-					<input type="button" id="editBtn" value="Edit" />
-				</div>
-				<div class="button_n">
-					<input type="button" id="exitBtn" value="Exit" />
-				</div>
-			</div>
+		<form method="POST">
+			<table>
+				<tr>
+					<td>First Name :</td>
+					<td><input size="50" id="editfirstName" name="firstname"
+						disabled /></td>
+				</tr>
+				<tr>
+					<td>Middle Name :</td>
+					<td><input size="50" id="editMiddleName" disabled /></td>
+				</tr>
+				<tr>
+					<td>Last Name :</td>
+					<td><input size="50" id="editLastName" disabled /></td>
+				</tr>
+				<tr>
+					<td>Department :</td>
+					<td><select class="department" id="editSelectDepartment">
 
+					</select></td>
+				</tr>
+				<tr>
+					<td>Biometrics :</td>
+					<td><input size="10" id="editBiometrics" disabled /></td>
+				</tr>
+				<tr>
+					<td>Shift :</td>
+					<td><input size="20" id="editShift" disabled /></td>
+				</tr>
+				<tr>
+					<td>Employee ID :</td>
+					<td><input size="10" id="editEmployeeId" disabled /></td>
+				</tr>
+				<tr>
+					<td>Position :</td>
+					<td><input size="50" id="editPosition" disabled /></td>
+				</tr>
+				<tr>
+					<td>Level :</td>
+					<td><input size="2" id="editLevel" disabled /></td>
+				</tr>
+				<tr>
+					<td>Employee Email :</td>
+					<td><input size="50" id="editEmployeeEmail" disabled /></td>
+				</tr>
+				<tr>
+					<td>Hired Date :</td>
+					<td><input size="50" id="editHiredDate" disabled /></td>
+				</tr>
+				<tr>
+					<td>Regularization Date :</td>
+					<td><input size="50" id="editRegularizationDate" disabled /></td>
+				</tr>
+				<tr>
+					<td>Resignation Date :</td>
+					<td><input size="50" id="editResignationDate" disabled /></td>
+				</tr>
+				<tr>
+					<td>Supervisor in NT3 :</td>
+					<td><input size="50" id="editSupervisorName" disabled /></td>
+				</tr>
+				<tr>
+					<td>Supervisor email :</td>
+					<td><input size="50" id="editSupervisorEmail" disabled /></td>
+				</tr>
+				<tr>
+					<td>Location Assignment :</td>
+					<td><input size="50" id="editLocAssign" disabled /></td>
+				</tr>
+			</table>
+		</form>
 	</div>
 
-	<div id="dialog-confirm" title="Do you want to save the profile?" style="display: none">
+	<div id="dialog-confirm" title="Do you want to save the profile?"
+		style="display: none">
 		<p>
 			<span class="ui-icon ui-icon-alert"
 				style="float: left; margin: 0 7px 20px 0;"></span> Are you sure?
 		</p>
 	</div>
-	
-	<div id="dialog-confirm-create" title="Do you want to create this profile?" style="display: none">
+
+	<div id="dialog-confirm-create"
+		title="Do you want to create this profile?" style="display: none">
 		<p>
 			<span class="ui-icon ui-icon-alert"
 				style="float: left; margin: 0 7px 20px 0;"></span> Are you sure?
