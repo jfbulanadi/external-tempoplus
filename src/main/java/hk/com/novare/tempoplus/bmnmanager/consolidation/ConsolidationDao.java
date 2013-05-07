@@ -28,9 +28,36 @@ public class ConsolidationDao {
 	 * 
 	 * @return
 	 */
-	public boolean isReadyForConsolidation() {
+	public boolean isReadyForConsolidation(String name) {
+		
+		try {
+			connection = dataSource.getConnection();
 
-		return true;
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("SELECT flag FROM timesheets WHERE description = ?");
+
+			preparedStatement.setString(1, name);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			preparedStatement.close();
+			
+			if(resultSet.getInt("flag") == 1) {
+				return true;
+			}
+			
+		} catch (SQLException e) {
+
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	/**
@@ -110,7 +137,7 @@ public class ConsolidationDao {
 
 	}
 
-	public Consolidation isReadyForConsolidation(int id) {
+	/*public Consolidation isReadyForConsolidation(int id) {
 
 		Consolidation consolidation = new Consolidation();
 		try {
@@ -150,7 +177,8 @@ public class ConsolidationDao {
 		return consolidation;
 
 	}
-
+*/
+	
 	public void consolidateTimeSheet(ArrayList<Integer> idList) {
 
 		try {
@@ -269,7 +297,7 @@ public class ConsolidationDao {
 	
 	
 
-	public void consolidateTimeSheetPhase1() {
+	public void consolidateTimeSheetTimeLog() {
 
 		try {
 			connection = dataSource.getConnection();
@@ -296,7 +324,7 @@ public class ConsolidationDao {
 
 	}
 
-	public void consolidateTimeSheetPhase2(ArrayList<TimeLogging> list) {
+	public void consolidateTimeSheetMantis(ArrayList<TimeLogging> list) {
 
 		try {
 			connection = dataSource.getConnection();
@@ -333,7 +361,7 @@ public class ConsolidationDao {
 
 	}
 
-	public void consolidateTimeSheetPhase3(ArrayList<TimeLogging> list) {
+	public void consolidateTimeSheetNt3(ArrayList<TimeLogging> list) {
 
 		try {
 			connection = dataSource.getConnection();

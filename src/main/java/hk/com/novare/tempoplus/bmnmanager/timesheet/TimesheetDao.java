@@ -96,7 +96,7 @@ public class TimesheetDao {
 				timesheet.setTimelog(timelog);
 				timesheet.setMantis(mantis);
 				timesheet.setNt3(nt3);
-				timesheet.setDailyBiometric(biometricDetails);
+				timesheet.setBiometricDetails(biometricDetails);
 				list.add(timesheet);
 			}
 
@@ -143,14 +143,14 @@ public class TimesheetDao {
 
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("SELECT name FROM timesheets");
-			
+
 			ResultSet resultSet = preparedStatement.executeQuery();
-			
-			while(resultSet.next()) { 
+
+			while (resultSet.next()) {
 				timesheetList = new TimesheetList();
-				
+
 				timesheetList.setName(resultSet.getString("name"));
-				
+
 				list.add(timesheetList);
 			}
 			preparedStatement.close();
@@ -161,15 +161,49 @@ public class TimesheetDao {
 
 		return list;
 	}
-	
-	public void updateTimesheetRecord(String description) {
-		
+
+	public void updateTimeLogTimesheetRecord(String description) {
+
 		try {
 			connection = dataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("UPDATE timesheets SET timelogId = 1 WHERE description = ?");
-			
+
+			preparedStatement.setString(1, description);
+			preparedStatement.executeUpdate();
+			preparedStatement.close();
+
+		} catch (SQLException e) {
+
+		}
+	}
+
+	public void updateMantisTimesheetRecord(String description) {
+
+		try {
+			connection = dataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("UPDATE timesheets SET mantisId = 1 WHERE description = ?");
+
+			preparedStatement.setString(1, description);
+			preparedStatement.executeUpdate();
+			preparedStatement.close();
+
+		} catch (SQLException e) {
+
+		}
+	}
+
+	public void updateNt3TimesheetRecord(String description) {
+
+		try {
+			connection = dataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("UPDATE timesheets SET nt3Id = 1 WHERE description = ?");
+
 			preparedStatement.setString(1, description);
 			preparedStatement.executeUpdate();
 			preparedStatement.close();

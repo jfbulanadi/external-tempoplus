@@ -19,11 +19,13 @@ public class MantisDao {
 	private Connection connection = null;
 	static final Logger logger = Logger.getLogger(MantisDao.class);
 
-	public void addMantisData(ArrayList<Mantis> list) {
+	public int[] insertMantisData(ArrayList<Mantis> list) {
 
+		int[] rows = null;
+		
 		try {
 			connection = dataSource.getConnection();
-
+			
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("INSERT INTO mantises (ticketId, startDate, endDate, hours, minutes, " +
 							"employeeId, timeIn, timeOut, dateSubmitted, category, status, timestamp) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
@@ -43,7 +45,7 @@ public class MantisDao {
 				preparedStatement.addBatch();
 			}
 
-			preparedStatement.executeBatch();
+			rows = preparedStatement.executeBatch();
 			preparedStatement.close();
 
 		} catch (SQLException e) {
@@ -57,6 +59,8 @@ public class MantisDao {
 				}
 			}
 		}
+		
+		return rows;
 	}
 
 	public ArrayList<Mantis> retriveMantisData() {
