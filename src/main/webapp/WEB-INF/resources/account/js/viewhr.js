@@ -398,7 +398,7 @@ $(function() {
 	var shift = '';
 	$.ajax({
 		url: "../hr/retrieveShiftJSON",
-		success: function(response) {i
+		success: function(response) {
 			$.each(response, function(key, value) {
 				shift +='<option value=' + key +'> ' + value + '</option>';
 			});

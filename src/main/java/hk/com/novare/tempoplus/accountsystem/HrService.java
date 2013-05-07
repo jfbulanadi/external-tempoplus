@@ -212,7 +212,14 @@ public class HrService {
 				humanResource2.setIsSupervisor("true");
 			}
 			hrDAO.createEmployeeFromUpload(humanResource2);
-			hrDAO.createAccount(humanResource2.getEmployeeId());
+			
+		}
+		
+		
+		//PHASE I.I
+		for(HumanResourceDTO humanResourceDTO: newhumanResourcesListToBeAddedToDatabase) {
+			int employeeId = humanResourceDTO.getEmployeeId();
+			hrDAO.createAccount(employeeId);
 		}
 		
 		//PHASE II - assigned designated supervisor using supervisor email

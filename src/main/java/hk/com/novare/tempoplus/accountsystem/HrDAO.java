@@ -732,15 +732,13 @@ public class HrDAO implements HrModel {
 	
 	public void createAccount(int employeeId){
         Connection connection = null;
-       
         try {
             connection = dataSource.getConnection();
             final PreparedStatement createUserStatement =
-                    connection.prepareStatement("INSERT INTO users (employeeId, password) " +
-                            "values (?,?)");
+                    connection.prepareStatement("INSERT INTO users (employeeId, password) values (?, MD5('default'))");
             createUserStatement.setInt(1, employeeId);
-            createUserStatement.setString(2, "MD5('default')");
-            createUserStatement.executeUpdate();
+/*            createUserStatement.setString(2, "default");
+*/            createUserStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
