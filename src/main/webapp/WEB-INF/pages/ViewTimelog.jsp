@@ -6,32 +6,32 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>View Time Log</title>
-<link href="../resources/timelog/css/jPages.css" rel="stylesheet">
-	<link href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" rel="stylesheet">
-	<link href="../resources/timelog/css/ViewTimeLogCSS.css" rel="stylesheet">
-	<link rel="stylesheet" href="../resources/timelog/css/style1.css" type="text/css" />
-	<script src="../resources/timelog/js/jquery-1.9.1.js"></script>
+<!-- <link href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" rel="stylesheet"> -->
+<link href="../resources/timelog/css/ViewTimeLogCSS.css" rel="stylesheet">
+<link rel="stylesheet" href="../resources/timelog/css/style1.css" type="text/css" />	
+<link rel="stylesheet" type="text/css" href="../resources/timelog/css/jquery.tablesorter.pager.css"></link>
+<link rel="stylesheet" type="text/css" href="../resources/timelog/css/theme.default.css"></link>
+<link rel="stylesheet" href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
+
+<script src="../resources/timelog/js/jquery-1.9.1.js"></script>
+<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>
 	
-	<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>	
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
-	<script>var my_jQuery = jQuery.noConflict();</script>
-	<script src="../resources/timelog/js/jPages.js"></script>
-	
-	<script type="text/javascript" src="../resources/timelog/js/jquery-1.3.1.min.js"></script>
-	<script>var my_jQuery3 = jQuery.noConflict();</script>
-	
-	<script type="text/javascript" src="../resources/timelog/js/jquery.tablesorter.js"></script>
-	<script type="text/javascript" src="../resources/timelog/js/jquery.tablesorter.pager.js"></script>
-	<script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
+	<script src="../resources/timelog/js/jquery.tablesorter.min.js"></script>
+	<script src="../resources/timelog/js/jquery.tablesorter.widgets.min.js"></script>
+	<script src="../resources/timelog/js/jquery-ui.js"></script>
+	<script src="../resources/timelog/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
+	<script src="../resources/timelog/js/jquery.tablesorter.pager.min.js"></script>
+
 	<script type="text/javascript">var idExternal =${id}</script>
-	
+	<script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
+
 	</head>
-<body onload = "mylog()">
+<body>
 
 <table id = "tblNav">
 <tr>
 <td>
-<a href= javascript:mylog()>MyLog</a>
+<a id ="mylog" href= javascript:mylog()>MyLog</a>
 <a id ="others" href= javascript:others()>MySubordinates</a>
 </td>
 </tr>
@@ -118,7 +118,7 @@ Lastname/Firstname: <input type="text" id="empName" /> <button id="SearchButton"
 
 <tr>
 <td>
-<div id="pager" class="pager">
+<div id="pagers" class="pagers">
 	<form>
 		<img src="../resources/timelog/css/images/images/first.png" class="first"/>
 		<img src="../resources/timelog/css/images/images/prev.png" class="prev"/>
