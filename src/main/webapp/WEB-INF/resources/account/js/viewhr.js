@@ -31,12 +31,10 @@ $(document).ready(function() {
 								biometrics:$("#biometrics").val(),
 								department:$("#selectDepartment").val(),
 								position:$("#selectPosition").val(),
-								shift:$("#shift").val(),
+								shift:$("#selectShift").val(),
 								level:$("#level").val(),
 								hireDate:$("#hiredDate").val(),
-								supervisorName:$("#supervisorName").val(),
-								supervisorEmail:$("#supervisorEmail").val(),
-								locAssign:$("#locAssign").val(),
+								supervisorName:$("#selectSupervisorName").val(),
 								employeeEmail:$("#employeeEmail").val(),
 								};
 						
@@ -82,74 +80,6 @@ $(document).ready(function() {
 		});
 		
 		
-		$("#editBtn").click(function() {
-			// edit button for
-			if($("#editBtn").val() == 'Save') {
-				$(function() {
-					$("#dialog-confirm").dialog({
-						 resizable: false,
-					     height:140,
-					     modal: true,
-					     buttons: {
-					    	 "Save Profile": function() {
-					    		 disabledInput();
-									
-									var d = {firstName:$("#editfirstName").val(),
-											middleName:$("#editMiddleName").val(),
-											lastName:$("#editLastName").val(),
-											employeeId:$("#editEmployeeId").val(),
-											biometrics:$("#editBiometrics").val(),
-											department:$("#editDepartment").val(),
-											position:$("#editPosition").val(),
-											shift:$("#editShift").val(),
-											level:$("#editLevel").val(),
-											hireDate:$("#editHiredDate").val(),
-											regularizationDate:$("#editRegularizationDate").val(),
-											resignationDate:$("#editResignationDate").val(),
-											supervisorName:$("#editSupervisorName").val(),
-											supervisorEmail:$("#editSupervisorEmail").val(),
-											locAssign:$("#editLocAssign").val(),
-											employeeEmail:$("#editEmployeeEmail").val(),
-											};
-									var json = JSON.stringify(d);
-									console.log(json);
-									
-									$.ajax({
-										url: '../hr/saveEditEmployee',
-										type: 'POST',
-										data: d
-									})
-
-								$( this ).dialog( "close" );
-								
-					    	 },
-					    	 Cancel: function() {
-					    		 $( this ).dialog( "close" );
-					    		 disabledInput();
-					        }
-					     }
-					});
-				});
-				
-				$("#editBtn").attr('value', 'Edit');
-				$("#exitBtn").attr('value', 'Exit');
-			} else {
-				enableInput();
-				$("#editBtn").attr('value', 'Save');
-				$("#exitBtn").attr('value', 'Cancel');
-			}
-		});
-		
-		// exit button
-		$("#exitBtn").click(function() {
-			if($("#exitBtn").val() == 'Cancel') {
-				$("#exitBtn").attr('value', 'Exit');
-				$("#editBtn").attr('value', 'Edit');
-			}
-			
-			disabledInput();
-			$("#dialog-formFullInformation").dialog('close');
-		});
 		
 		$("#createBtn").click(function() {
 			
@@ -212,43 +142,63 @@ function showToForm(empInfo) {
 	
 	var employeeId = empInfo.id;
 	console.log(empInfo.id);
-	var d ={firstName:$("#editfirstName").val(),
-			middleName:$("#editMiddleName").val(),
-			lastName:$("#editLastName").val(),
-			employeeId:$("#editEmployeeId").val(),
-			biometrics:$("#editBiometrics").val(),
-			department:$("#editDepartment").val(),
-			position:$("#editPosition").val(),
-			shift:$("#editShift").val(),
-			level:$("#editLevel").val(),
-			hireDate:$("#editHiredDate").val(),
-			regularizationDate:$("#editRegularizationDate").val(),
-			resignationDate:$("#editResignationDate").val(),
-			supervisorName:$("#editSupervisorName").val(),
-			supervisorEmail:$("#editSupervisorEmail").val(),
-			locAssign:$("#editLocAssign").val(),
-			employeeEmail:$("#editEmployeeEmail").val(),
-			};
+	
 	$("#dialog-formFullInformation").dialog({
 		maxWidth : 550,
-		maxHeight : 600,
+		maxHeight : 630,
 		width : 550,
-		height : 600,
+		height : 630,
 		modal : true,
 		buttons: {
 			"Save" : function() {
-				disabledInput();
-				$.ajax({
-					url: '../hr/saveEditEmployee',
-					type: 'POST',
-					data: d
-				})
+				$("#dialog-confirm").dialog({
+					 resizable: false,
+				     height:140,
+				     modal: true,
+				     buttons: {
+				    	 "Save Profile": function() {
+				    		 disabledInput();
+								
+								var d = {firstName:$("#editfirstName").val(),
+										middleName:$("#editMiddleName").val(),
+										lastName:$("#editLastName").val(),
+										employeeId:$("#editEmployeeId").val(),
+										biometrics:$("#editBiometrics").val(),
+										department:$("#editDepartment").val(),
+										position:$("#editPosition").val(),
+										shift:$("#editShift").val(),
+										level:$("#editLevel").val(),
+										hireDate:$("#editHiredDate").val(),
+										regularizationDate:$("#editRegularizationDate").val(),
+										resignationDate:$("#editResignationDate").val(),
+										supervisorName:$("#editSupervisorName").val(),
+										supervisorEmail:$("#editSupervisorEmail").val(),
+										locAssign:$("#editLocAssign").val(),
+										employeeEmail:$("#editEmployeeEmail").val(),
+										};
+								var json = JSON.stringify(d);
+								console.log(json);
+								
+								$.ajax({
+									url: '../hr/saveEditEmployee',
+									type: 'POST',
+									data: d
+								})
+
+							$( this ).dialog( "close" );
+							
+				    	 },
+				    	 Cancel: function() {
+				    		 $( this ).dialog( "close" );
+				    		 disabledInput();
+				        }
+				     }
+				});
 			},
 			"Edit Profile" : function() {
 				enableInput();
 				
-				var json = JSON.stringify(d);
-				console.log(json);
+				
 			},
 			Cancel: function() {
 		          $( this ).dialog( "close" );
@@ -264,6 +214,19 @@ function showToForm(empInfo) {
 		
 	});
 	
+	var department = '';
+	$.ajax({
+		url: "../hr/retrieveDepartmentJSON",
+		success: function(response) {
+			$.each(response, function(key, value) {
+				department +='<option value=' + key +'> ' + value + '</option>';
+			});
+			$('#editSelectDepartment').append(department);
+			
+			
+		}
+	})
+		
 	$.ajax({
 		url : "../hr/searchEmployee",
 		data : {
@@ -274,8 +237,7 @@ function showToForm(empInfo) {
 			$("#editMiddleName").val(response.middleName)
 			$("#editLastName").val(response.lastName)
 			$("#editEmployeeId").val(response.employeeId)
-			$("#editBiometrics").val(response.biometrics)
-			$("#editDepartment").val(response.department)
+			$("#editBiometrics").val(response.biometricId)				
 			$("#editShift").val(response.shift)
 			$("#editPosition").val(response.position)
 			$("#editLevel").val(response.level)
@@ -286,12 +248,16 @@ function showToForm(empInfo) {
 			$("#editSupervisorEmail").val(response.supervisorEmail)
 			$("#editLocAssign").val(response.locAssign)
 			$("#editEmployeeEmail").val(response.employeeEmail)
+			
 		}
 	})
+	
+	
 }
 
 // add attribute 'disabled' to input of dialog-formFullInformation
 function disabledInput() {
+	$("#editEmployeeId").attr('disabled', 'disabled');
 	$("#editfirstName").attr('disabled', 'disabled');
 	$("#editMiddleName").attr('disabled', 'disabled');
 	$("#editLastName").attr('disabled', 'disabled');
@@ -312,6 +278,7 @@ function disabledInput() {
 
 // remove attribute 'disabled' to input of dialog-formFullInformation
 function enableInput() {
+	$("#editEmployeeId").removeAttr('disabled');
 	$("#editfirstName").removeAttr('disabled');
 	$("#editMiddleName").removeAttr('disabled');
 	$("#editLastName").removeAttr('disabled');
@@ -427,6 +394,20 @@ $(function() {
 
 });
 
+$(function() {
+	var shift = '';
+	$.ajax({
+		url: "../hr/retrieveShiftJSON",
+		success: function(response) {i
+			$.each(response, function(key, value) {
+				shift +='<option value=' + key +'> ' + value + '</option>';
+			});
+			$('#selectShift').append(shift);
+		}
+	})
+	
+});
+
 
 $(function() {
   $( "#hiredDate" ).datepicker();
@@ -456,4 +437,3 @@ $(function() {
 	      $( "#editResignationDate" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
 	    });
 });
-

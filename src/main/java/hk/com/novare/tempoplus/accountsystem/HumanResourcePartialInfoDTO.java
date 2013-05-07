@@ -1,6 +1,6 @@
 package hk.com.novare.tempoplus.accountsystem;
 
-public class EmployeePartialInfoDTO {
+public class HumanResourcePartialInfoDTO {
 	
 	private String firstName;
 	private String middleName;

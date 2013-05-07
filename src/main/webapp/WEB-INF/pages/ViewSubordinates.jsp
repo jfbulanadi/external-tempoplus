@@ -24,26 +24,11 @@
 	src="../resources/account/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.pager.min.js"></script>
 <script src="../resources/account/js/viewhr.js"></script>
-<!-- <script src="../resources/account/js/addManagerSubordinate.js"></script> -->
-
+<script src="../resources/account/js/addManagerSubordinate.js"></script>
+<!-- <script src="../resources/account/js/deleteManagerSubordinate.js"></script> -->
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Subordinate's List</title>
 
-<script>
-$(function(){
-	$("#addSubordinates").button().click(function(){
-		 $( "#AddSubordinateForm" ).dialog({
-				maxWidth : 300,
-				maxHeight : 300,
-				width : 300,
-				height : 300,
-				modal: true
-			});
-	});
-});
-
-
-</script>
 </head>
 <body>
 	<!-- Table viewer -->
@@ -55,41 +40,56 @@ $(function(){
 		<div align="right">
 			<button id="addSubordinates">Add Subordinates</button>
 		</div>
-	</div>
-
-	<table class="tablesorter">
-		<thead>
-			<tr>
+	
+	
+		<div>
+			<table class="tablesorter" id = "retrieveSubordinates" align = "center">
+				<thead>
+					<tr>
+				
+						<th>Employee ID</th>
+						<th>First Name</th>
+						<th class="sorter-false">Middle Name</th>
+						<th>Last Name</th>
+						<th class="sorter-false">Department</th>
+						<th class="sorter-false">Position</th>
+						<th width ="50" class="sorter-false">
+						delete subordinate</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${subordinatesList}" var="subordinate">
+						<tr>
+							<td>${subordinate.employeeId }</td>
+							<td>${subordinate.firstName }</td>
+							<td>${subordinate.middleName }</td>
+							<td>${subordinate.lastName }</td>
+							<td>${subordinate.department }</td>
+							<td>${subordinate.position }</td>
+							<td width ="50">
+							<center>
+							<input type="checkbox"name="delete"
+								id = "${subordinate.employeeId}" />
+							</center>
+							</td>
 		
-				<th class="sorter-false">Employee ID</th>
-				<th class="sorter-false">First Name</th>
-				<th class="sorter-false">Middle Name</th>
-				<th class="sorter-false">Last Name</th>
-				<th class="sorter-false">Department</th>
-				<th class="sorter-false">Position</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach items="${subordinatesList}" var="subordinate">
-				<tr <%-- id="${subordinate.employeeId} " onClick=showToForm(this) --%>>
-					<td>${subordinate.employeeId }</td>
-					<td>${subordinate.firstName }</td>
-					<td>${subordinate.middleName }</td>
-					<td>${subordinate.lastName }</td>
-					<td>${subordinate.department }</td>
-					<td>${subordinate.position }</td>
-
-				</tr>
-			</c:forEach>
-		</tbody>
-	</table>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+			
+			<!-- <div align = "right">
+			<button id="deleteSubordinates">Delete Subordinates</button>
+			</div> -->
+		</div>
+	</div>
 	
 	<div class="pager" align="right">
 	
 		<img src="../resources/bmn/css/images/first.png" class="first" /> 
 		<img src="../resources/bmn/css/images/prev.png" class="prev" /> 
 		<span class="pagedisplay"></span>
-		<!-- this can be any element, including an input -->
+
 		<img src="../resources/bmn/css/images/next.png" class="next" /> 
 		<img src="../resources/bmn/css/images/last.png" class="last" /> 
 		<select	class="pagesize">
@@ -99,19 +99,27 @@ $(function(){
 		</select>
 	</div>
 	
-	<div id="AddSubordinateForm" title="Add Subordinate">
-		<form method="POST" action="/searchSubordinateEmployeeId" >
+		
+	
+	<div id="AddSubordinateForm" title="Add Subordinate" style = "display:none">
+		
 			<table>
 				<tr>
-					<td>Search Employee Id  </td>
-					<td><input size="12" id="searchEmployeeId" /></td>
-				</tr>
-					
-				<tr>
+					<!-- Search Employee -->
+					<td><input size="25" id="employeeName" /></td>
+					<td><button id = "searchEmployee" >Search Employee Name</button></td>
 				</tr>
 				
 			</table>
-		</form>
+				<div id = "foundEmployeeDiv">
+					<table id ="foundEmployeeTable" class = "tablesorter" align = "center">
+				
+						
+					</table>
+						<button id = "addNewSubordinates" >Add Subordinate/s</button>
+					
+				</div>
+							
 	</div>
 </body>
 </html>

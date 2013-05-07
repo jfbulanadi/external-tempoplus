@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("hr")
@@ -22,8 +21,8 @@ public class HrController {
 	@Qualifier("hrService")
 	HrService hrService;
 	
-	@Autowired
-	SingleFileUploadForm singleFileUploadForm;
+	/*@Autowired
+	SingleFileUploadForm singleFileUploadForm;*/
 	
 
 	@RequestMapping(value = "/employeemanager")
@@ -34,14 +33,14 @@ public class HrController {
 
 	@RequestMapping(value = "/selectAllJSON")
 	public @ResponseBody
-	List<EmployeePartialInfoDTO> subPage() {
+	List<HumanResourcePartialInfoDTO> subPage() {
 		return hrService.retrieveAllEmployee();
 
 	}
 	
 	@RequestMapping(value = "/searchEmployee")
 	public @ResponseBody
-	EmployeeFullInfoDTO searchEmployee( @RequestParam(value = "employeeId") String searchString) {
+	HumanResourceDTO searchEmployee( @RequestParam(value = "employeeId") String searchString) {
 		return hrService.searchEmployee(searchString, "employeeId");
 	}
 	
@@ -61,10 +60,10 @@ public class HrController {
 			@RequestParam(value = "resignationDate") String resignationDate,
 			@RequestParam(value = "supervisorName") String supervisorName,
 			@RequestParam(value = "supervisorEmail") String supervisorEmail,
-			@RequestParam(value = "employeeEmail") String employeeEmail) {
+			@RequestParam(value = "employeeEmail") String employeeEmail){
 		
 		
-		EmployeeFullInfoDTO employeeFullInfoDTO = new EmployeeFullInfoDTO();
+		HumanResourceFullInfoDTO employeeFullInfoDTO = new HumanResourceFullInfoDTO();
 		
 		employeeFullInfoDTO.setFirstName(firstName);
 		employeeFullInfoDTO.setMiddleName(middleName);
@@ -80,9 +79,12 @@ public class HrController {
 		employeeFullInfoDTO.setResignationDate(resignationDate);
 		employeeFullInfoDTO.setSupervisorName(supervisorName);
 		employeeFullInfoDTO.setSupervisorEmail(supervisorEmail);
-		employeeFullInfoDTO.setEmployeeEmail(employeeEmail);		
+		employeeFullInfoDTO.setEmployeeEmail(employeeEmail);
 		
-		hrService.saveEmployeeDetail(employeeFullInfoDTO);
+		
+		hrService.saveEditedEmployeeDetail(employeeFullInfoDTO);
+		
+		System.out.println(employeeFullInfoDTO.getBiometrics());
 		
 		return "ViewHr";
 	}
@@ -98,14 +100,13 @@ public class HrController {
 			@RequestParam(value = "biometrics") String biometrics,
 			@RequestParam(value = "department") int departmentId,
 			@RequestParam(value = "position") int positionId,
-			@RequestParam(value = "shift") String shift,
+			@RequestParam(value = "shift") int shift,
 			@RequestParam(value = "level") String level,
 			@RequestParam(value = "hireDate") String hireDate,
 			@RequestParam(value = "supervisorName") String supervisorName,
-			@RequestParam(value = "supervisorEmail") String supervisorEmail,
 			@RequestParam(value = "employeeEmail") String employeeEmail) {
 		
-		EmployeeFullInfoDTO employeeFullInfoDTO = new EmployeeFullInfoDTO();
+		HumanResourceFullInfoDTO employeeFullInfoDTO = new HumanResourceFullInfoDTO();
 		
 		employeeFullInfoDTO.setFirstName(firstName);
 		employeeFullInfoDTO.setMiddleName(middleName);
@@ -114,10 +115,9 @@ public class HrController {
 		employeeFullInfoDTO.setBiometrics(biometrics);
 		employeeFullInfoDTO.setDepartmentId(departmentId);
 		employeeFullInfoDTO.setPositionId(positionId);
-		employeeFullInfoDTO.setShift(shift);
+		employeeFullInfoDTO.setShiftId(shift);
 		employeeFullInfoDTO.setLevel(level);
 		employeeFullInfoDTO.setHiredDate(hireDate);
-		employeeFullInfoDTO.setSupervisorEmail(supervisorEmail);
 		employeeFullInfoDTO.setSupervisorName(supervisorName);
 		employeeFullInfoDTO.setEmployeeEmail(employeeEmail);
 		hrService.createEmployeeDetail(employeeFullInfoDTO);
@@ -145,23 +145,24 @@ public class HrController {
 		return hrService.retieveSupervisor(departmentId);
 	}
 	
-	/*@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
+	@RequestMapping(value = "/retrieveShiftJSON")
+	public @ResponseBody
+	Map<Integer, String> retrieveSupervisor() {		
+		return hrService.retrieveShifts();
+	}
+	
+	@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
 	public String getFileUpload(
 			@ModelAttribute("uploadForm") SingleFileUploadForm uploadForm,
 			ModelMap modelMap) {
 
 		// upload file
-		final MultipartFile files = uploadForm.getFile();
+		hrService.userDBFileUpload(uploadForm.getFile());
+		
+		return "redirect:employeemanager";
 
-		// transform to direct category userDb
-		TransformFile tf;
-		tf = new UserDb();
-		List<EmployeeFullInfoDTO> pList = tf.toExcel(files);
-
-		// pass to add_profile.jsp
-		//modelMap.addAttribute("employeeList", hrService.retieveAllEmployee());
-		return "ViewHr";
-
-	}*/
+	}
+	
+	
 	
 }
