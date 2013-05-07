@@ -22,8 +22,8 @@ public class HrController {
 	@Qualifier("hrService")
 	HrService hrService;
 	
-	@Autowired
-	SingleFileUploadForm singleFileUploadForm;
+	/*@Autowired
+	SingleFileUploadForm singleFileUploadForm;*/
 	
 
 	@RequestMapping(value = "/employeemanager")
