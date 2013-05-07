@@ -40,10 +40,6 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 		<li><a href = "#AccountSettings">Account Settings</a></li>
 		<li><a href = "#Administration">Administration</a></li>
 	</ul>
-		
-	<div id = "ViewTimeLog">
-					
-	</div>
 
 	<div id = "MyProfile">
 		<table>
