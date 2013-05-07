@@ -1,5 +1,9 @@
 var user = "";
+<<<<<<< HEAD
+var Employee_Id = 0; //for hr
+=======
 var Employee_Id = 123; //for hr
+>>>>>>> c24a701837bea0e031c386c1e2242f09e47e5ef2
 var view ="";
 var id = 0;
 $(document).ready(function() {
@@ -7,7 +11,11 @@ $(document).ready(function() {
 		$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
 		$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
 		$( "#SearchTimeLog" ).click(SearchTimeLog); 
+<<<<<<< HEAD
+		$( "#SearchButton" ).click(SearchButton);
+=======
 		$( "#SearchButton" ).click(SearchButton);		
+>>>>>>> c24a701837bea0e031c386c1e2242f09e47e5ef2
 		mylog();
 });	
 function SearchButton() {
@@ -301,12 +309,19 @@ function SearchTimeLog()
 						    }).done(
 						    		
 							    	function(){
+<<<<<<< HEAD
+							    		$("#tblTimeLog")
+							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
+							    		.tablesorterPager({container: $("#pager"),positionFixed: false}); 
+									});
+=======
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
 							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,output : '{page} / {totalPages}'}); 
 							    		$("#tblTimeLog").trigger('update');
 							    	});
+>>>>>>> c24a701837bea0e031c386c1e2242f09e47e5ef2
 					}
 				else if(view == "manager")
 					{
@@ -340,12 +355,19 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
+<<<<<<< HEAD
+							    		$("#tblTimeLog")
+							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
+							    		.tablesorterPager({container: $("#pager"),positionFixed: false});
+									});
+=======
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
 							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,output : '{page} / {totalPages}'});
 							    		$("#tblTimeLog").trigger('update');
 							    	});
+>>>>>>> c24a701837bea0e031c386c1e2242f09e47e5ef2
 					}
 				else if(view == "hr")
 					{ 
@@ -378,12 +400,19 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
+<<<<<<< HEAD
+							    		$("#tblTimeLog")
+							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
+							    		.tablesorterPager({container: $("#pager"),positionFixed: false});
+									});
+=======
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
 							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,output : '{page} / {totalPages}'});
 							    		$("#tblTimeLog").trigger('update');
 							    	});
+>>>>>>> c24a701837bea0e031c386c1e2242f09e47e5ef2
 					}
 			}
 		else

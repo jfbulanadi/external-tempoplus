@@ -41,9 +41,6 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 		<li><a href = "#Administration">Administration</a></li>
 	</ul>
 		
-	<div id = "ViewTimeLog">
-					
-	</div>
 
 	<div id = "MyProfile">
 		<table align = "center">
@@ -160,7 +157,7 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
     			
   			</div>
 	</div>
-	
+
 
 </div>
 

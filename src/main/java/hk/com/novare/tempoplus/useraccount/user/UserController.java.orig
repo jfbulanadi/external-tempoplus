@@ -123,19 +123,37 @@ public class UserController {
 	}
 	
 	@RequestMapping("/logout")
+<<<<<<< HEAD
 	public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest,@ModelAttribute(value="timelogs") TimeLogging timelogs) throws SQLException{
+		
+		httpServletRequest.getSession().invalidate();
+		modelMap.clear();
+		timelogService.logTimeOut(timelogs);
+
+		//clear all objects in memory
+		List<User> userList = userService.clearUserInformation(user.getEmail());
+		List<Employee> supervisorList = userService.clearSupervisorInformation(user.getSupervisorId());
+		
+		userList.clear();
+		supervisorList.clear();
+		
+		return "redirect:index";
+	}
+=======
+	 public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest,@ModelAttribute(value="timelogs") TimeLogging timelogs) throws SQLException{
 	  
 	  httpServletRequest.getSession().invalidate();
 	  modelMap.clear();
-		timelogService.logTimeOut(timelogs);
+	  timelogService.logTimeOut(timelogs);
 
 	  //clear all objects in memory
 	  List<User> userList = userService.clearUserInformation(user.getEmail());
 	  List<Employee> supervisorList = userService.clearSupervisorInformation(user.getSupervisorId());
-		
+	  
 	  userList.clear();
 	  supervisorList.clear();
 	  
 	  return "redirect:index";
 	 }
+>>>>>>> c24a701837bea0e031c386c1e2242f09e47e5ef2
 }
