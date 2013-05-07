@@ -10,14 +10,6 @@
 <title>BMN Manager</title>
 
  
-<link rel="stylesheet" type="text/css"
-	href="../resources/bmn/css/jquery.tablesorter.pager.css"></link>
-<link rel="stylesheet" type="text/css"
-	href="../resources/bmn/css/theme.default.css"></link>
-<link rel="stylesheet" type="text/css"
-	href="../resources/account/css/jquery-ui.css"></link>
- 
- 
 <script src="../resources/bmn/js/jquery-1.9.1.js"></script>
 <script src="../resources/bmn/js/jquery-ui.js"></script>
 <script src="../resources/bmn/js/jquery.tablesorter.min.js"></script>
@@ -226,10 +218,37 @@ font-family : Arial, Helvetica, sans-serif;
 </script>
 </head>
 <body>
-	<!-- FORM IS HIDDEN BY DIALOG -->
+<h2>BMN Manager</h2>
+	<div>
+
+	<form:form method="post" action="uploadfile"
+		modelAttribute="uploadForm" enctype="multipart/form-data">
+
+		<p>Select File to Upload</p>
+
+		<input id="addFile" type="button" value="Add File" />
+		<table id="fileTable">
+		<tr>
+			<td><select name = "category">
+			<option value=1>Biometric</option>
+			<option value=2>Mantis</option>
+			<option value=3>Nt3</option>
+			<option value=4>Employees</option>
+			<option value=5>Consolidate Timesheet</option>
+			</select></td>
+		</tr>
+			<tr>
+				<td><input name="file" type="file" /></td>
+			</tr>
+		</table>
+		<br />
+		<input type="submit" value="Upload" />
+	</form:form>
+	
+	</div>
 	
 
-	
+	<!-- FORM IS HIDDEN BY DIALOG -->	
 	<div id="dialog" title="Update time">
 	<h3>Employee timelog details</h3>
 		<hr/>
@@ -303,33 +322,6 @@ font-family : Arial, Helvetica, sans-serif;
 		</tbody>
 	</table>
 	<hr/>
-	<div>
-	<form:form method="post" action="uploadfile"
-		modelAttribute="uploadForm" enctype="multipart/form-data">
-
-		<p>Select File to Upload</p>
-
-		<input id="addFile" type="button" value="Add File" />
-		<table id="fileTable">
-		<tr>
-			<td><select name = "category">
-			<option value=1>Biometric</option>
-			<option value=2>Mantis</option>
-			<option value=3>Nt3</option>
-			<option value=4>Employees</option>
-			<option value=5>Consolidate Timesheet</option>
-			</select></td>
-		</tr>
-			<tr>
-				<td><input name="file" type="file" /></td>
-			</tr>
-		</table>
-		<br />
-		<input type="submit" value="Upload" />
-	</form:form>
-	</div>
-	
-
 
 </body>
 </html>

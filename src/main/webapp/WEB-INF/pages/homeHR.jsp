@@ -18,6 +18,13 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 });
 </script>
 
+<style>
+div#dialog {
+display: none;
+font-size: 68.5%;   
+font-family : Arial, Helvetica, sans-serif;
+}
+</style>
 </head>
 
 
@@ -150,9 +157,9 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
   			<ul>
 			    <li><a href="../hr/employeemanager">Employee Manager</a></li>
 			    <li><a href="#ShiftManager">Shift Manager</a></li>
-			  	<li><a href="#BMNManager">BMN Manager</a></li>
+			  	<li><a href="../consolidation/view">BMN Manager</a></li>
 			  	<li><a href="#DownloadTimesheet">Download Timesheet</a></li>
-			  	<li><a href="#EmailManager">Email Manager</a></li> 
+			  	<li><a href="../sendMail/mail">Email Manager</a></li> 
 			  	<li><a href="#HolidayView">Holiday View</a></li> 	
   			</ul>
 	  		<div id="ShiftManager">
@@ -160,20 +167,16 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
     			<h2>Shift Manager</h2>
     		</div>
   			
-  			<div id="BMNManager">
-    			<h2>BMN Manager</h2>
-    			
-  			</div>
+  			<div></div>
+  			
+  		
   			
   			<div id="DownloadTimesheet">
     			<h2>Download Timesheet</h2>
     			
   			</div>
   			
-  			<div id="EmailManager">
-    			<h2>Shift Manager</h2>
-    			
-  			</div>
+  			
   			
   			<div id="HolidayView">
     			<h2>Shift Manager</h2>
