@@ -6,27 +6,33 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>View Time Log</title>
-<link href="../resources/timelog/css/jPages.css" rel="stylesheet">
+
+	<link href="../resources/timelog/css/jPages.css" rel="stylesheet">
 	<link href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" rel="stylesheet">
 	<link href="../resources/timelog/css/ViewTimeLogCSS.css" rel="stylesheet">
 	<link rel="stylesheet" href="../resources/timelog/css/style1.css" type="text/css" />
+
 	<script src="../resources/timelog/js/jquery-1.9.1.js"></script>
-	
 	<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>	
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
-	<script>var my_jQuery = jQuery.noConflict();</script>
+	
+	<!-- no need for version 1.7.1 -->
+	<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> 
+	<script>var my_jQuery = jQuery.noConflict();</script> -->
+	
+	<!-- transfer to main view -->
+		<!-- <script type="text/javascript" src="../resources/timelog/js/jquery-1.3.1.min.js"></script>
+	<script>var my_jQuery3 = jQuery.noConflict();</script> -->
+	
+	<!-- <script type="text/javascript" src="../resources/timelog/js/jquery.tablesorter.js"></script>
+	<script type="text/javascript" src="../resources/timelog/js/jquery.tablesorter.pager.js"></script> -->
+	
 	<script src="../resources/timelog/js/jPages.js"></script>
 	
-	<script type="text/javascript" src="../resources/timelog/js/jquery-1.3.1.min.js"></script>
-	<script>var my_jQuery3 = jQuery.noConflict();</script>
-	
-	<script type="text/javascript" src="../resources/timelog/js/jquery.tablesorter.js"></script>
-	<script type="text/javascript" src="../resources/timelog/js/jquery.tablesorter.pager.js"></script>
-	<script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
 	<script type="text/javascript">var idExternal =${id}</script>
+	<script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
 	
 	</head>
-<body onload = "mylog()">
+<body>
 
 <table id = "tblNav">
 <tr>
@@ -75,7 +81,7 @@ Lastname/Firstname: <input type="text" id="empName" /> <button id="SearchButton"
 	<table>
 	<tr >
 	<td>From: <input type="text" id="from" readonly="readonly"/> </td>
-	<td>To: <input type="text" id="to" readonly="readonly" /> </td>
+	<td>To: <input type="text" id="to"  readonly="readonly" /> </td>
 	<td> <input type="button" id="SearchTimeLog" value="Search"> </td>
 	</tr>
 	</table>
@@ -138,4 +144,5 @@ Lastname/Firstname: <input type="text" id="empName" /> <button id="SearchButton"
 
 </table>
 </body>
+<!-- <script type="text/javascript">mylog()</script> -->
 </html>

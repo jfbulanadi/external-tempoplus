@@ -1,27 +1,25 @@
 var user = "";
 var Employee_Id = 0; //for hr
-var view =""
-var id;
+var view ="";
+var id = 0;
 $(document).ready(function() {
-		
+		id = idExternal;
 		$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
 		$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
 		$( "#SearchTimeLog" ).click(SearchTimeLog); 
-		id = idExternal;
-		
-
-	$("#SearchButton").click(function() {
+		$( "#SearchButton" ).click(SearchButton);
+		mylog();
+});	
+function SearchButton() {
 		var newresponse = null;
 		var empname = $('#empName').val();
-							
 				$.ajax({
 					type: "POST",
 			        url: "/tempoplus/timelog/searchEmployee",
 			    	data: {'empName': empname},
 			    	success: function(response){
-			    		newresponse = response;
+			    		newresponse = response; 
 			    		if(newresponse =="OK"){
-
 			    			$("#HrSearch").dialog({
 			    				
 								maxWidth : 550,
@@ -66,8 +64,8 @@ $(document).ready(function() {
 			    			}).done(
 						    		
 							    	function(){
-							    		my_jQuery3("#tblSearch").tablesorter();
-							    		my_jQuery3("#tblSearch tbody td").hover(function() {
+							    		$("#tblSearch").tablesorter();
+							    		$("#tblSearch tbody td").hover(function() {
 											$(this).parents('tr').find('td').addClass('highlight');
 										}, function() {
 											$(this).parents('tr').find('td').removeClass('highlight');
@@ -82,10 +80,8 @@ $(document).ready(function() {
 			    	},
 					
 				});
-	});
 
-});
-
+}
 
 
 function fetch(d){
@@ -116,14 +112,17 @@ function mylog()
 	$("#SearchSub").css({display: "none"});
 	$("#HrSearch").css({display: "none"});
 	$("#SearchRow").css({display:"none"});
+
 	//hr search textbox and label
 	document.getElementById('from').value = ""; 
 	document.getElementById('to').value = ""; 
 	document.getElementById('empName').value = "";
 
 	$('#tblTimeLog tbody').remove();
-	document.getElementById('tbl').value = ""; 
 	document.getElementById('tbl').disabled=true;
+	
+	document.getElementById('tbl').value = "";  
+	
 	document.getElementById('pagesize').selectedIndex=0;
 	$('#tblSearch tbody').remove();
 	
@@ -147,7 +146,6 @@ function mylog()
 	        }
 	    });
 	 view ='mylog';
-
 	if(user == "hr" || user == "manager")
 		{
 		document.getElementById('others').href ="javascript:others()";
@@ -164,6 +162,7 @@ function mylog()
 		{
 		document.getElementById('others').href ="javascript:void(0)";
 		}
+	
 }
 
 function others()
@@ -299,9 +298,9 @@ function SearchTimeLog()
 						    }).done(
 						    		
 							    	function(){
-							    		my_jQuery3("#tblTimeLog")
+							    		$("#tblTimeLog")
 							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
-							    		.tablesorterPager({container: my_jQuery3("#pager"),positionFixed: false}); 
+							    		.tablesorterPager({container: $("#pager"),positionFixed: false}); 
 									});
 					}
 				else if(view == "manager")
@@ -336,9 +335,9 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
-							    		my_jQuery3("#tblTimeLog")
+							    		$("#tblTimeLog")
 							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
-							    		.tablesorterPager({container: my_jQuery3("#pager"),positionFixed: false});
+							    		.tablesorterPager({container: $("#pager"),positionFixed: false});
 									});
 					}
 				else if(view == "hr")
@@ -373,9 +372,9 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
-							    		my_jQuery3("#tblTimeLog")
+							    		$("#tblTimeLog")
 							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
-							    		.tablesorterPager({container: my_jQuery3("#pager"),positionFixed: false});
+							    		.tablesorterPager({container: $("#pager"),positionFixed: false});
 									});
 					}
 			}
@@ -394,3 +393,4 @@ function SearchTimeLog()
 			
 			}
 	}
+/*mylog();*/
