@@ -5,7 +5,6 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>View Time Log</title>
 
 	
 	
@@ -14,7 +13,6 @@
 
 
 	
-
 <title>TempoPlus Login</title>
 </head>
 <body>

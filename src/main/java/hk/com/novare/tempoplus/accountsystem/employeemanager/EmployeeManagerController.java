@@ -56,10 +56,7 @@ public class EmployeeManagerController {
 			for(int i = 0; i < idArray.length(); i++){
 				subordinateIds.add(Integer.parseInt(idArray.getString(i)));
 			}
-			
-			for(int id : subordinateIds) {
-				System.out.println(id);
-			}
+		
 		int managerEmployeeId = Integer.parseInt(modelMap.get("userEmployeeId").toString());
 		boolean isSupervisorUpdated = 
 				employeeManagerService.updateSupervisor(managerEmployeeId, subordinateIds);
