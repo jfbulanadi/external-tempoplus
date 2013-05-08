@@ -117,13 +117,7 @@
 					});
 	
 </script>
-
-<script>
-
-
-
-</script>
-
+W
 <script>
  function showToForm(myId) {
 	
@@ -183,6 +177,9 @@
 	 $("#txttimeout").val(timeout);
 	 $("#txtdate").val(date);
 	 
+	
+	 
+	 
 	 $.ajax({
 			type: "POST",
 			url: "/tempoplus/consolidation/ajaxFetchTickets",
@@ -195,7 +192,6 @@
 				$.each(data, function(keys,values) {
 					htmlstr+= "<tr>";
 					htmlstr+= "<td>" + values.category + "|" + values.ticketId + "|" + values.status + "|" +values.timeIn+ "|" + values.timeOut + "</td>";
-					//htmlstr+= "<td>adada</td>";
 					htmlstr+= "</tr>";
 				
 				});
@@ -283,7 +279,7 @@
 	<hr/>
 	<div>
 	<div class="pager" align="right">
-	Select timesheet:<select>
+	Select timesheet: <select>
 	<option>010113.xls</option>
 	<option>011513.xls</option>
 	<option>020113.xls</option>

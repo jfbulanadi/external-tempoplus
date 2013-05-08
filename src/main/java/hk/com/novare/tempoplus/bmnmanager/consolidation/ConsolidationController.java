@@ -53,14 +53,6 @@ public class ConsolidationController {
 		return "ViewBMN";
 	}
 	
-	
-	
-	@RequestMapping(value = "/mail", method = RequestMethod.GET)
-	public String mailTimeSheet() {
-	logger.info("mailTimeSheet: Displaying mail tab.");
-	return "ViewSendMail";
-	}
-	
 	@RequestMapping(value = "/ajaxUpdateConsolidations", method = RequestMethod.POST)
 	public @ResponseBody Boolean updateConsolidations(@RequestParam String timeIn,
 			@RequestParam String timeOut,
