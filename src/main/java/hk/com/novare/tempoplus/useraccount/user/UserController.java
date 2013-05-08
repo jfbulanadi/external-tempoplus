@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Controller
@@ -80,30 +81,32 @@ public class UserController {
 		//set to session attributes
 		modelMap.addAttribute("userEmployeeId", user.getEmployeeId());
 		modelMap.addAttribute("userEmail",user.getEmail());
-		
 		modelMap.addAttribute("userFirstName", user.getFirstname().toLowerCase());
+
 		modelMap.addAttribute("userEmail", modelMap.get("userEmail"));
 		if(user.getDepartmentId() == 11){
 			//for HR access
+
 			 accessLevel ="homeHR";
 		}
 		else if(user.getIsSupervisor() == 1){
 			//for Supervisor access
+			
 			accessLevel = "homeSupervisor";
 		}else {
 			//for for all access
+			
 			accessLevel = "homeUser";
 		}		
-	return accessLevel;
-					
+	return accessLevel;		
 	}
-	/*change password for user*/
+		
 	@RequestMapping("/changePassword")
-	public String changePasswordProcess(ModelMap modelMap,
+	public @ResponseBody String changePasswordProcess(
 			@RequestParam("currentPassword") String currentPassword,
 			@RequestParam("newPassword") String newPassword,
 			@RequestParam("repeatNewPassword") String repeatedNewPassword) {
-		
+		String message = "";
 		boolean isCurrentPasswordMatched = userService.matchCurrentPassword(
 						userService.hashPassword(currentPassword),user.getPassword());
 		boolean isNewPasswordAcceptable = 
@@ -112,12 +115,12 @@ public class UserController {
 		if(isCurrentPasswordMatched && isNewPasswordAcceptable){
 			
 			userService.saveNewPassword(user.getEmployeeId(), repeatedNewPassword);
-			modelMap.addAttribute("passwordMsg", "New password is saved.");
+			message = "New password is saved.";
 			
 		}else{
-			modelMap.addAttribute("passwordMsg", "Check your input.");
+			message =  "Check your input.";
 		}
-		return accessLevel;
+		return message;
 	}
 	
 	@RequestMapping("/logout")

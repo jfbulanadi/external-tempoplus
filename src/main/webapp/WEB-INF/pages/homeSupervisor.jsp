@@ -8,6 +8,7 @@
 <!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" /> -->
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script src="../resources/account/js/changePassword.js"></script>
 
 <title>Tempoplus Supervisor</title>
 
@@ -43,6 +44,9 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 		
 
 	<div id = "MyProfile">
+	<br></br>
+	<br></br>
+	<center>
 		<table align = "center">
 		<tbody id = "UserDetailsTable">
 				<tr>
@@ -107,42 +111,45 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 				</tbody>	
 		
 			</table>
-		
+		</center>
 	</div>
 
 
 	<div id = "AccountSettings">
-		<table>
-				 	<form name="changePassword" method="POST" action="<c:url value='/user/changePassword'/>">
-						
-						
-						<b>Change Password</b>
+
+	<br></br>
+	<br></br>
+		<center>
+			<table>
+				 		<b>Change Password</b>
 						
 							<tr>
 								<td><div style = "text-align: right">Current Password:</div> </td>
-								<td><input type="password" name = "currentPassword" /></td>
+								<td><input type="password" id = "currentPassword" /></td>
 							</tr>
 							
 							<tr>
 								<td><div style = "text-align: right">New Password:</div></td>
-								<td> <input type="password" name = "newPassword" /></td>
+								<td> <input type="password" id = "newPassword" /></td>
 							</tr>
 							
 							<tr>
 								<td><div style = "text-align: right">Re-enter New Password: </div></td>
-								<td><input type="password" name = "repeatNewPassword" /></td>
+								<td><input type="password" id = "repeatNewPassword" /></td>
 							</tr>
 							
 							<tr>
-								<td></td>
+								<td><div style = "text-align: right">
+								<span style = "color:blue">*minimum of 6 characters</span>
+								</div></td>
 								<td><div style = "text-align: right"></div>
-								<input type= "submit" value="Confirm"/></td>
+								<button id = "changePasswordBtn">Confirm </button>
 							</tr>
-						
-					</form>
+				
 				</table>
-		<div>${passwordMsg}</div>
-	</div>
+			</center>
+		</div>
+
 	
 	<div id = "Administration">
 	<div id="adminTab">
@@ -159,6 +166,7 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 	</div>
 
 
+	</div>
 </div>
 
 </body>
