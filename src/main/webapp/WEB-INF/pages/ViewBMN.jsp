@@ -10,7 +10,6 @@
 <title>BMN Manager</title>
 <link rel="stylesheet" type="text/css" href="../resources/bmn/css/theme.default.css" />
 <link rel="stylesheet" type="text/css" href="../resources/bmn/css/jquery.tablesorter.pager.css" />
-<link rel="stylesheet" type="text/css" href="../resources/bmn/css/jquery-ui.css" />
 
 
 <script src="../resources/bmn/js/jquery-1.9.1.js"></script>
