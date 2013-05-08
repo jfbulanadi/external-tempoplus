@@ -12,10 +12,6 @@
 <link rel="stylesheet" type="text/css" href="../resources/timelog/css/theme.default.css"></link>
 <link rel="stylesheet" href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
 
-
-	
-	<!-- <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script> -->
 	
 	<script src="../resources/timelog/js/jquery-1.9.1.js"></script>
 	<script type="text/javascript">var idExternal =${id}</script>
@@ -31,7 +27,7 @@
 	<script src="../resources/timelog/js/jquery.tablesorter.pager.min.js"></script>
 	
 	</head>
-<body>
+<body id = "bodyTimelog">
 
 <table id = "tblNav">
 <tr>
