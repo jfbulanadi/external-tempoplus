@@ -5,7 +5,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link rel="stylesheet" type="text/css"
+<!-- <link rel="stylesheet" type="text/css"
 	href="../resources/account/css/jquery.tablesorter.pager.css"></link>
 <link rel="stylesheet" type="text/css"
 	href="../resources/account/css/theme.default.css"></link>
@@ -16,7 +16,7 @@
 	href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
 
 <script src="../resources/account/js/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script> -->
 
 <script src="../resources/account/js/viewhr.js"></script>
 

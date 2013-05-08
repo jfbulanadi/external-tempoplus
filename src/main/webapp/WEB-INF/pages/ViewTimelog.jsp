@@ -8,16 +8,8 @@
 <title>View Time Log</title>
 <link href="../resources/timelog/css/ViewTimeLogCSS.css" rel="stylesheet">
 <link rel="stylesheet" href="../resources/timelog/css/style1.css" type="text/css" />
-<!-- <link rel="stylesheet" type="text/css" href="../resources/timelog/css/jquery.tablesorter.pager.css"></link> -->
-
-    <!-- 
-    <script src="../resources/timelog/js/jquery.tablesorter.min.js"></script>
-    <script src="../resources/timelog/js/jquery.tablesorter.widgets.min.js"></script>
-    <script src="../resources/timelog/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
-    <script src="../resources/timelog/js/jquery.tablesorter.pager.min.js"></script> -->
     
     <script type="text/javascript">var idExternal =${id}</script>
-
     <script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
 
     </head> 
