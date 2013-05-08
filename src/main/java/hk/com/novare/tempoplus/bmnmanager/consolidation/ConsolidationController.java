@@ -42,10 +42,14 @@ public class ConsolidationController {
 		return consolidationService.viewConsolidation();
 	}
 	
+
+	
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
 	public String viewConsolidated() throws SQLException {
-	return "ViewBMN";
+		return "ViewBMN";
 	}
+	
+	
 	
 	@RequestMapping(value = "/mail", method = RequestMethod.GET)
 	public String mailTimeSheet() {

@@ -185,9 +185,9 @@
 <body>
 
 
-	<center>
+	
 		<h2>Send TimeSheet to Employees</h2>
-	</center>
+	
 
 	<div id="validateForm">
 	Enter Your Mail Password
