@@ -21,8 +21,8 @@ public class HrController {
 	@Qualifier("hrService")
 	HrService hrService;
 	
-	/*@Autowired
-	SingleFileUploadForm singleFileUploadForm;*/
+	@Autowired
+	SingleFileUploadForm singleFileUploadForm;
 	
 
 	@RequestMapping(value = "/employeemanager")
@@ -51,16 +51,16 @@ public class HrController {
 			@RequestParam(value = "lastName") String lastName,
 			@RequestParam(value = "employeeId") String employeeId,
 			@RequestParam(value = "biometrics") String biometrics,
-			@RequestParam(value = "department") String department,
-			@RequestParam(value = "position") String position,
-			@RequestParam(value = "shift") String shift,
+			@RequestParam(value = "departmentId") int departmentId,
+			@RequestParam(value = "positionId") int positionId,
+			@RequestParam(value = "shiftId") int shiftId,
 			@RequestParam(value = "level") String level,
 			@RequestParam(value = "hireDate") String hireDate,
 			@RequestParam(value = "regularizationDate") String regularizationDate,
 			@RequestParam(value = "resignationDate") String resignationDate,
-			@RequestParam(value = "supervisorName") String supervisorName,
-			@RequestParam(value = "supervisorEmail") String supervisorEmail,
-			@RequestParam(value = "employeeEmail") String employeeEmail){
+			@RequestParam(value = "supervisorId") String supervisorId,
+			@RequestParam(value = "employeeEmail") String employeeEmail,
+			@RequestParam(value = "locAssign") String locAssign){
 		
 		
 		HumanResourceFullInfoDTO employeeFullInfoDTO = new HumanResourceFullInfoDTO();
@@ -70,21 +70,19 @@ public class HrController {
 		employeeFullInfoDTO.setLastName(lastName);
 		employeeFullInfoDTO.setBiometrics(biometrics);
 		employeeFullInfoDTO.setEmployeeId(employeeId);
-		employeeFullInfoDTO.setDepartment(department);
-		employeeFullInfoDTO.setPosition(position);
-		employeeFullInfoDTO.setShift(shift);
+		employeeFullInfoDTO.setDepartmentId(departmentId);
+		employeeFullInfoDTO.setPositionId(positionId);
+		employeeFullInfoDTO.setShiftId(shiftId);
 		employeeFullInfoDTO.setLevel(level);
 		employeeFullInfoDTO.setHiredDate(hireDate);
 		employeeFullInfoDTO.setRegularizationDate(regularizationDate);
 		employeeFullInfoDTO.setResignationDate(resignationDate);
-		employeeFullInfoDTO.setSupervisorName(supervisorName);
-		employeeFullInfoDTO.setSupervisorEmail(supervisorEmail);
+		employeeFullInfoDTO.setSupervisorName(supervisorId);
 		employeeFullInfoDTO.setEmployeeEmail(employeeEmail);
-		
+		employeeFullInfoDTO.setLocAssign(locAssign);
 		
 		hrService.saveEditedEmployeeDetail(employeeFullInfoDTO);
 		
-		System.out.println(employeeFullInfoDTO.getBiometrics());
 		
 		return "ViewHr";
 	}
@@ -138,6 +136,12 @@ public class HrController {
 		return hrService.retievePosition(departmentId);
 	}
 	
+	@RequestMapping(value = "/retrieveAllPositionJSON")
+	public @ResponseBody
+	Map<Integer, String> retrieveAllPosition() {		
+		return hrService.retieveAllPosition();
+	}
+	
 	@RequestMapping(value = "/retrieveSupervisorJSON")
 	public @ResponseBody
 	Map<Integer, String> retrieveSupervisor(
@@ -150,7 +154,7 @@ public class HrController {
 	Map<Integer, String> retrieveSupervisor() {		
 		return hrService.retrieveShifts();
 	}
-	
+
 	@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
 	public String getFileUpload(
 			@ModelAttribute("uploadForm") SingleFileUploadForm uploadForm,
@@ -162,6 +166,8 @@ public class HrController {
 		return "redirect:employeemanager";
 
 	}
+	
+
 	
 	
 	

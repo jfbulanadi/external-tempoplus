@@ -30,7 +30,7 @@
 <title>HR Administration</title>
 
 </head>
-<body>
+<body id="viewHrBody">
 
 	<!-- Table viewer -->
 	<br>
@@ -58,7 +58,7 @@
 		</thead>
 		<tbody>
 			<c:forEach items="${employeeList}" var="employee">
-				<tr id="${employee.employeeId} " onClick=showToForm(this)>
+				<tr id="${employee.employeeId}" onClick=showToForm(this)>
 					<td>${employee.biometrics }</td>
 					<td>${employee.employeeId }</td>
 					<td>${employee.firstName }</td>
@@ -191,7 +191,7 @@
 				</tr>
 				<tr>
 					<td>Department :</td>
-					<td><select class="department" id="editSelectDepartment">
+					<td><select class="department" id="editSelectDepartment" disabled>
 
 					</select></td>
 				</tr>
@@ -201,7 +201,9 @@
 				</tr>
 				<tr>
 					<td>Shift :</td>
-					<td><input size="20" id="editShift" disabled /></td>
+					<td><select id=editSelectShift disabled>
+
+					</select></td>
 				</tr>
 				<tr>
 					<td>Employee ID :</td>
@@ -209,7 +211,9 @@
 				</tr>
 				<tr>
 					<td>Position :</td>
-					<td><input size="50" id="editPosition" disabled /></td>
+					<td><select id="editSelectPosition" disabled> 
+
+					</select></td>
 				</tr>
 				<tr>
 					<td>Level :</td>
@@ -233,11 +237,9 @@
 				</tr>
 				<tr>
 					<td>Supervisor in NT3 :</td>
-					<td><input size="50" id="editSupervisorName" disabled /></td>
-				</tr>
-				<tr>
-					<td>Supervisor email :</td>
-					<td><input size="50" id="editSupervisorEmail" disabled /></td>
+					<td><select id="editSelectSupervisorName" disabled>
+
+					</select></td>
 				</tr>
 				<tr>
 					<td>Location Assignment :</td>
