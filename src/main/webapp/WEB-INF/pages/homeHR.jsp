@@ -5,9 +5,10 @@
 <html lang = "en">
 <head>
 <meta charset ="utf-8"/>
+
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
-
+	
 <title>Tempoplus HR</title>
 
 <script>
@@ -46,10 +47,6 @@ font-family : Arial, Helvetica, sans-serif;
 		<li><a href = "#AccountSettings">Account Settings</a></li>
 		<li><a href = "#Administration">Administration</a></li>
 	</ul>
-		
-	<div id = "ViewTimeLog">
-					
-	</div>
 
 	<div id = "MyProfile">
 		<table>

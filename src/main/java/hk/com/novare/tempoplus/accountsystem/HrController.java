@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("hr")
@@ -25,8 +24,7 @@ public class HrController {
 	@Autowired
 	SingleFileUploadForm singleFileUploadForm;
 	
-	
-	
+
 	@RequestMapping(value = "/employeemanager")
 	public String subPage(ModelMap modelMap) {		
 		modelMap.addAttribute("employeeList", hrService.retrieveAllEmployee());
@@ -53,16 +51,16 @@ public class HrController {
 			@RequestParam(value = "lastName") String lastName,
 			@RequestParam(value = "employeeId") String employeeId,
 			@RequestParam(value = "biometrics") String biometrics,
-			@RequestParam(value = "department") String department,
-			@RequestParam(value = "position") String position,
-			@RequestParam(value = "shift") String shift,
+			@RequestParam(value = "departmentId") int departmentId,
+			@RequestParam(value = "positionId") int positionId,
+			@RequestParam(value = "shiftId") int shiftId,
 			@RequestParam(value = "level") String level,
 			@RequestParam(value = "hireDate") String hireDate,
 			@RequestParam(value = "regularizationDate") String regularizationDate,
 			@RequestParam(value = "resignationDate") String resignationDate,
-			@RequestParam(value = "supervisorName") String supervisorName,
-			@RequestParam(value = "supervisorEmail") String supervisorEmail,
-			@RequestParam(value = "employeeEmail") String employeeEmail){
+			@RequestParam(value = "supervisorId") String supervisorId,
+			@RequestParam(value = "employeeEmail") String employeeEmail,
+			@RequestParam(value = "locAssign") String locAssign){
 		
 		
 		HumanResourceFullInfoDTO employeeFullInfoDTO = new HumanResourceFullInfoDTO();
@@ -72,19 +70,19 @@ public class HrController {
 		employeeFullInfoDTO.setLastName(lastName);
 		employeeFullInfoDTO.setBiometrics(biometrics);
 		employeeFullInfoDTO.setEmployeeId(employeeId);
-		employeeFullInfoDTO.setDepartment(department);
-		employeeFullInfoDTO.setPosition(position);
-		employeeFullInfoDTO.setShift(shift);
+		employeeFullInfoDTO.setDepartmentId(departmentId);
+		employeeFullInfoDTO.setPositionId(positionId);
+		employeeFullInfoDTO.setShiftId(shiftId);
 		employeeFullInfoDTO.setLevel(level);
 		employeeFullInfoDTO.setHiredDate(hireDate);
 		employeeFullInfoDTO.setRegularizationDate(regularizationDate);
 		employeeFullInfoDTO.setResignationDate(resignationDate);
-		employeeFullInfoDTO.setSupervisorName(supervisorName);
-		employeeFullInfoDTO.setSupervisorEmail(supervisorEmail);
+		employeeFullInfoDTO.setSupervisorName(supervisorId);
 		employeeFullInfoDTO.setEmployeeEmail(employeeEmail);
-		
+		employeeFullInfoDTO.setLocAssign(locAssign);
 		
 		hrService.saveEditedEmployeeDetail(employeeFullInfoDTO);
+		
 		
 		return "ViewHr";
 	}
@@ -100,7 +98,7 @@ public class HrController {
 			@RequestParam(value = "biometrics") String biometrics,
 			@RequestParam(value = "department") int departmentId,
 			@RequestParam(value = "position") int positionId,
-			@RequestParam(value = "shift") String shift,
+			@RequestParam(value = "shift") int shift,
 			@RequestParam(value = "level") String level,
 			@RequestParam(value = "hireDate") String hireDate,
 			@RequestParam(value = "supervisorName") String supervisorName,
@@ -115,7 +113,7 @@ public class HrController {
 		employeeFullInfoDTO.setBiometrics(biometrics);
 		employeeFullInfoDTO.setDepartmentId(departmentId);
 		employeeFullInfoDTO.setPositionId(positionId);
-		employeeFullInfoDTO.setShift(shift);
+		employeeFullInfoDTO.setShiftId(shift);
 		employeeFullInfoDTO.setLevel(level);
 		employeeFullInfoDTO.setHiredDate(hireDate);
 		employeeFullInfoDTO.setSupervisorName(supervisorName);
@@ -138,6 +136,12 @@ public class HrController {
 		return hrService.retievePosition(departmentId);
 	}
 	
+	@RequestMapping(value = "/retrieveAllPositionJSON")
+	public @ResponseBody
+	Map<Integer, String> retrieveAllPosition() {		
+		return hrService.retieveAllPosition();
+	}
+	
 	@RequestMapping(value = "/retrieveSupervisorJSON")
 	public @ResponseBody
 	Map<Integer, String> retrieveSupervisor(
@@ -145,7 +149,13 @@ public class HrController {
 		return hrService.retieveSupervisor(departmentId);
 	}
 	
-	/*@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
+	@RequestMapping(value = "/retrieveShiftJSON")
+	public @ResponseBody
+	Map<Integer, String> retrieveSupervisor() {		
+		return hrService.retrieveShifts();
+	}
+
+	@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
 	public String getFileUpload(
 			@ModelAttribute("uploadForm") SingleFileUploadForm uploadForm,
 			ModelMap modelMap) {
@@ -155,6 +165,10 @@ public class HrController {
 		
 		return "redirect:employeemanager";
 
-	}*/
+	}
+	
+
+	
+	
 	
 }

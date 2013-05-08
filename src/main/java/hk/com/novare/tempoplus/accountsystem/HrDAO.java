@@ -115,7 +115,7 @@ public class HrDAO implements HrModel {
 	}
 
 	@Override
-	public void createEmployee(HumanResource employee) {
+	public void createEmployee(HumanResourceDTO employee) {
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
@@ -128,22 +128,23 @@ public class HrDAO implements HrModel {
 			
 			
 			final PreparedStatement ps = connection
-					.prepareStatement("INSERT INTO employees (firstname, lastname, middlename, biometricId, employeeId, email, hireDate, positionId, departmentId, supervisorId, level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					.prepareStatement("INSERT INTO employees (firstname, lastname, middlename, biometricId, employeeId, email, hireDate, positionId, departmentId, supervisorId, level, shiftId, isSupervisor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 			// Convert object to a row
 			
 			ps.setString(1, employee.getFirstName());
 			ps.setString(2, employee.getMiddleName());
 			ps.setString(3, employee.getLastName());
-			ps.setString(4, employee.getBiometrics());
-			ps.setString(5, employee.getEmployeeId());
+			ps.setInt(4, employee.getBiometricId());
+			ps.setInt(5, employee.getEmployeeId());
 			ps.setString(6, employee.getEmployeeEmail());
 			ps.setString(7, employee.getHiredDate());
 			ps.setInt(8, employee.getPositionId());
 			ps.setInt(9, employee.getDepartmentId());
-			ps.setInt(10, 1);
-			ps.setString(11, employee.getLevel());
-			
+			ps.setInt(10, employee.getSupervisorId());
+			ps.setInt(11, employee.getLevel());
+			ps.setInt(12, employee.getShiftId());
+			ps.setString(13, employee.getIsSupervisor());
 			ps.executeUpdate();
 			
 		} catch (SQLException e) {
@@ -166,13 +167,6 @@ public class HrDAO implements HrModel {
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
-			// ? are placeholders for the parameters
-			/*final PreparedStatement ps = connection
-					.prepareStatement("INSERT INTO employees (firstname, middlename, lastname, biometricId,"
-							+ " employeeId, email, hireDate, "
-							+ "departmentId, positionId, level, supervisorId) values (?, ?,"
-							+ " ?, ?, ?, ?, ?, ?, ?, ?, ? )");*/
-			
 			
 			final PreparedStatement ps = connection
 					.prepareStatement("INSERT INTO employees (firstname, lastname, middlename, " +
@@ -226,7 +220,7 @@ public class HrDAO implements HrModel {
 			final ResultSet resultSet = st
 					.executeQuery("SELECT firstname, lastname, middlename, biometricId, shiftId, employeeId, " +
 							"positionId, level, hireDate, regularizationDate, resignationDate, email, " +
-							"locationAssign, departments.name, positions.description, locationAssign, supervisorId, shifts.description" +
+							"locationAssign, departments.name, positions.description, locationAssign, supervisorId, shifts.description , employees.departmentId " +
 							" FROM tempoplus.employees, departments, positions, shifts  "
 							+ "WHERE employees.employeeId = "
 							+ searchString
@@ -255,7 +249,9 @@ public class HrDAO implements HrModel {
 						.getString("locationAssign");
 				final int supervisorId = resultSet.getInt("supervisorId");
 				final String shift = resultSet.getString("shifts.description");
-
+				final int departmentId = resultSet.getInt("departmentId");
+				final int shiftId = resultSet.getInt("shiftId");
+				final int positionId = resultSet.getInt("positionId");
 				// Store in an object
 
 				employee.setFirstName(firstName);
@@ -273,6 +269,9 @@ public class HrDAO implements HrModel {
 				employee.setLocAssign(location);
 				employee.setSupervisorId(supervisorId);
 				employee.setShift(shift);
+				employee.setDepartmentId(departmentId);
+				employee.setShiftId(shiftId);
+				employee.setPositionId(positionId);
 
 			}
 			resultSet.close();
@@ -409,6 +408,41 @@ public class HrDAO implements HrModel {
 			final ResultSet resultSet = st
 					.executeQuery("SELECT positions.id, description FROM tempoplus.positions " +
 							"WHERE positions.departmentId = "+ departmentId);
+			
+			while (resultSet.next()) {
+				int id = resultSet.getInt("id");
+				String name = resultSet.getString("description");
+				// Store in an object
+				map.put(id, name);
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return map;
+	}
+	
+	public Map<Integer, String> retrieveAllPosition() {
+		Connection connection = null;
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st
+					.executeQuery("SELECT positions.id, description FROM tempoplus.positions");
 			
 			while (resultSet.next()) {
 				int id = resultSet.getInt("id");
@@ -623,6 +657,41 @@ public class HrDAO implements HrModel {
 		return employeeId;
 	}
 	
+	public Map<Integer, String> retrieveShifts() {
+		Connection connection = null;
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		
+		try {
+			connection = dataSource.getConnection();
+			final Statement st = connection.createStatement();
+			final ResultSet resultSet = st
+					.executeQuery("SELECT * FROM tempoplus.shifts ");
+
+			while (resultSet.next()) {
+				int id = resultSet.getInt("id");
+				String description = resultSet.getString("description");
+				// Store in an object
+				map.put(id, description);
+			}
+			resultSet.close();
+
+		} catch (SQLException e) {
+			// Throw a nested exception
+			// Encapsulation of exceptions
+			e.printStackTrace();
+		} finally {
+			// Always close the connection. Error or not.
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return map;
+	}
+	
 
 	public void updateEmployee(HumanResourceDTO employee) {
 		Connection connection = null;
@@ -701,15 +770,13 @@ public class HrDAO implements HrModel {
 	
 	public void createAccount(int employeeId){
         Connection connection = null;
-       
         try {
             connection = dataSource.getConnection();
             final PreparedStatement createUserStatement =
-                    connection.prepareStatement("INSERT INTO users (employeeId, password) " +
-                            "values (?,?)");
+                    connection.prepareStatement("INSERT INTO users (employeeId, password) values (?, MD5('default'))");
             createUserStatement.setInt(1, employeeId);
-            createUserStatement.setString(2, "MD5(default)");
-            createUserStatement.executeUpdate();
+/*            createUserStatement.setString(2, "default");
+*/            createUserStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -723,5 +790,6 @@ public class HrDAO implements HrModel {
        
        
     }
+
 
 }

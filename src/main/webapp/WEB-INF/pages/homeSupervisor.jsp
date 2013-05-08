@@ -25,7 +25,7 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 <body>
 <div id ="employeeAccess">
 	<div align = "right"> 
-		<table>
+		<table>  
 			<tr>
 			<td>Hi ${userFirstName}!</td>
 			</tr>
@@ -35,15 +35,12 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 		</table>
 	</div>
 	<ul>
-		<li><a href = "#ViewTimeLog">View Time Log</a></li>
+		<li><a href = "../timelog/userLog">View Time Log</a></li>
 		<li><a href = "#MyProfile" >My Profile</a></li>
 		<li><a href = "#AccountSettings">Account Settings</a></li>
 		<li><a href = "#Administration">Administration</a></li>
 	</ul>
 		
-	<div id = "ViewTimeLog">
-					
-	</div>
 
 	<div id = "MyProfile">
 		<table align = "center">
@@ -160,7 +157,7 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
     			
   			</div>
 	</div>
-	
+
 
 </div>
 
