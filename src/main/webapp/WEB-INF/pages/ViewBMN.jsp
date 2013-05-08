@@ -19,14 +19,6 @@
 <script
 	src="../resources/bmn/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
 <script src="../resources/bmn/js/jquery.tablesorter.pager.min.js"></script>
-<style>
-div#dialog {
-display: none;
-font-size: 70.5%;   
-font-family : Arial, Helvetica, sans-serif;
-}
-</style>
-
 <script>
 	$(document)
 			.ready(
@@ -291,6 +283,17 @@ font-family : Arial, Helvetica, sans-serif;
 	<hr/>
 	<div>
 	<div class="pager" align="right">
+	Select timesheet:<select>
+	<option>010113.xls</option>
+	<option>011513.xls</option>
+	<option>020113.xls</option>
+	<option>021513.xls</option>
+	<option>030113.xls</option>
+	<option>031513.xls</option>
+	<option>040113.xls</option>
+	<option>041513.xls</option>
+	<option>050113.xls</option>
+	</select>
 		<img src="../resources/bmn/css/images/first.png" class="first" /> <img
 			src="../resources/bmn/css/images/prev.png" class="prev" /> <span
 			class="pagedisplay"></span>
