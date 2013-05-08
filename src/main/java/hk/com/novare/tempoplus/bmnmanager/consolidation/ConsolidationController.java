@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ public class ConsolidationController {
 
 	@Inject
 	ConsolidationService consolidationService;
+	final Logger logger = Logger.getLogger(ConsolidationController.class);
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	private String createConsolidatedTimesheet(@RequestParam String name,
@@ -28,7 +30,7 @@ public class ConsolidationController {
 
 		// consolidationService.createConsolidatedTimesheet(name, periodStart,
 		// periodEnd);
-
+		logger.info("createConsolidatedTimesheet: Parameters(" + name + "," + periodStart + "," + periodEnd+ ")");
 		return "upload";
 	}
 
@@ -39,6 +41,7 @@ public class ConsolidationController {
 	
 	@RequestMapping(value = "/ajaxFetchConsolidations", method=RequestMethod.GET)
 	public @ResponseBody ArrayList<ConsolidationDTO> fetchConsolidations(ModelMap modelMap)  {
+		logger.info("fetchConsolidations: Loading consolidated records.");
 		return consolidationService.viewConsolidation();
 	}
 	
@@ -46,6 +49,7 @@ public class ConsolidationController {
 	
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
 	public String viewConsolidated() throws SQLException {
+		logger.info("viewConsolidated: Displaying consolidated records.");
 		return "ViewBMN";
 	}
 	
@@ -53,6 +57,7 @@ public class ConsolidationController {
 	
 	@RequestMapping(value = "/mail", method = RequestMethod.GET)
 	public String mailTimeSheet() {
+	logger.info("mailTimeSheet: Displaying mail tab.");
 	return "ViewSendMail";
 	}
 	
@@ -61,7 +66,7 @@ public class ConsolidationController {
 			@RequestParam String timeOut,
 			@RequestParam String employeeId,
 			@RequestParam String date) {
-		System.out.println("here at controller");
+		logger.info("Updating record consolidations.");
 		consolidationService.updateConsolidations(employeeId, timeIn, timeOut, date);
 		
 		return true;
@@ -71,7 +76,7 @@ public class ConsolidationController {
 	public @ResponseBody ArrayList<Mantis> fetchTicketDetails(
 			@RequestParam String employeeId) {
 		
-		System.out.println("@ajaxfetchtickets");
+		logger.info("Fetching NT3/Mantis tickets for the user");
 		return consolidationService.fetchTicket(employeeId);
 		
 	}

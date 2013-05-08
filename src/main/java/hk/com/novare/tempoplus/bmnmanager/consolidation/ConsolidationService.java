@@ -50,13 +50,7 @@ public class ConsolidationService {
 		 return true;
 	}
 	
-	public ArrayList<Mantis> fetchTicket(String employeeId) {
-		
-		System.out.println("@service");
-
-		System.out.println(employeeId);
-		
-		
+	public ArrayList<Mantis> fetchTicket(String employeeId) {		
 		return consolidationDao.fetchMantisTickets(employeeId);
 	}
 
