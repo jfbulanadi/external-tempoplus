@@ -6,8 +6,17 @@
 <head>
 <meta charset ="utf-8"/>
 
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css"
+href="../resources/account/css/theme.default.css"></link>
+<link rel="stylesheet" type="text/css"
+    href="../resources/account/css/viewhr.css"></link>
+
+<link rel="stylesheet"
+    href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
+
+<script src="../resources/account/js/jquery-1.9.1.js"></script>
+<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>
+<script src="../resources/account/js/jquery-ui.js"></script>
 
 <title>Tempoplus HR</title>
 
@@ -17,8 +26,7 @@ $( "#employeeAccess" ).tabs();
 $( "#adminTab" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 });
-</script>
-
+</script> 
 <style>
 div#dialog {
 display: none;
