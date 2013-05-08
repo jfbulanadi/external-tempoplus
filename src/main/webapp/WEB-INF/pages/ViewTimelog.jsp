@@ -27,7 +27,7 @@
 	<script src="../resources/timelog/js/jquery.tablesorter.pager.min.js"></script>
 	
 	</head>
-<body>
+<body id = "bodyTimelog">
 
 <table id = "tblNav">
 <tr>

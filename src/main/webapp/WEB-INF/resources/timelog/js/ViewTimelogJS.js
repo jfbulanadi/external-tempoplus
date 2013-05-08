@@ -395,7 +395,7 @@ function SearchTimeLog()
 				$('#tblTimeLog tbody').remove();
 				$("#data").css({display: "block"});
 				}
-			elses
+			else
 				{
 				$('#tblTimeLog tbody').remove();
 				alert(rponse);
