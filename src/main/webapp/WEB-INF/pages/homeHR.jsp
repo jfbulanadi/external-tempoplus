@@ -5,11 +5,10 @@
 <html lang = "en">
 <head>
 <meta charset ="utf-8"/>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" /> 
 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
-	
+
 <title>Tempoplus HR</title>
 
 <script>
@@ -40,8 +39,11 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 		<li><a href = "#MyProfile" >My Profile</a></li>
 		<li><a href = "#AccountSettings">Account Settings</a></li>
 		<li><a href = "#Administration">Administration</a></li>
-	</ul>	
-
+		
+	</ul>
+	
+		
+	
 	<div id = "MyProfile">
 		<table>
 		<tbody id = "UserDetailsTable">
