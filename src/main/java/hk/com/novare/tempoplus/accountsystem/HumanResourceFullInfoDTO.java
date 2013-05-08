@@ -1,9 +1,6 @@
 package hk.com.novare.tempoplus.accountsystem;
 
-import org.springframework.stereotype.Service;
-
-
-public class HumanResource {
+public class HumanResourceFullInfoDTO {
 	
 	private String firstName;
 	private String middleName;
@@ -25,7 +22,17 @@ public class HumanResource {
 	private String active;
 	private int departmentId;
 	private int positionId;
+	private int shiftId;
 	
+	
+	
+	
+	public int getShiftId() {
+		return shiftId;
+	}
+	public void setShiftId(int shiftId) {
+		this.shiftId = shiftId;
+	}
 	public int getDepartmentId() {
 		return departmentId;
 	}
@@ -148,7 +155,5 @@ public class HumanResource {
 	}
 	
 	
-	
-	
-	
+
 }

@@ -6,8 +6,9 @@ import java.util.List;
 public interface HrModel {
 
 	List<HumanResource> selectAll();
-	void addEmployee(HumanResource employee );
-	HumanResource search(String searches, String category);
+	HumanResourceDTO search(String searches, String category);
+	void createEmployeeFromUpload(HumanResourceDTO employee);
+	void createEmployee(HumanResourceDTO employee);
 
 	
 }

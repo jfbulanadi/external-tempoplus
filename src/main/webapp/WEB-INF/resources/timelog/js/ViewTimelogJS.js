@@ -1,8 +1,7 @@
 var user = "";
 var Employee_Id = 0; //for hr
 var view ="";
-var id = 0;
-
+var id =0;
 $(document).ready(function() {
 	id = idExternal;
 	$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
@@ -17,7 +16,6 @@ function SearchButton() {
 		var empname = $('#empName').val();
 				$.ajax({
 					type: "POST",
-					action: '<c:url value="/timelog/searchEmployee"/>',
 			        url: "/tempoplus/timelog/searchEmployee",
 			    	data: {'empName': empname},
 			    	success: function(response){
@@ -99,6 +97,14 @@ function fetch(d){
 	
 	
 	$('#employee').val(lastname +", " +firstname);
+	
+	var rows = $('#tblSearch tbody tr');
+	var length = $('#tblSearch tbody tr').length;
+	for(var i= 0; i< length; i++){
+		rows[i].style.background = "";
+	}
+			
+			d.style.background="gray";
 }
 function mylog()
 {	
@@ -397,4 +403,3 @@ function SearchTimeLog()
 			
 			}
 	}
-

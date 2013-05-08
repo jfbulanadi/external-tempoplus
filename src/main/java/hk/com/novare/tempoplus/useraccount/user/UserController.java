@@ -4,8 +4,6 @@ import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.timelogging.DataAccessException;
 import java.sql.SQLException;
 
-import java.sql.SQLException;
-
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingService;
 

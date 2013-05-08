@@ -18,32 +18,6 @@ $(function() {
 $( "#employeeAccess" ).tabs();
 
 });
-
-
-/*  $(".selector").bind("tabsselect", function(event, ui){ 
-
-function retrieveEmployeeDetails(){
-	var tableStr = null;
-	
-	   $.ajax({	
-           type: "GET",
-           url: "/training-webapp/user/viewUserDetails",
-        	
-           success: function(employeeDetails) {
-				$.each(employeeDetails, function(index, detail){
-					
-					tableStr += "<tr>";
-					tableStr += "<th> " + detail.fullName + "</th>";
-					tableStr += "</tr>";
-					
-				});
-				
-				$('#UserDetailsTable').append(tableStr);
-				
-           }
-   });
-} 
- });  */
 </script>
 
 </head>
