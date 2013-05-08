@@ -48,6 +48,8 @@ font-family : Arial, Helvetica, sans-serif;
 		<li><a href = "#Administration">Administration</a></li>
 	</ul>
 
+		
+	</ul>
 	<div id = "MyProfile">
 		<table>
 		<tbody id = "UserDetailsTable">
