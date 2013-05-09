@@ -9,8 +9,9 @@ $(document).ready(function() {
 	$( "#SearchButton" ).click(SearchButton);
 	$( "#SearchTimeLog" ).click(SearchTimeLog);
 	mylog();
+	
 });	
-
+ 
 function SearchButton() {
 		var newresponse = null;
 		var empname = $('#empName').val();
@@ -21,17 +22,7 @@ function SearchButton() {
 			    	success: function(response){
 			    		newresponse = response; 
 			    		if(newresponse =="OK"){
-			    			$("#HrSearch").dialog({
-			    				
-								maxWidth : 550,
-								maxHeight : 600,
-								width : 550,
-								height : 600,
-								modal : true
-								
-							});
 			    			
-
 			    			$('#tblSearch tbody').remove();
 			    			$('#tblSearch thead').remove();
 			    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
@@ -55,7 +46,6 @@ function SearchButton() {
 			    		        	tblList += "</tbody>";
 			    		        	$('#tblSearch').append(tblList);
 			    		        	
-			    		        	
 			    		        },
 			    		        error: function(e) {
 			    		            alert("Error: " + e);
@@ -72,6 +62,18 @@ function SearchButton() {
 											$(this).parents('tr').find('td').removeClass('highlight');
 										});
 									});
+			    			$("#HrSearch").dialog({
+			    				
+								maxWidth : 550,
+								maxHeight : 600,
+								width : 550,
+								height : 600,
+								modal : true
+								
+							});
+			    			
+
+			    			
 			    			
 			    		}else{
 			    			$("#result").css({display: "none"});
@@ -86,7 +88,7 @@ function SearchButton() {
 
 
 function fetch(d){
-	$("#HrSearch").dialog('close');
+	
 	var rowid = d.id;
 	var delimited = rowid.split(",");
 	Employee_Id = delimited[0];
@@ -97,14 +99,8 @@ function fetch(d){
 	
 	
 	$('#employee').val(lastname +", " +firstname);
+	$("#HrSearch").dialog('destroy');
 	
-	var rows = $('#tblSearch tbody tr');
-	var length = $('#tblSearch tbody tr').length;
-	for(var i= 0; i< length; i++){
-		rows[i].style.background = "";
-	}
-			
-			d.style.background="gray";
 }
 function mylog()
 {	
@@ -282,7 +278,7 @@ function SearchTimeLog()
 						        success: function(response) {
 						        	$.each(response, function(index,item) {
 								 	
-								 		tableStr += "<tr>";
+								 		tableStr += "<tr id = 'trTimeLog'>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
 											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
@@ -306,6 +302,7 @@ function SearchTimeLog()
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
 							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'}); 
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
 							    		$("#tblTimeLog").trigger('update');
 							   
 							    	});
@@ -346,6 +343,7 @@ function SearchTimeLog()
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
 							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
 							    		$("#tblTimeLog").trigger('update');
 							    	});
 					}
@@ -384,6 +382,7 @@ function SearchTimeLog()
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
 							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
 							    		$("#tblTimeLog").trigger('update');
 							    	});
 					}

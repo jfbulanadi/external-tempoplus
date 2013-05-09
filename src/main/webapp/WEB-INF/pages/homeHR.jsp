@@ -53,7 +53,7 @@ font-family : Arial, Helvetica, sans-serif;
 		</table>
 	</div>
 	<ul>
-		<li><a href = "../timelog/userLog">View Time Log</a></li>
+		<li><a href = <c:url value='../timelog/userLog'/>/>View Time Log</a></li>
 		<li><a href = "#MyProfile" >My Profile</a></li>
 		<li><a href = "#AccountSettings">Account Settings</a></li>
 		<li><a href = "#Administration">Administration</a></li>
