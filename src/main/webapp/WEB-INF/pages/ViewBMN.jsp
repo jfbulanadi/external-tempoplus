@@ -38,9 +38,6 @@ font-family : Arial, Helvetica, sans-serif;
 							cssGoto : '.gotoPage',
 						};
 						//$("#mantistable").remove();
-						$("#tablesorter").tablesorter({
-							widgets : [ 'zebra', 'filter' ]
-						}).tablesorterPager(pagerOptions);
 						
 						
 						
@@ -50,24 +47,28 @@ font-family : Arial, Helvetica, sans-serif;
 							url: "<c:url value="/consolidation/ajaxFetchTimesheets"/>",
 							success: function(data) {
 								$.each(data, function(keys,values) {	
-									htmlstr +='<option value=' + keys +'> ' + values + '</option>';
+									htmlstr +='<option value=' + values.id +'> ' + values.description + '</option>';
 								});
 								$("#selectTimesheets").append(htmlstr);
 							}
 						}).done( function(){
 							$("#btnSelectTimesheet").click(function() {
+								$("#tablesorter").tablesorter({
+									widgets : [ 'zebra', 'filter' ]
+								}).tablesorterPager(pagerOptions);
 								$("#tablesorter tbody").remove();
 								ctr=null;
 								var selectedTimesheet = $("#selectTimesheets option:selected").text();
-
+								var id = $("#selectTimesheets option:selected").val();
+								console.log(id);
 								//insert populate table here
-								 //clear html string
+								//clear html string
 								htmlstr=null;
 								$.ajax({
 												type : "GET",
 												url : "<c:url value="/consolidation/ajaxFetchConsolidations"/>",
 												data: {
-														selectedTimesheet : selectedTimesheet
+													id : id
 													
 												},
 												success : function(data) {
@@ -95,7 +96,8 @@ font-family : Arial, Helvetica, sans-serif;
 														htmlstr += "<td>" + values.lastname + "</td>";
 														htmlstr += "<td>" + values.email + "</td>";
 														htmlstr += "<td>" + values.position + "</td>";
-														htmlstr += "<td>" + values.date + "</td>";
+														htmlstr += "<td>" + values.timelogDate + "</td>";
+														htmlstr += "<td>" + values.timeDuration + "</td>";
 														console.log(ctr + " " +values.firstname + values.timeIn);
 														htmlstr += '<td id="tdTimeIn'+ ctr +'">' + values.timeIn + '</td>';
 														htmlstr += '<td id="tdTimeOut'+ ctr +'">' + values.timeOut + '</td>';
@@ -119,7 +121,8 @@ font-family : Arial, Helvetica, sans-serif;
 												}
 
 											}).done(function() {
-
+												
+												
 										$("#tablesorter").append(htmlstr);
 										var resort = true;
 										$("#tablesorter").trigger("update", [ resort ]);
@@ -345,6 +348,7 @@ font-family : Arial, Helvetica, sans-serif;
 			<th>Email</th>	
 			<th>Position</th>
 			<th>Date</th>
+			<th>Duration</th>
 			<th>Time in</th>
 			<th>Time out</th>
 			<th>Mantis</th>

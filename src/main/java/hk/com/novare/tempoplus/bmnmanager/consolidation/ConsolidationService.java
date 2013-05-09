@@ -3,6 +3,7 @@ package hk.com.novare.tempoplus.bmnmanager.consolidation;
 import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDao;
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
+import hk.com.novare.tempoplus.bmnmanager.timesheet.TimesheetPartialDTO;
 import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.employee.EmployeeDao;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingDao;
@@ -39,8 +40,8 @@ public class ConsolidationService {
 				periodEnd);
 	}
 
-	public ArrayList<ConsolidationDTO> viewConsolidation(String selectedTimesheet) {
-		return consolidationDao.viewConsolidation(selectedTimesheet);
+	public ArrayList<ConsolidationDTO> viewConsolidation(String id) {
+		return consolidationDao.viewConsolidation(id);
 		
 	}
 
@@ -54,7 +55,7 @@ public class ConsolidationService {
 		return consolidationDao.fetchMantisTickets(employeeId);
 	}
 	
-	public ArrayList<String> fetchTimesheets() {
+	public ArrayList<TimesheetPartialDTO> fetchTimesheets() {
 		return consolidationDao.fetchTimesheets();
 	}
 
