@@ -4,8 +4,22 @@ var view ="";
 var id =0;
 $(document).ready(function() {
 	id = idExternal;
-	$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
-	$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
+	$( "#from" ).datepicker({ 
+		dateFormat: 'yy-mm-dd', 
+		showOn: "button",
+	    buttonImage: "../resources/timelog/css/images/img_calendar.png",
+	    buttonImageOnly: true,
+	    buttonText: "Calendar"
+	});
+	
+	$( "#to" ).datepicker({ 
+		dateFormat: 'yy-mm-dd',
+		showOn: "button",
+	    buttonImage: "../resources/timelog/css/images/img_calendar.png",
+	    buttonImageOnly: true,
+	    buttonText: "Calendar"
+	}); 
+	
 	$( "#SearchButton" ).click(SearchButton);
 	$( "#SearchTimeLog" ).click(SearchTimeLog);
 	mylog();
@@ -36,7 +50,7 @@ function SearchButton() {
 			    		       		
 			    		        	$.each(response,function(keys, values){
 
-			    		        		tblList += "<tr ondblclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
+			    		        		tblList += "<tr onclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
 			    						tblList +="<td>"+values.employeeId+"</td><td>"+values.lastname+"</td>";
 			    						tblList +="<td>"+values.firstname+"</td><td>"+values.middlename+"</td>";
 			    						tblList +="</tr>";		
@@ -104,6 +118,12 @@ function fetch(d){
 }
 function mylog()
 {	
+	
+	/*$("#tblTimeLog").tablesorter('destroy');
+	$("#tblTimeLog").tablesorter();*/
+	
+	$('#tblTimeLog').trigger("update"); 
+	
 	$("#data").css({display: "none"});
 	$("#SearchBox").css({display: "none"});
 	$("#SearchSub").css({display: "none"});
@@ -111,16 +131,12 @@ function mylog()
 	$("#SearchRow").css({display:"none"});
 
 	//hr search textbox and label
-	document.getElementById('from').value = ""; 
-	document.getElementById('to').value = ""; 
-	document.getElementById('empName').value = "";
-
+	$('#from').val(""); 
+	$('#to').val(""); 
+	$('empName').val("");
+	$('#tbl').val("");
 	$('#tblTimeLog tbody').remove();
-	document.getElementById('tbl').disabled=true;
-	
-	document.getElementById('tbl').value = "";  
-	
-	document.getElementById('pagesize').selectedIndex=0;
+	$('#pagesize').selectedIndex=0;
 	$('#tblSearch tbody').remove();
 	
 	$("#result").css({display: "none"});
@@ -145,22 +161,22 @@ function mylog()
 	 view ='mylog';
 	if(user == "hr" || user == "manager")
 		{
-		document.getElementById('mylog').innerHTML = "MyLog";
-		document.getElementById('others').href ="javascript:others()";
+		$('#mylog').html("MyLog");
+		$('#others').href ="javascript:others()";
 			if(user=="hr")
 				{
-					document.getElementById('others').innerHTML = "View Others";
+					$('#others').html("View Others");
 				}
 			else if(user =="manager")
 				{
-					document.getElementById('others').innerHTML = "MySubordinates";
+					$('#others').html("MySubordinates");
 				}
 		}
 	else
 		{
-		document.getElementById('others').href ="javascript:void(0)";
-		document.getElementById('others').innerHTML = "";
-		document.getElementById('mylog').innerHTML = "";
+		$('#others').href ="javascript:void(0)";
+		$('#others').html("");
+		$('#mylog').html("");
 		}
 	
 }
@@ -168,12 +184,12 @@ function mylog()
 function others()
 {
 	$("#data").css({display: "none"});
-	document.getElementById('from').value = ""; 
-	document.getElementById('to').value = ""; 
+	$('#from').val(""); 
+	$('#to').val(""); 
 	$('#tblTimeLog tbody').remove();
-	document.getElementById('tbl').value = ""; 
-	document.getElementById('pagesize').selectedIndex=0;
-	document.getElementById('empName').value = "";
+	$('#tbl').val(""); 
+	$('#pagesize').selectedIndex=0;
+	$('#empName').val("");
 	$('#tblSearch tbody').remove();
 	
 	$("#result").css({display: "none"});
@@ -218,7 +234,7 @@ function others()
 }
 function SearchTimeLog()
 {	
-		document.getElementById('pagesize').selectedIndex=0;
+		$('#pagesize').selectedIndex=0;
 		var name;
 		var from = $('#from').val();
 		var to = $('#to').val();
@@ -227,16 +243,9 @@ function SearchTimeLog()
 		if(view == "manager")
 			{
 			idd = id;
-			var sub = document.getElementById("sub");
-			if(sub.options.length > 0)
-				{
-				name =  sub.options[sub.selectedIndex].text;
-				}
-			else
-				{
-				name = "";
-				}
+			name = $("#sub option:selected").text();
 			}
+		
 		else if(view =="mylog")
 			{
 			idd = id;
@@ -278,7 +287,7 @@ function SearchTimeLog()
 						        success: function(response) {
 						        	$.each(response, function(index,item) {
 								 	
-								 		tableStr += "<tr id = 'trTimeLog'>";
+								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
 											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
