@@ -14,6 +14,7 @@ $(document).ready(function() {
 function SearchButton() {
 		var newresponse = null;
 		var empname = $('#empName').val();
+		$.ajaxSetup({async:false});
 				$.ajax({
 					type: "POST",
 			        url: "/tempoplus/timelog/searchEmployee",
@@ -21,17 +22,6 @@ function SearchButton() {
 			    	success: function(response){
 			    		newresponse = response; 
 			    		if(newresponse =="OK"){
-			    			$("#HrSearch").dialog({
-			    				
-								maxWidth : 550,
-								maxHeight : 600,
-								width : 550,
-								height : 600,
-								modal : true
-								
-							});
-			    			
-
 			    			$('#tblSearch tbody').remove();
 			    			$('#tblSearch thead').remove();
 			    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
@@ -45,7 +35,7 @@ function SearchButton() {
 			    		       		
 			    		        	$.each(response,function(keys, values){
 
-			    		        		tblList += "<tr ondblclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
+			    		        		tblList += "<tr onclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
 			    						tblList +="<td>"+values.employeeId+"</td><td>"+values.lastname+"</td>";
 			    						tblList +="<td>"+values.firstname+"</td><td>"+values.middlename+"</td>";
 			    						tblList +="</tr>";		
@@ -65,14 +55,22 @@ function SearchButton() {
 			    			}).done(
 						    		
 							    	function(){
-							    		$("#tblSearch").tablesorter();
+							     		$("#tblSearch").tablesorter();
 							    		$("#tblSearch tbody td").hover(function() {
 											$(this).parents('tr').find('td').addClass('highlight');
 										}, function() {
 											$(this).parents('tr').find('td').removeClass('highlight');
 										});
 									});
-			    			
+			    			$("#HrSearch").dialog({
+								maxWidth : 550,
+								maxHeight : 600,
+								width : 550,
+								height : 600,
+								modal : true
+								
+							});
+				
 			    		}else{
 			    			$("#result").css({display: "none"});
 			    			alert("No Employee Found");
@@ -86,7 +84,6 @@ function SearchButton() {
 
 
 function fetch(d){
-	$("#HrSearch").dialog('close');
 	var rowid = d.id;
 	var delimited = rowid.split(",");
 	Employee_Id = delimited[0];
@@ -94,17 +91,8 @@ function fetch(d){
 	var lastname = delimited[1]; 
 	
 	$("#result").css({display: "block"});
-	
-	
 	$('#employee').val(lastname +", " +firstname);
-	
-	var rows = $('#tblSearch tbody tr');
-	var length = $('#tblSearch tbody tr').length;
-	for(var i= 0; i< length; i++){
-		rows[i].style.background = "";
-	}
-			
-			d.style.background="gray";
+	$("#HrSearch").dialog('destroy');
 }
 function mylog()
 {	

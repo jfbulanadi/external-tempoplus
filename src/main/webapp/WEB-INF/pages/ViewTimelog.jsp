@@ -6,13 +6,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>View Time Log</title>
+
 <link href="../resources/timelog/css/ViewTimeLogCSS.css" rel="stylesheet">
 <link rel="stylesheet" href="../resources/timelog/css/style1.css" type="text/css" />
-    
-    <script type="text/javascript">var idExternal =${id}</script>
-    <script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
+<script type="text/javascript">var idExternal =${id}</script>
+<script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
 
-    </head> 
+</head> 
 <body id = "bodyTimelog">
 
 <table id = "tblNav">
@@ -23,7 +23,6 @@
 </td>
 </tr>
 </table>
-
 
 <br><br><br><br>
 <table id ="tblAll">

@@ -8,7 +8,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>BMN Manager</title>
-<link rel="stylesheet" type="text/css" href="../resources/bmn/css/theme.default.css" />
+<!-- <link rel="stylesheet" type="text/css" href="../resources/bmn/css/theme.default.css" />
 <link rel="stylesheet" type="text/css" href="../resources/bmn/css/jquery.tablesorter.pager.css" />
 
 
@@ -18,7 +18,7 @@
 <script src="../resources/bmn/js/jquery.tablesorter.widgets.min.js"></script>
 <script
 	src="../resources/bmn/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
-<script src="../resources/bmn/js/jquery.tablesorter.pager.min.js"></script>
+<script src="../resources/bmn/js/jquery.tablesorter.pager.min.js"></script> -->
 <script>
 	$(document)
 			.ready(
