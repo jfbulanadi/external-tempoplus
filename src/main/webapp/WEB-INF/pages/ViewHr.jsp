@@ -99,7 +99,7 @@ src="../resources/account/js/jquery.tablesorter.widgets-filter-formatter.min.js"
 	<div id="accordion">
 		<h2>Select files to upload.</h2>
 		<div>
-			<form:form method="post" action="uploadUserDB"
+			<form:form method="post" action="../hr/uploadUserDB"
 				modelAttribute="uploadForm" enctype="multipart/form-data">
 
 				<input name="file" type="file" />

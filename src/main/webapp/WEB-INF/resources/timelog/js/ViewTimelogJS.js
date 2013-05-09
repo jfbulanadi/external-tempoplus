@@ -9,12 +9,12 @@ $(document).ready(function() {
 	$( "#SearchButton" ).click(SearchButton);
 	$( "#SearchTimeLog" ).click(SearchTimeLog);
 	mylog();
+	
 });	
-
+ 
 function SearchButton() {
 		var newresponse = null;
 		var empname = $('#empName').val();
-		$.ajaxSetup({async:false});
 				$.ajax({
 					type: "POST",
 			        url: "/tempoplus/timelog/searchEmployee",
@@ -22,6 +22,7 @@ function SearchButton() {
 			    	success: function(response){
 			    		newresponse = response; 
 			    		if(newresponse =="OK"){
+			    			
 			    			$('#tblSearch tbody').remove();
 			    			$('#tblSearch thead').remove();
 			    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
@@ -45,7 +46,6 @@ function SearchButton() {
 			    		        	tblList += "</tbody>";
 			    		        	$('#tblSearch').append(tblList);
 			    		        	
-			    		        	
 			    		        },
 			    		        error: function(e) {
 			    		            alert("Error: " + e);
@@ -55,7 +55,7 @@ function SearchButton() {
 			    			}).done(
 						    		
 							    	function(){
-							     		$("#tblSearch").tablesorter();
+							    		$("#tblSearch").tablesorter();
 							    		$("#tblSearch tbody td").hover(function() {
 											$(this).parents('tr').find('td').addClass('highlight');
 										}, function() {
@@ -63,6 +63,7 @@ function SearchButton() {
 										});
 									});
 			    			$("#HrSearch").dialog({
+			    				
 								maxWidth : 550,
 								maxHeight : 600,
 								width : 550,
@@ -70,7 +71,10 @@ function SearchButton() {
 								modal : true
 								
 							});
-				
+			    			
+
+			    			
+			    			
 			    		}else{
 			    			$("#result").css({display: "none"});
 			    			alert("No Employee Found");
@@ -84,6 +88,7 @@ function SearchButton() {
 
 
 function fetch(d){
+	
 	var rowid = d.id;
 	var delimited = rowid.split(",");
 	Employee_Id = delimited[0];
@@ -91,8 +96,11 @@ function fetch(d){
 	var lastname = delimited[1]; 
 	
 	$("#result").css({display: "block"});
+	
+	
 	$('#employee').val(lastname +", " +firstname);
 	$("#HrSearch").dialog('destroy');
+	
 }
 function mylog()
 {	
@@ -103,16 +111,12 @@ function mylog()
 	$("#SearchRow").css({display:"none"});
 
 	//hr search textbox and label
-	document.getElementById('from').value = ""; 
-	document.getElementById('to').value = ""; 
-	document.getElementById('empName').value = "";
-
+	$('#from').val(""); 
+	$('#to').val(""); 
+	$('empName').val("");
+	$('#tbl').val("");
 	$('#tblTimeLog tbody').remove();
-	document.getElementById('tbl').disabled=true;
-	
-	document.getElementById('tbl').value = "";  
-	
-	document.getElementById('pagesize').selectedIndex=0;
+	$('#pagesize').selectedIndex=0;
 	$('#tblSearch tbody').remove();
 	
 	$("#result").css({display: "none"});
@@ -137,22 +141,22 @@ function mylog()
 	 view ='mylog';
 	if(user == "hr" || user == "manager")
 		{
-		document.getElementById('mylog').innerHTML = "MyLog";
-		document.getElementById('others').href ="javascript:others()";
+		$('#mylog').html("MyLog");
+		$('#others').href ="javascript:others()";
 			if(user=="hr")
 				{
-					document.getElementById('others').innerHTML = "View Others";
+					$('#others').html("View Others");
 				}
 			else if(user =="manager")
 				{
-					document.getElementById('others').innerHTML = "MySubordinates";
+					$('#others').html("MySubordinates");
 				}
 		}
 	else
 		{
-		document.getElementById('others').href ="javascript:void(0)";
-		document.getElementById('others').innerHTML = "";
-		document.getElementById('mylog').innerHTML = "";
+		$('#others').href ="javascript:void(0)";
+		$('#others').html("");
+		$('#mylog').html("");
 		}
 	
 }
@@ -160,12 +164,12 @@ function mylog()
 function others()
 {
 	$("#data").css({display: "none"});
-	document.getElementById('from').value = ""; 
-	document.getElementById('to').value = ""; 
+	$('#from').val(""); 
+	$('#to').val(""); 
 	$('#tblTimeLog tbody').remove();
-	document.getElementById('tbl').value = ""; 
-	document.getElementById('pagesize').selectedIndex=0;
-	document.getElementById('empName').value = "";
+	$('#tbl').val(""); 
+	$('#pagesize').selectedIndex=0;
+	$('#empName').val("");
 	$('#tblSearch tbody').remove();
 	
 	$("#result").css({display: "none"});
@@ -210,7 +214,7 @@ function others()
 }
 function SearchTimeLog()
 {	
-		document.getElementById('pagesize').selectedIndex=0;
+		$('#pagesize').selectedIndex=0;
 		var name;
 		var from = $('#from').val();
 		var to = $('#to').val();
@@ -219,16 +223,9 @@ function SearchTimeLog()
 		if(view == "manager")
 			{
 			idd = id;
-			var sub = document.getElementById("sub");
-			if(sub.options.length > 0)
-				{
-				name =  sub.options[sub.selectedIndex].text;
-				}
-			else
-				{
-				name = "";
-				}
+			name = $("#sub option:selected").text();
 			}
+		
 		else if(view =="mylog")
 			{
 			idd = id;
@@ -294,6 +291,7 @@ function SearchTimeLog()
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
 							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'}); 
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
 							    		$("#tblTimeLog").trigger('update');
 							   
 							    	});
@@ -334,6 +332,7 @@ function SearchTimeLog()
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
 							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
 							    		$("#tblTimeLog").trigger('update');
 							    	});
 					}
@@ -372,6 +371,7 @@ function SearchTimeLog()
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
 							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
 							    		$("#tblTimeLog").trigger('update');
 							    	});
 					}
