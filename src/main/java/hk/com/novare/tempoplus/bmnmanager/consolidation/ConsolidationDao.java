@@ -361,17 +361,19 @@ public class ConsolidationDao {
 		PreparedStatement ps = null;
 		ResultSet resultSet = null;
 		ArrayList<Mantis> list = new ArrayList<Mantis>();
-		
+		String statuz = "new";
 
 		try {
 			
 			connection = dataSource.getConnection();
 			logger.info("fetchMantisTickets: Created MySQL connection.");
-			ps = connection.prepareStatement("SELECT ticketId, employeeId, dateSubmitted, startDate, endDate, category, timeIn, timeOut, status FROM mantises WHERE employeeId = ?");
+			ps = connection.prepareStatement("SELECT ticketId, employeeId, dateSubmitted, startDate, endDate, category, timeIn, timeOut, status FROM mantises WHERE employeeId = ? and status = ?");
 			ps.setString(1, employeeId);	
+			ps.setString(2, statuz);
+			//ps.setString(3, date);
 			resultSet = ps.executeQuery();
 			logger.info("fetchMantisTickets: Executed MySQL query.");
-			
+			logger.info("employeeID" + employeeId);
 			
 			while(resultSet.next()) {
 				final int ticketId = resultSet.getInt("ticketId");

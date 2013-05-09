@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../resources/bmn/css/theme.default.css" />
 <link rel="stylesheet" type="text/css" href="../resources/bmn/css/jquery.tablesorter.pager.css" />
 <style>
-div#dialog {
+div#dialog-bmn {
 display: none;   
 font-family : Arial, Helvetica, sans-serif;
 }
@@ -37,8 +37,8 @@ font-family : Arial, Helvetica, sans-serif;
 							removeRows : false,
 							cssGoto : '.gotoPage',
 						};
-						//$("#mantistable").remove();
 						
+							
 						
 						
 						$.ajax({
@@ -50,12 +50,15 @@ font-family : Arial, Helvetica, sans-serif;
 									htmlstr +='<option value=' + values.id +'> ' + values.description + '</option>';
 								});
 								$("#selectTimesheets").append(htmlstr);
-							}
+							},
+							 async:  false
 						}).done( function(){
 							$("#btnSelectTimesheet").click(function() {
 								$("#tablesorter").tablesorter({
-									widgets : [ 'zebra', 'filter' ]
+									widgets : [ 'zebra', 'filter']
 								}).tablesorterPager(pagerOptions);
+								
+							
 								$("#tablesorter tbody").remove();
 								ctr=null;
 								var selectedTimesheet = $("#selectTimesheets option:selected").text();
@@ -64,6 +67,7 @@ font-family : Arial, Helvetica, sans-serif;
 								//insert populate table here
 								//clear html string
 								htmlstr=null;
+								
 								$.ajax({
 												type : "GET",
 												url : "<c:url value="/consolidation/ajaxFetchConsolidations"/>",
@@ -88,7 +92,7 @@ font-family : Arial, Helvetica, sans-serif;
 															//has timein and timeout
 														}
 														// onclick=showToForm(this)
-														htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "," + values.date + "," + ctr + "' onclick=showToForm(this) >";
+														htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "," + values.timelogDate + "," + ctr + "' onclick=showToForm(this) >";
 														htmlstr += "<td>" + values.employeeId + "</td>";
 														htmlstr += "<td>" + values.biometricId +"</td>";
 														htmlstr += "<td>" + values.firstname + "</td>";
@@ -102,7 +106,7 @@ font-family : Arial, Helvetica, sans-serif;
 														htmlstr += '<td id="tdTimeIn'+ ctr +'">' + values.timeIn + '</td>';
 														htmlstr += '<td id="tdTimeOut'+ ctr +'">' + values.timeOut + '</td>';
 														
-														if(values.mantisId!=null) {
+														/* if(values.mantisId!=null) {
 														htmlstr += '<td>'+values.mantisId+'</td>';
 														} else {
 															htmlstr += "<td>No tickets filed.</td>";
@@ -112,18 +116,20 @@ font-family : Arial, Helvetica, sans-serif;
 														htmlstr += '<td>'+values.nt3Id+'</td>';													
 														} else {
 															htmlstr += "<td>No tickets filed.</td>";
-														}
+														} */
 														
 														htmlstr += "</tr>";
 															
 													});
-
+													
+													$("#tablesorter").append(htmlstr);
+													console.log("appended on tbody");
 												}
 
 											}).done(function() {
 												
 												
-										$("#tablesorter").append(htmlstr);
+										
 										var resort = true;
 										$("#tablesorter").trigger("update", [ resort ]);
 										var sorting = [ [ 2, 0 ], [7, 0] ];
@@ -177,7 +183,7 @@ font-family : Arial, Helvetica, sans-serif;
 
 	
 	//initializes dialog form 
-	$("#dialog").dialog({
+	$("#dialog-bmn").dialog({
 	width:450,
 	height:500,
 	modal: true,
@@ -191,7 +197,8 @@ font-family : Arial, Helvetica, sans-serif;
 			timeout = null;
 			date = null;
 			htmlstr = null;
-			console.log("closed");
+			 $("#mantistable tbody").remove();
+			console.log("closed and removed tbody");
 			} 
 	
 	});
@@ -213,7 +220,29 @@ font-family : Arial, Helvetica, sans-serif;
 	  $("#txttimeout").val(timeout);
 	  $("#txtdate").val(date);
 	
-	
+	  $.ajax({
+			type: "POST",
+			url: "/tempoplus/consolidation/ajaxFetchTickets",
+			async: false,
+			data: {
+				employeeId: trId
+			},
+			success: function(data) {
+				$.each(data, function(keys, values) {
+					console.log(values.employeeId);
+					console.log(values.ticketId);
+					console.log(values.category);
+					console.log(values.status);
+					
+					$("#mantistable").append("<tr><td><a href=https://sec2.novare.com.hk/mantis/view.php?id="+values.ticketId+">"+values.ticketId+"</a></td><td>"+values.category+"</td></tr>");
+				console.log("appended tbody");
+				
+				});
+			}
+			
+		}).done(function(){		
+		$("#tab-form").tabs();
+		});
 	
 	 $("#btnUpdate").click(function() {
 			var timeIn = $("#txttimein").val();
@@ -279,8 +308,10 @@ font-family : Arial, Helvetica, sans-serif;
 	</div>
 	
 
+	
+
 	<!-- FORM IS HIDDEN BY DIALOG -->	
-	<div id="dialog" title="Update time">
+	<div id="dialog-bmn" title="Update time">
 	<h3>Employee timelog details</h3>
 		<hr/>
 		<div>Employee ID</div>
@@ -312,6 +343,24 @@ font-family : Arial, Helvetica, sans-serif;
 		<hr/>
 		
 		<h3>Tickets filed</h3>
+		<div id="tab-form">
+		<ul>
+		    <li><a href="#mantistab">Mantis</a></li>
+		    <li><a href="#nt3tab">NT3</a></li>
+		 </ul>
+		 <div id="mantistab">
+				<table id="mantistable">
+					<thead>
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+					</thead>
+					<tbody id="mantistbody">
+					</tbody>
+				</table>
+			</div>
+		 <div id="nt3tab">B</div>
+		</div>
 		<hr/>
 		
 		
@@ -340,6 +389,7 @@ font-family : Arial, Helvetica, sans-serif;
 	<hr/>	
 	<table id="tablesorter" class="tablesorter">
 		<thead>
+		<tr>
 			<th>Employee ID</th>
 			<th>Biometric ID</th>
 			<th>First name</th>
@@ -351,10 +401,9 @@ font-family : Arial, Helvetica, sans-serif;
 			<th>Duration</th>
 			<th>Time in</th>
 			<th>Time out</th>
-			<th>Mantis</th>
-			<th>NT3</th>
+		</tr>
 		</thead>
-		<tbody>
+		<tbody id="tablesorterbody">
 		</tbody>
 	</table>
 	<hr/>
