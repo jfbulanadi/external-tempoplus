@@ -1,27 +1,29 @@
 var user = "";
 var Employee_Id = 0; //for hr
-var view =""
-var id;
+var view ="";
+var id = 123;
 $(document).ready(function() {
-		
-		$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
-		$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
-		$( "#SearchTimeLog" ).click(SearchTimeLog); 
-		id = idExternal;
-		
+	id = idExternal;
+	$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
+	$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
+	$( "#SearchButton" ).click(SearchButton);
+	$( "#SearchTimeLog" ).click(SearchTimeLog);
+	mylog();
+});	
 
-	$("#SearchButton").click(function() {
+function SearchButton() {
+		$('#tblSearch tbody').remove();
+		$('#tblSearch thead').remove();
 		var newresponse = null;
 		var empname = $('#empName').val();
-							
 				$.ajax({
+					async : false,
 					type: "POST",
 			        url: "/tempoplus/timelog/searchEmployee",
 			    	data: {'empName': empname},
 			    	success: function(response){
-			    		newresponse = response;
+			    		newresponse = response; 
 			    		if(newresponse =="OK"){
-
 			    			$("#HrSearch").dialog({
 			    				
 								maxWidth : 550,
@@ -31,13 +33,9 @@ $(document).ready(function() {
 								modal : true
 								
 							});
-			    			
-
-			    			$('#tblSearch tbody').remove();
-			    			$('#tblSearch thead').remove();
 			    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
 			    			$.ajax({		
-			    				
+			    				async : false,
 			    			 	type: "POST",
 			    		        url: "/tempoplus/timelog/retrieveEmployee",
 			    		       	data: {'empName': empname},
@@ -66,8 +64,8 @@ $(document).ready(function() {
 			    			}).done(
 						    		
 							    	function(){
-							    		my_jQuery3("#tblSearch").tablesorter();
-							    		my_jQuery3("#tblSearch tbody td").hover(function() {
+							    		$("#tblSearch").tablesorter();
+							    		$("#tblSearch tbody td").hover(function() {
 											$(this).parents('tr').find('td').addClass('highlight');
 										}, function() {
 											$(this).parents('tr').find('td').removeClass('highlight');
@@ -82,10 +80,8 @@ $(document).ready(function() {
 			    	},
 					
 				});
-	});
 
-});
-
+}
 
 
 function fetch(d){
@@ -116,14 +112,17 @@ function mylog()
 	$("#SearchSub").css({display: "none"});
 	$("#HrSearch").css({display: "none"});
 	$("#SearchRow").css({display:"none"});
+
 	//hr search textbox and label
 	document.getElementById('from').value = ""; 
 	document.getElementById('to').value = ""; 
 	document.getElementById('empName').value = "";
 
 	$('#tblTimeLog tbody').remove();
-	document.getElementById('tbl').value = ""; 
 	document.getElementById('tbl').disabled=true;
+	
+	document.getElementById('tbl').value = "";  
+	
 	document.getElementById('pagesize').selectedIndex=0;
 	$('#tblSearch tbody').remove();
 	
@@ -133,7 +132,7 @@ function mylog()
 	var rponse ="";
 	
 	$.ajaxSetup({async:false});
-	 $.ajax(
+	$.ajax(
 	    		{
 	        type: "POST",
 	        url: "/tempoplus/timelog/checkUser",
@@ -147,9 +146,9 @@ function mylog()
 	        }
 	    });
 	 view ='mylog';
-
 	if(user == "hr" || user == "manager")
 		{
+		document.getElementById('mylog').innerHTML = "MyLog";
 		document.getElementById('others').href ="javascript:others()";
 			if(user=="hr")
 				{
@@ -163,7 +162,10 @@ function mylog()
 	else
 		{
 		document.getElementById('others').href ="javascript:void(0)";
+		document.getElementById('others').innerHTML = "";
+		document.getElementById('mylog').innerHTML = "";
 		}
+	
 }
 
 function others()
@@ -249,7 +251,7 @@ function SearchTimeLog()
 			name = id;
 			}
 		$.ajaxSetup({async:false});
-		 $.ajax(
+		$.ajax(
 		    		{
 		        type: "POST",
 		        url: "/tempoplus/timelog/validateInput",
@@ -271,18 +273,18 @@ function SearchTimeLog()
 					{
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveMylog",
 						        data: {'id': id , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										
@@ -299,28 +301,31 @@ function SearchTimeLog()
 						    }).done(
 						    		
 							    	function(){
-							    		my_jQuery3("#tblTimeLog")
-							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
-							    		.tablesorterPager({container: my_jQuery3("#pager"),positionFixed: false}); 
-									});
+							    		$("#tblTimeLog").trigger('update');
+							    		$("#tblTimeLog")
+							    		 .tablesorter({widgets: ['zebra']})
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'}); 
+							    		$("#tblTimeLog").trigger('update');
+							   
+							    	});
 					}
 				else if(view == "manager")
 					{
 					
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveTimelog",
 						        data: {'name': name , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										
@@ -336,28 +341,29 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
-							    		my_jQuery3("#tblTimeLog")
-							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
-							    		.tablesorterPager({container: my_jQuery3("#pager"),positionFixed: false});
-									});
+							    		$("#tblTimeLog").trigger('update');
+							    		$("#tblTimeLog")
+							    		 .tablesorter({widgets: ['zebra']})
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
+							    		$("#tblTimeLog").trigger('update');
+							    	});
 					}
 				else if(view == "hr")
 					{ 
-				
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveMylog",
 						        data: {'id': idd , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										
@@ -373,10 +379,12 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
-							    		my_jQuery3("#tblTimeLog")
-							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
-							    		.tablesorterPager({container: my_jQuery3("#pager"),positionFixed: false});
-									});
+							    		$("#tblTimeLog").trigger('update');
+							    		$("#tblTimeLog")
+							    		 .tablesorter({widgets: ['zebra']})
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
+							    		$("#tblTimeLog").trigger('update');
+							    	});
 					}
 			}
 		else
@@ -386,7 +394,7 @@ function SearchTimeLog()
 				$('#tblTimeLog tbody').remove();
 				$("#data").css({display: "block"});
 				}
-			else
+			elses
 				{
 				$('#tblTimeLog tbody').remove();
 				alert(rponse);

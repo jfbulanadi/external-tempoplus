@@ -18,3 +18,10 @@ Body {
 	margin: 20px;
 	
 }
+
+.bar {
+	height: 18px;
+	
+	background: green;
+}
+</style>

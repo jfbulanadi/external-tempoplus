@@ -7,16 +7,17 @@
 <head>
 <link rel="stylesheet" type="text/css"
 	href="../resources/account/css/jquery.tablesorter.pager.css"></link>
-<link rel="stylesheet" type="text/css"
+<!-- <link rel="stylesheet" type="text/css"
 	href="../resources/account/css/theme.default.css"></link>
 <link rel="stylesheet" type="text/css"
 	href="../resources/account/css/viewhr.css"></link>
 
 <link rel="stylesheet"
-	href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
+	href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" /> -->
 
-<script src="../resources/account/js/jquery-1.9.1.js"></script>
-<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>
+<!-- <script src="../resources/account/js/jquery-1.9.1.js"></script>
+<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script> -->
+
 <script src="../resources/account/js/jquery.tablesorter.min.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.widgets.min.js"></script>
 <script src="../resources/account/js/jquery-ui.js"></script>
@@ -24,6 +25,14 @@
 	src="../resources/account/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.pager.min.js"></script>
 <script src="../resources/account/js/viewhr.js"></script>
+
+<script
+	src="../resources/account/js/jquery-fileupload/vendor/jquery.ui.widget.js"></script>
+<script
+	src="../resources/account/js/jquery-fileupload/jquery.fileupload.js"></script>
+<script
+	src="../resources/account/js/jquery-fileupload/jquery.iframe-transport.js"></script>
+<script src="../resources/account/js/upload.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
@@ -93,8 +102,8 @@
 	<!-- this one uses Excel Controller -->
 	<div id="accordion">
 		<h2>Select files to upload.</h2>
-		<div>
-			<form:form method="post" action="uploadUserDB"
+		<%-- <div>
+			<form:form method="post" action="../hr/uploadUserDB"
 				modelAttribute="uploadForm" enctype="multipart/form-data">
 
 				<input name="file" type="file" />
@@ -103,8 +112,26 @@
 					onclick="uploadStatus()" />
 
 			</form:form>
+		</div> --%>
+		
+		<div id="uploadfile">
+		<form id='uploadForm' action="../hr/uploadUserDB" method="POST" enctype="multipart/form-data">
+			<fieldset>
+				<legend>Files</legend>
+
+				<span id='filename'></span><br /> <input name="file" type="file"
+					id="control" /> <br />
+					<input type='button' value='Reset' id="reset" /> 
+					<input type='submit' value='Upload' id='submit' />
+			</fieldset>
+		</form>
+		<div id="progress">
+				<div class="bar" style="width: 0%;"></div>
 		</div>
+		</div>
+		
 	</div>
+	
 
 	<!-- popup registration -->
 	<div id="dialog-form" title="Add new Employee">

@@ -16,8 +16,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
+
 public class TimeLoggingService implements TimelogServiceInt{
 
+	static final Logger logger = Logger.getLogger(TimeLoggingService.class);
 	@Inject
 	TimelogDAOInt timelogDAOInt;
 	
@@ -29,7 +32,8 @@ public class TimeLoggingService implements TimelogServiceInt{
 	Map subMap = new HashMap();
 	
 	@Override
-	public void flaggingProcess() throws DataAccessException, ParseException {
+	public void flaggingProcess() {
+		logger.info("flag");
 		int id;
 		String desc,timeIn,timeOut,shiftIn,shiftInReal,shiftOut;
 		boolean checkTime,checkIn,checkOut,checkLate;
@@ -46,8 +50,8 @@ public class TimeLoggingService implements TimelogServiceInt{
 			id = timelogDAOInt.getUserID(i);
 			desc = timelogDAOInt.getShiftDesc(id);
 			shiftInReal = timelogDAOInt.getShiftInReal(desc);
-			shiftInReal =  yDate + " " + shiftInReal;
 			
+			shiftInReal =  yDate + " " + shiftInReal;
 			
 			shiftIn = getShiftIn(id,desc,shiftInReal);
 			
@@ -107,7 +111,14 @@ public class TimeLoggingService implements TimelogServiceInt{
 
 					SimpleDateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
 					SimpleDateFormat printFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					java.util.Date dateIn = parseFormat.parse(timeIn);
+				
+					Date dateIn;
+					dateIn = null;
+					try {
+						dateIn = parseFormat.parse(timeIn);
+					} catch (ParseException e) {
+						logger.info(e.getMessage());
+					}
 					
 					timeIn=printFormat.format(dateIn);
 
@@ -118,7 +129,13 @@ public class TimeLoggingService implements TimelogServiceInt{
 
 					{
 						timeOut = timelogDAOInt.getTimeOut(yDate,id);
-							java.util.Date dateOut = parseFormat.parse(timeOut);
+							Date dateOut;
+							dateOut = null;
+							try {
+								dateOut = parseFormat.parse(timeOut);
+							} catch (ParseException e) {
+								logger.info(e.getMessage());
+							}
 							timeOut = printFormat.format(dateOut);
 							flagUndertime(yDate, id,shiftInReal,shiftIn,timeIn, shiftOut, timeOut,desc,checkLate);
 							flagOvertime(yDate, id,shiftInReal,shiftIn,timeIn, shiftOut, timeOut,desc,checkLate);
@@ -155,7 +172,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 			return dateFormat.format(cal.getTime());
 		}
 		//Get Shift In
-		private String getShiftIn(int id, String desc,String shiftInReal) throws ParseException
+		private String getShiftIn(int id, String desc,String shiftInReal)
 		{
 			 String shiftIn;
 			 shiftIn ="";
@@ -172,7 +189,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 		}
 		
 		//check if late and return boolean
-		private boolean checkLate(String d, int uid,String shiftIn,String timeIn) throws DataAccessException
+		private boolean checkLate(String d, int uid,String shiftIn,String timeIn)
 		{
 			int comp;
 			boolean flag;
@@ -188,7 +205,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 			return flag;
 		}
 		//flag for undertime
-		private void flagUndertime(String d, int uid,String shiftInReal,String shiftIn,String timeIn, String shiftOut, String timeOut,String desc,boolean checkLate) throws DataAccessException, ParseException
+		private void flagUndertime(String d, int uid,String shiftInReal,String shiftIn,String timeIn, String shiftOut, String timeOut,String desc,boolean checkLate)
 		{
 			int comp;
 			String ntime;
@@ -232,7 +249,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 				}
 			}
 		}
-		private void flagOvertime(String d, int uid,String shiftInReal,String shiftIn,String timeIn, String shiftOut, String timeOut,String desc,boolean checkLate) throws DataAccessException, ParseException
+		private void flagOvertime(String d, int uid,String shiftInReal,String shiftIn,String timeIn, String shiftOut, String timeOut,String desc,boolean checkLate)
 		{
 			int comp;
 			String ntime;
@@ -277,31 +294,39 @@ public class TimeLoggingService implements TimelogServiceInt{
 				}
 			}
 		}
-		private String addHour(String timeIn, int n) throws ParseException
+		private String addHour(String timeIn, int n)
 		{
 			String ntime;
 			ntime = "";
 			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Calendar c = Calendar.getInstance();
-			c.setTime(time.parse(timeIn));
+			try {
+				c.setTime(time.parse(timeIn));
+			} catch (ParseException e) {
+				logger.info(e.getMessage());
+			}
 			c.add(Calendar.HOUR,n);
 			ntime = time.format(c.getTime());
 			return ntime;
 		}
-		private String addMinutes(String timeIn, int n) throws ParseException
+		private String addMinutes(String timeIn, int n)
 		{
 			String ntime;
 			ntime = "";
 			SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Calendar c = Calendar.getInstance();
-			c.setTime(time.parse(timeIn));
+			try {
+				c.setTime(time.parse(timeIn));
+			} catch (ParseException e) {
+				logger.info(e.getMessage());
+			}
 			c.add(Calendar.MINUTE,n);
 			ntime = time.format(c.getTime());
 			return ntime;
 		}
 		
 		@Override
-		public String validateInput(int id,String name,String from, String to) throws ParseException, DataAccessException {
+		public String validateInput(int id,String name,String from, String to){
 			String nwrponse;
 			nwrponse = "";
 			if(id == 0 || name.equals(""))
@@ -317,8 +342,17 @@ public class TimeLoggingService implements TimelogServiceInt{
 				else
 				{
 					SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-mm-dd" );  
-						java.util.Date dfrom = sdf.parse(from);  
-						java.util.Date dto = sdf.parse(to);
+						Date dfrom;
+						Date dto;
+						dfrom = null;
+						dto=null;
+						try {
+							dfrom = sdf.parse(from);
+							 dto= sdf.parse(to);
+						} catch (ParseException e) {
+							logger.info(e.getMessage());
+						}  
+						
 				
 					if(dfrom.before(dto) || dfrom.equals(dto))
 					{
@@ -343,7 +377,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 		}
 
 		@Override
-		public List retrieveSubordinates(int id) throws DataAccessException {
+		public List retrieveSubordinates(int id){
 			
 			subMap.clear();
 			subMap = timelogDAOInt.retrieveSubordinatesMap(id);
@@ -352,7 +386,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 
 		@Override
 		public List<TimeLogging> retrieveTimelog(String name, String from,
-				String to) throws DataAccessException {
+				String to){
 		
 			//method internal only
 			//paramater(name)
@@ -380,29 +414,17 @@ public class TimeLoggingService implements TimelogServiceInt{
 		
 		@Override
 		public List<TimeLogging> retrieveMylog(int id, String from,
-				String to) throws DataAccessException {
+				String to){
 	
 			return timelogDAOInt.retrieveMylog(id, from, to);
 		}
 
 		@Override
-		public String checkUser(int id) throws DataAccessException {
+		public String checkUser(int id){
 	
 			String user,position;
 			user = "";
 			int levelID;
-			//manager
-
-			/*levelID = timelogDAOInt.getLevelId(id);
-	
-			if(levelID >= 5)
-			{
-				user = "manager";
-			}
-			else
-			{
-				user = "";
-			}*/
 			if(timelogDAOInt.isSupervisor(id))
 			{
 				user = "manager";
@@ -413,25 +435,6 @@ public class TimeLoggingService implements TimelogServiceInt{
 				user = "";
 			}
 
-		
-			
-			//hr
-			/*position = timelogDAOInt.getPosition(id);
-			if(position.equals("HR Officer"))
-			{
-				user = "hr";
-			}
-			else
-			{
-				if(user.equals("manager"))
-				{
-					user = "manager";
-				}
-				else
-				{
-					user = "";
-				}
-			}*/
 			if(timelogDAOInt.isHR(id).equals("Human Resources Department"))
 			{
 				user = "hr";
@@ -454,13 +457,9 @@ public class TimeLoggingService implements TimelogServiceInt{
 		public String checkName(String name) {
 
 			int validate = 0;
-			try {
-				timelogDAOInt.searchEmployees(name);
-				validate = timelogDAOInt.getValidationOfEmployeeSearch();
-			} catch (DataAccessException e) {
-				e.printStackTrace();
-			}
-			
+		
+			timelogDAOInt.searchEmployees(name);
+			validate = timelogDAOInt.getValidationOfEmployeeSearch();
 			String newresponse = "";
 
 			if (name.equals("")){
@@ -476,13 +475,13 @@ public class TimeLoggingService implements TimelogServiceInt{
 
 		@Override
 		public List<Employee> searchEmployees(String name)
-				throws DataAccessException {
+			{
 			
 			return timelogDAOInt.searchEmployees(name);
 		}
 		
 		@Override
-		public void logTimeIn(TimeLogging timelogs) throws DataAccessException{
+		public void logTimeIn(TimeLogging timelogs){
 			
 			employeeid = user.getEmployeeId();
 						
@@ -506,7 +505,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 		}
 		
 		@Override
-		public void logTimeOut(TimeLogging timeLogging) throws DataAccessException, ParseException{
+		public void logTimeOut(TimeLogging timeLogging){
 
 			String duration =hoursCompute(getTime(), getCurrentTime());
 						
@@ -534,25 +533,28 @@ public class TimeLoggingService implements TimelogServiceInt{
 		private String getTime(){
 			
 			String timeIn = null;
-			try {
-				timeIn = timelogDAOInt.getTimeIn(getCurrentDate(), getCurrentTime(), getEmployeeId());
-			} catch (DataAccessException e) {
-				e.printStackTrace();
-			}
+			timeIn = timelogDAOInt.getTimeIn(getCurrentDate(), getCurrentTime(), getEmployeeId());
 			return timeIn;
 		}
 		
 		//Computation of Duration
-		private String hoursCompute(String timeIn, String tout) throws ParseException, DataAccessException{
+		private String hoursCompute(String timeIn, String tout){
 			timeIn = timelogDAOInt.getTimeIn(getCurrentDate(), getCurrentTime(), getEmployeeId());
 			
 			String final_total_hours = "0";
 		
 				 SimpleDateFormat total_hours = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					
-				    Date final1 = total_hours.parse(tout);
-				    Date final2 = total_hours.parse(timeIn);
-				    
+				    Date final1;
+				    Date final2;
+				    final1 = null;
+				    final2 = null;
+					try {
+						final1 = total_hours.parse(tout);
+						final2 = total_hours.parse(timeIn);
+					} catch (ParseException e) {
+						logger.info(e.getMessage());
+					}
 				    long inTime = final1.getTime() - final2.getTime();
 				    
 				    long diffDays = inTime / (24*60*60*1000);
