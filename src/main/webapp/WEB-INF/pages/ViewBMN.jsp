@@ -10,7 +10,12 @@
 <title>BMN Manager</title>
 <link rel="stylesheet" type="text/css" href="../resources/bmn/css/theme.default.css" />
 <link rel="stylesheet" type="text/css" href="../resources/bmn/css/jquery.tablesorter.pager.css" />
-
+<style>
+div#dialog {
+display: none;   
+font-family : Arial, Helvetica, sans-serif;
+}
+</style>
 
 <script src="../resources/bmn/js/jquery-1.9.1.js"></script>
 <script src="../resources/bmn/js/jquery-ui.js"></script>
@@ -36,69 +41,103 @@
 						$("#tablesorter").tablesorter({
 							widgets : [ 'zebra', 'filter' ]
 						}).tablesorterPager(pagerOptions);
-
-						$
-								.ajax(
-										{
-											type : "GET",
-											url : "<c:url value="/consolidation/ajaxFetchConsolidations"/>",
-											success : function(data) {
-											
-												$.each(data, function(keys,
-														values) {
-													ctr = ctr + 1;
-													if(values.timeIn==null && values.timeOut!=null) {
-														values.timeIn = "&nbsp";
-													} else  if(values.timeOut==null && values.timeIn!=null) {
-														values.timeOut = "&nbsp";
-													} else if(values.timeIn==null && values.timeOut==null) {
-														
-														values.timeIn = "&nbsp";
-														values.timeOut = "&nbsp";
-													} else {
-														//has timein and timeout
-													}
-													// onclick=showToForm(this)
-													htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "," + values.date + "," + values.mantisId + "," + values.nt3Id + "," + ctr + "' onclick=showToForm(this) >";
-													htmlstr += "<td>" + values.employeeId + "</td>";
-													htmlstr += "<td>" + values.biometricId +"</td>";
-													htmlstr += "<td>" + values.firstname + "</td>";
-													htmlstr += "<td>" + values.middlename + "</td>";
-													htmlstr += "<td>" + values.lastname + "</td>";
-													htmlstr += "<td>" + values.email + "</td>";
-													htmlstr += "<td>" + values.position + "</td>";
-													htmlstr += "<td>" + values.date + "</td>";
-													console.log(ctr + " " +values.firstname + values.timeIn);
-													htmlstr += '<td id="tdTimeIn'+ ctr +'">' + values.timeIn + '</td>';
-													htmlstr += '<td id="tdTimeOut'+ ctr +'">' + values.timeOut + '</td>';
-													
-													if(values.mantisId!=null) {
-													htmlstr += '<td>'+values.mantisId+'</td>';
-													} else {
-														htmlstr += "<td>No tickets filed.</td>";
-													}
-													
-													if(values.nt3Id!=null){
-													htmlstr += '<td>'+values.nt3Id+'</td>';													
-													} else {
-														htmlstr += "<td>No tickets filed.</td>";
-													}
-													
-													htmlstr += "</tr>";
-														
-												});
-
-											}
-
-										}).done(function() {
-
-									$("#tablesorter").append(htmlstr);
-									var resort = true;
-									$("#tablesorter").trigger("update", [ resort ]);
-									var sorting = [ [ 2, 0 ], [7, 0] ];
-									$("#tablesorter").trigger("sorton", [ sorting ]);
-
+						
+						
+						
+						$.ajax({
+						
+							type: "POST",
+							url: "<c:url value="/consolidation/ajaxFetchTimesheets"/>",
+							success: function(data) {
+								$.each(data, function(keys,values) {	
+									htmlstr +='<option value=' + keys +'> ' + values + '</option>';
 								});
+								$("#selectTimesheets").append(htmlstr);
+							}
+						}).done( function(){
+							$("#btnSelectTimesheet").click(function() {
+								$("#tablesorter tbody").remove();
+								ctr=null;
+								var selectedTimesheet = $("#selectTimesheets option:selected").text();
+
+								//insert populate table here
+								 //clear html string
+								htmlstr=null;
+								$.ajax({
+												type : "GET",
+												url : "<c:url value="/consolidation/ajaxFetchConsolidations"/>",
+												data: {
+														selectedTimesheet : selectedTimesheet
+													
+												},
+												success : function(data) {
+												
+													$.each(data, function(keys,
+															values) {
+														ctr = ctr + 1;
+														if(values.timeIn==null && values.timeOut!=null) {
+															values.timeIn = "&nbsp";
+														} else  if(values.timeOut==null && values.timeIn!=null) {
+															values.timeOut = "&nbsp";
+														} else if(values.timeIn==null && values.timeOut==null) {
+															
+															values.timeIn = "&nbsp";
+															values.timeOut = "&nbsp";
+														} else {
+															//has timein and timeout
+														}
+														// onclick=showToForm(this)
+														htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "," + values.date + "," + ctr + "' onclick=showToForm(this) >";
+														htmlstr += "<td>" + values.employeeId + "</td>";
+														htmlstr += "<td>" + values.biometricId +"</td>";
+														htmlstr += "<td>" + values.firstname + "</td>";
+														htmlstr += "<td>" + values.middlename + "</td>";
+														htmlstr += "<td>" + values.lastname + "</td>";
+														htmlstr += "<td>" + values.email + "</td>";
+														htmlstr += "<td>" + values.position + "</td>";
+														htmlstr += "<td>" + values.date + "</td>";
+														console.log(ctr + " " +values.firstname + values.timeIn);
+														htmlstr += '<td id="tdTimeIn'+ ctr +'">' + values.timeIn + '</td>';
+														htmlstr += '<td id="tdTimeOut'+ ctr +'">' + values.timeOut + '</td>';
+														
+														if(values.mantisId!=null) {
+														htmlstr += '<td>'+values.mantisId+'</td>';
+														} else {
+															htmlstr += "<td>No tickets filed.</td>";
+														}
+														
+														if(values.nt3Id!=null){
+														htmlstr += '<td>'+values.nt3Id+'</td>';													
+														} else {
+															htmlstr += "<td>No tickets filed.</td>";
+														}
+														
+														htmlstr += "</tr>";
+															
+													});
+
+												}
+
+											}).done(function() {
+
+										$("#tablesorter").append(htmlstr);
+										var resort = true;
+										$("#tablesorter").trigger("update", [ resort ]);
+										var sorting = [ [ 2, 0 ], [7, 0] ];
+										$("#tablesorter").trigger("sorton", [ sorting ]);
+
+									}); 
+
+								
+							
+								
+							});
+							
+						});
+						
+						
+						
+			 	
 
 						$("button:contains(Destroy)").click(function() {
 							var $t = $(this);
@@ -117,7 +156,7 @@
 					});
 	
 </script>
-W
+
 <script>
  function showToForm(myId) {
 	
@@ -139,25 +178,21 @@ W
 	width:450,
 	height:500,
 	modal: true,
-	 close: function() {
-		trId = null;
-		tdId = null;
-		firstname = null;
-		middlename = null;
-		lastname = null;
-		timein = null;
-		timeout = null;
-		date = null;
-		htmlstr = null;
-
-		console.log("closed");
-		
-	} 
+	close: function() {
+			trId = null;
+			tdId = null;
+			firstname = null;
+			middlename = null;
+			lastname = null;
+			timein = null;
+			timeout = null;
+			date = null;
+			htmlstr = null;
+			console.log("closed");
+			} 
 	
 	});
 
-	
-	
 	
 	  var delimited = trId.split(",");
 	  trId = delimited[0];
@@ -168,40 +203,43 @@ W
 	  timeout = delimited[5];
 	  date = delimited[6];
 	  tdId = delimited[7];
-	  
-	  
 	
-	 $("#txtemployeeid").val(trId);
-	 $("#txtfirstname").val(firstname + " " + middlename + " " + lastname);
-	 $("#txttimein").val(timein);
-	 $("#txttimeout").val(timeout);
-	 $("#txtdate").val(date);
-	 
+	  $("#txtemployeeid").val(trId);
+	  $("#txtfirstname").val(firstname + " " + middlename + " " + lastname);
+	  $("#txttimein").val(timein);
+	  $("#txttimeout").val(timeout);
+	  $("#txtdate").val(date);
 	
-	 
-	 
-	 $.ajax({
-			type: "POST",
-			url: "/tempoplus/consolidation/ajaxFetchTickets",
-			data: {
-				employeeId : trId
-			},
-			success: function(data) {
-				console.log("ajax succeeded");
-				
-				$.each(data, function(keys,values) {
-					htmlstr+= "<tr>";
-					htmlstr+= "<td>" + values.category + "|" + values.ticketId + "|" + values.status + "|" +values.timeIn+ "|" + values.timeOut + "</td>";
-					htmlstr+= "</tr>";
-				
-				});
-				
-				$("table tbody.mantis").append(htmlstr);
-				
-			}
+	
+	
+	 $("#btnUpdate").click(function() {
+			var timeIn = $("#txttimein").val();
+			var timeOut = $("#txttimeout").val();
+			employeeId = $("#txtemployeeid").val();
+			date = $("#txtdate").val();
 			
+			console.log(tdId);
+			
+			$.ajax({
+				type : "POST",
+				url : "<c:url value="/consolidation/ajaxUpdateConsolidations"/>",
+				data: {
+					timeIn: timeIn,
+					timeOut: timeOut,
+					employeeId: employeeId,
+					date: date
+				},
+				success : function(data) {
+
+					$("#tdTimeIn"+tdId).text(timeIn);
+					$("#tdTimeOut"+tdId).text(timeOut);
 				
+				}
+			});
+			 
 	 });
+	 
+	 
 	
 	
 } 
@@ -279,17 +317,10 @@ W
 	<hr/>
 	<div>
 	<div class="pager" align="right">
-	Select timesheet: <select>
-	<option>010113.xls</option>
-	<option>011513.xls</option>
-	<option>020113.xls</option>
-	<option>021513.xls</option>
-	<option>030113.xls</option>
-	<option>031513.xls</option>
-	<option>040113.xls</option>
-	<option>041513.xls</option>
-	<option>050113.xls</option>
+	Timesheets: <select id="selectTimesheets">
+	
 	</select>
+	<button id="btnSelectTimesheet">Select</button>
 		<img src="../resources/bmn/css/images/first.png" class="first" /> <img
 			src="../resources/bmn/css/images/prev.png" class="prev" /> <span
 			class="pagedisplay"></span>
@@ -311,7 +342,7 @@ W
 			<th>First name</th>
 			<th>Middle name</th>
 			<th>Last name</th>
-			<th>Email</th>
+			<th>Email</th>	
 			<th>Position</th>
 			<th>Date</th>
 			<th>Time in</th>

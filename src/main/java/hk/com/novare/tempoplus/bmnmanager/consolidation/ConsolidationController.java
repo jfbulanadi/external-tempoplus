@@ -1,6 +1,7 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
+import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.employee.Employee;
 
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,9 +42,9 @@ public class ConsolidationController {
 //	}
 	
 	@RequestMapping(value = "/ajaxFetchConsolidations", method=RequestMethod.GET)
-	public @ResponseBody ArrayList<ConsolidationDTO> fetchConsolidations(ModelMap modelMap)  {
+	public @ResponseBody ArrayList<ConsolidationDTO> fetchConsolidations(@RequestParam String selectedTimesheet)  {
 		logger.info("fetchConsolidations: Loading consolidated records.");
-		return consolidationService.viewConsolidation();
+		return consolidationService.viewConsolidation(selectedTimesheet);
 	}
 	
 
@@ -73,7 +75,13 @@ public class ConsolidationController {
 		
 	}
 	
-	
+	@RequestMapping(value = "/ajaxFetchTimesheets", method = RequestMethod.POST)
+	public @ResponseBody ArrayList<String> fetchTimesheets() {
+		logger.info("fetchTimesheets: Loading timesheets");
+		return consolidationService.fetchTimesheets();
+		
+	}
+
 	
 	
 

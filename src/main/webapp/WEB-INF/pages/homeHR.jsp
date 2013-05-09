@@ -19,13 +19,7 @@ $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 });
 </script>
 
-<style>
-div#dialog {
-display: none;
-font-size: 68.5%;   
-font-family : Arial, Helvetica, sans-serif;
-}
-</style>
+
 </head>
 
 

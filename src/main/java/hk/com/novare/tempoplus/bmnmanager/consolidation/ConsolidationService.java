@@ -39,8 +39,8 @@ public class ConsolidationService {
 				periodEnd);
 	}
 
-	public ArrayList<ConsolidationDTO> viewConsolidation() {
-		return consolidationDao.viewConsolidation();
+	public ArrayList<ConsolidationDTO> viewConsolidation(String selectedTimesheet) {
+		return consolidationDao.viewConsolidation(selectedTimesheet);
 		
 	}
 
@@ -52,6 +52,10 @@ public class ConsolidationService {
 	
 	public ArrayList<Mantis> fetchTicket(String employeeId) {		
 		return consolidationDao.fetchMantisTickets(employeeId);
+	}
+	
+	public ArrayList<String> fetchTimesheets() {
+		return consolidationDao.fetchTimesheets();
 	}
 
 	/*

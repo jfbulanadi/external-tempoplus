@@ -223,7 +223,7 @@ public class ConsolidationDao {
 
 	}
 	
-	public ArrayList<ConsolidationDTO> viewConsolidation() {
+	public ArrayList<ConsolidationDTO> viewConsolidation(String selectedTimesheet) {
 		ResultSet resultSet = null;
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -236,16 +236,16 @@ public class ConsolidationDao {
 				connection = dataSource.getConnection();
 				logger.info("viewConsolidation: Created MySQL connection.");
 				ps = connection.prepareStatement("SELECT e.employeeId, e.id, e.biometricId, e.firstname, e.middlename, e.lastname, e.email, p.description AS position, CONCAT_WS(', ' , e.lastname, e.firstname) AS fullName, e.hiredate, e.regularizationdate, "
-       + "(SELECT CONCAT_WS(', ' , lastname, firstname) AS fullName FROM employees WHERE employeeId = e.supervisorId) AS supervisor, "
-       + "c.mantisId, c.nt3Id, t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, "
-       + "m.category, m.status, n.startDate, n.endDate, n.duration, n.absenceType, n.absenceStatus, "
-       + "(SELECT MIN(bIn.logTime) FROM biometrics AS bIn WHERE log = 0 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeIn, "
-       + "(SELECT MAX(bOut.logTime)  FROM biometrics AS bOut WHERE log = 1 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeOut "
-       + "FROM timelogs AS t JOIN employees AS e ON t.employeeId = e.employeeId "
-       + "LEFT JOIN positions p ON p.id = e.positionId "
-       + "LEFT JOIN consolidations c ON t.id = c.timelogId "
-       + "LEFT JOIN mantises m ON m.id = c.mantisId "
-       + "LEFT JOIN nt3s n ON n.id = c.nt3Id ORDER BY e.id");
+					       + "(SELECT CONCAT_WS(', ' , lastname, firstname) AS fullName FROM employees WHERE employeeId = e.supervisorId) AS supervisor, "
+					       + "c.mantisId, c.nt3Id, t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, "
+					       + "m.category, m.status, n.startDate, n.endDate, n.duration, n.absenceType, n.absenceStatus, "
+					       + "(SELECT MIN(bIn.logTime) FROM biometrics AS bIn WHERE log = 0 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeIn, "
+					       + "(SELECT MAX(bOut.logTime)  FROM biometrics AS bOut WHERE log = 1 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeOut "
+					       + "FROM timelogs AS t JOIN employees AS e ON t.employeeId = e.employeeId "
+					       + "LEFT JOIN positions p ON p.id = e.positionId "
+					       + "LEFT JOIN consolidations c ON t.id = c.timelogId "
+					       + "LEFT JOIN mantises m ON m.id = c.mantisId "
+					       + "LEFT JOIN nt3s n ON n.id = c.nt3Id ORDER BY e.id");
 				resultSet = ps.executeQuery();
 				logger.info("viewConsolidation: Executed query for displaying consolidation.");
 				
@@ -300,6 +300,31 @@ public class ConsolidationDao {
 		
 		
 	}
+	
+	public ArrayList<String> fetchTimesheets() {
+		
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet resultSet = null;
+		ArrayList<String> list = new ArrayList<String>();
+		
+		try {
+			connection = dataSource.getConnection();
+			ps = connection
+					.prepareStatement("SELECT description FROM timesheets");
+			resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				final String description = resultSet.getString("description");
+				list.add(description);
+			
+			}
+
+		} catch (SQLException e) {
+
+		}
+		return list;
+	}
 
 	public void updateConsolidations(String employeeId,
 			String timeIn, String timeOut, String date)  {
@@ -308,9 +333,15 @@ public class ConsolidationDao {
 			Connection connection = null;
 			PreparedStatement ps = null;
 			
-			//connection = dataSource.getConnection();
-			//ps = connection.prepareStatement("UPDATE");
-			//ps.executeUpdate();
+//			try {
+//				connection = dataSource.getConnection();
+//				ps = connection.prepareStatement("UPDATE SET ");
+//				ps.executeUpdate();
+//				connection.close();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			
 			
 	}
