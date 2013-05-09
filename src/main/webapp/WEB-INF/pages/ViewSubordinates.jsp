@@ -7,7 +7,8 @@
 <head>
 
 <!-- <link rel="stylesheet" type="text/css"
-<!-- <link rel="stylesheet" type="text/css"
+	href="../resources/account/css/jquery.tablesorter.pager.css"></link>
+<link rel="stylesheet" type="text/css"
 	href="../resources/account/css/theme.default.css"></link>
 <link rel="stylesheet" type="text/css"
 	href="../resources/account/css/viewhr.css"></link>
@@ -16,14 +17,14 @@
 	href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
 
 <script src="../resources/account/js/jquery-1.9.1.js"></script>
-<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script> -->
-<<!-- script src="../resources/account/js/jquery.tablesorter.min.js"></script>
+<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>
+<script src="../resources/account/js/jquery.tablesorter.min.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.widgets.min.js"></script>
 <script src="../resources/account/js/jquery-ui.js"></script>
 <script
 	src="../resources/account/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
 <script src="../resources/account/js/jquery.tablesorter.pager.min.js"></script>
-<script src="../resources/account/js/viewhr.js"></script> -->
+<script src="../resources/account/js/viewhr.js"></script>
 <script src="../resources/account/js/addManagerSubordinate.js"></script>
 <script src="../resources/account/js/deleteManagerSubordinate.js"></script> -->
 
