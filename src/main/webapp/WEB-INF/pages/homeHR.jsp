@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../resources/account/css/viewhr.css"></link>
 <link rel="stylesheet" href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
 <link rel="stylesheet" type="text/css" href="../resources/account/css/jquery.tablesorter.pager.css"></link>
-
+ 
 <script src="../resources/account/js/jquery-1.9.1.js"></script>
 <script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>
 <script src="../resources/account/js/jquery-ui.js"></script>

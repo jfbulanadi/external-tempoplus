@@ -4,8 +4,22 @@ var view ="";
 var id =0;
 $(document).ready(function() {
 	id = idExternal;
-	$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
-	$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
+	$( "#from" ).datepicker({ 
+		dateFormat: 'yy-mm-dd', 
+		showOn: "button",
+	    buttonImage: "../resources/timelog/css/images/img_calendar.png",
+	    buttonImageOnly: true,
+	    buttonText: "Calendar"
+	});
+	
+	$( "#to" ).datepicker({ 
+		dateFormat: 'yy-mm-dd',
+		showOn: "button",
+	    buttonImage: "../resources/timelog/css/images/img_calendar.png",
+	    buttonImageOnly: true,
+	    buttonText: "Calendar"
+	}); 
+	
 	$( "#SearchButton" ).click(SearchButton);
 	$( "#SearchTimeLog" ).click(SearchTimeLog);
 	mylog();
@@ -104,6 +118,12 @@ function fetch(d){
 }
 function mylog()
 {	
+	
+	/*$("#tblTimeLog").tablesorter('destroy');
+	$("#tblTimeLog").tablesorter();*/
+	
+	$('#tblTimeLog').trigger("update"); 
+	
 	$("#data").css({display: "none"});
 	$("#SearchBox").css({display: "none"});
 	$("#SearchSub").css({display: "none"});
@@ -213,8 +233,7 @@ function others()
 		}
 }
 function SearchTimeLog()
-{	
-		$('#pagesize').selectedIndex=0;
+{		
 		var name;
 		var from = $('#from').val();
 		var to = $('#to').val();
@@ -331,7 +350,7 @@ function SearchTimeLog()
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
-							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'});
 							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
 							    		$("#tblTimeLog").trigger('update');
 							    	});
@@ -370,7 +389,7 @@ function SearchTimeLog()
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
-							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'});
 							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
 							    		$("#tblTimeLog").trigger('update');
 							    	});
@@ -390,4 +409,5 @@ function SearchTimeLog()
 				}
 			
 			}
+		
 	}

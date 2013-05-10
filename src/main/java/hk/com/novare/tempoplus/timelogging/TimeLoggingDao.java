@@ -934,7 +934,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		}
 		
 		@Override
-		public void insertTimeIn(String datestring, String timestring, int id, TimeLogging time){
+		public void insertTimeIn(String datestring, String timestring, int id){
 
 			Connection connection = null;
 			
@@ -1029,7 +1029,7 @@ public class TimeLoggingDao implements TimelogDAOInt {
 		
 		@Override
 
-		public void validateout(String totalHours, String datestring, String timestring,int id, TimeLogging time){
+		public void validateout(String totalHours, String datestring, String timestring,int id){
 
 
 			Connection connection = null;

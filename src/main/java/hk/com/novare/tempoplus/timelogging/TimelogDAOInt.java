@@ -46,8 +46,8 @@ public interface TimelogDAOInt {
 		int getValidationOfEmployeeSearch();
 		
 	//Timein TimeOut
-		void insertTimeIn(String datestring, String timestring, int id, TimeLogging time);
-		void validateout(String totalHours, String datestring, String timestring,int id, TimeLogging time);
+		void insertTimeIn(String datestring, String timestring, int id);
+		void validateout(String totalHours, String datestring, String timestring,int id);
 		int validatetimeIn(String datestring,int id);	
 		String getTimeIn(String dateString, String timeString, int id);
 

@@ -124,7 +124,7 @@ Lastname/Firstname: <input type="text" id="empName" /> <button id="SearchButton"
 	<form>
 		<img src="../resources/timelog/css/images/images/first.png" class="first"/>
 		<img src="../resources/timelog/css/images/images/prev.png" class="prev"/>
-		<input type="text" id="tbl" class="pagedisplay"/>
+		<input type="text" id="tbl" class="pagedisplay" readonly="readonly"/>
 		<!-- <span class="pagedisplay"></span> -->
 		<img src="../resources/timelog/css/images/images/next.png" class="next"/>
 		<img src="../resources/timelog/css/images/images/last.png" class="last"/>
