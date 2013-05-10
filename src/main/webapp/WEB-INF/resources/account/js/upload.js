@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /*$(function() {
+=======
+$(function() {
+>>>>>>> ff706300618d3d6cc545d8849418b7b5e5a4c726
 	$('#uploadForm').fileupload(
 			{
 				basic: true,
@@ -16,6 +20,7 @@
 			    }
 			})
 });
+<<<<<<< HEAD
 */
 
 /*$(function() {
@@ -60,9 +65,16 @@ $(function () {
 });
 */
 /*$(function() {
+=======
+
+$(function() {
+>>>>>>> ff706300618d3d6cc545d8849418b7b5e5a4c726
 	var control = $("#control");
     $("#reset").click(function() {
         control.replaceWith( control = control.clone( true ) );
     });  
 });
+<<<<<<< HEAD
 */
+=======
+>>>>>>> ff706300618d3d6cc545d8849418b7b5e5a4c726

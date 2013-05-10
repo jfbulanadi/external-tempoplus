@@ -8,11 +8,6 @@ html, body, h1, h2, h3, h4, h5, h6, div, span, blockquote, p, address, form, fie
 	line-height: 1.5em;
 }
 
-body
-{
-	padding: 10px 30px;
-}
-
 input, textarea, select, option, optgroup, button, td, th
 {
 	font-size: 100%;
@@ -24,10 +19,6 @@ pre, code, kbd, samp, tt
 	font-size: 1em;
 }
 
-body {
-    width: 960px;
-    margin: 0 auto;
-}
 
 code
 {
@@ -121,11 +112,6 @@ body, input, textarea
 {
 	color: #333333;
 	font-family: Arial, Helvetica, sans-serif;
-}
-
-body
-{
-	font-size: 75%;
 }
 
 a.samples

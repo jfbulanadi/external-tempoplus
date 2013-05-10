@@ -194,7 +194,6 @@ public class HrController {
 		return hrService.userDBFileUpload(file);
 
 	}
-	
 	@RequestMapping(value = "/uploadPage")
 	public String uploadPage() {
 
@@ -204,6 +203,15 @@ public class HrController {
 		return "upload";
 	}
 	
+	/*@RequestMapping(value = "/uploadPage")
+	public String uploadPage() {
+
+		// upload file
+		//hrService.userDBFileUpload(uploadForm.getFile());
+		//System.out.println("files" + uploadForm.toString());
+		return "upload";
+	}
+*/	
 	
 	@RequestMapping(value = "/uploadUserDBFromTest")
 	public String getFileUpload() {

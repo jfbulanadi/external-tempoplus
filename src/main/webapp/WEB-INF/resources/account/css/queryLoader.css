@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .QOverlay {
 	background-color: #000000;
 	z-index: 9999;
@@ -6,4 +7,14 @@
 .QLoader {
 	background-color: #CCCCCC;
 	height: 1px;
+=======
+.QOverlay {
+	background-color: #000000;
+	z-index: 9999;
+}
+
+.QLoader {
+	background-color: #CCCCCC;
+	height: 1px;
+>>>>>>> ff706300618d3d6cc545d8849418b7b5e5a4c726
 }

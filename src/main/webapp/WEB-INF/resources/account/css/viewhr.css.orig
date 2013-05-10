@@ -1,0 +1,57 @@
+<<<<<<< HEAD
+@CHARSET "ISO-8859-1";
+
+#dialog-form {
+	display: none;
+}
+
+#dialog-formFullInformatiion {
+	display: none;
+}
+
+Body {
+	font-size: 11px;
+}
+
+.button_n {
+	float: right;
+	height: 100px;
+	margin: 20px;
+	
+}
+
+.bar {
+	height: 18px;
+	
+	background: green;
+}
+</style>
+=======
+@CHARSET "ISO-8859-1";
+
+#dialog-form {
+	display: none;
+}
+
+#dialog-formFullInformatiion {
+	display: none;
+}
+
+Body {
+	font-size: 11px;
+}
+
+.button_n {
+	float: right;
+	height: 100px;
+	margin: 20px;
+	
+}
+
+.bar {
+	height: 18px;
+	
+	background: green;
+}
+</style>
+>>>>>>> ff706300618d3d6cc545d8849418b7b5e5a4c726

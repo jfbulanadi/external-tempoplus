@@ -307,6 +307,10 @@ function showToForm(empInfo) {
 			$.each(response, function(key, value) {
 				department += '<option value=' + key + '> ' + value
 						+ '</option>';
+				});
+				$('#editSelectDepartment').append(department);
+			}
+		})
 			});
 			$('#editSelectDepartment').append(department);
 		}
@@ -364,6 +368,19 @@ function showToForm(empInfo) {
 		$("#editMiddleName").val(response.middleName)
 		$("#editLastName").val(response.lastName)
 		$("#editSelectDepartment").val(department)
+		$("#editEmployeeId").val(response.employeeId)
+		$("#editBiometrics").val(response.biometricId)
+		$("#editSelectShift").val(response.shiftId)
+		$("#editSelectPosition").val(position)
+		$("#editLevel").val(response.level)
+		$("#editHiredDate").val(response.hiredDate)
+		$("#editRegularizationDate").val(response.regularizationDate)
+		$("#editResignationDate").val(response.resignationDate)
+		$("#editSelectSupervisorName").val(supervisor)
+		$("#editSupervisorEmail").val(response.supervisorEmail)
+		$("#editLocAssign").val(response.locAssign)
+		$("#editEmployeeEmail").val(response.employeeEmail)
+		$("#editSelectPosition").val(position)
 		$("#editEmployeeId").val(response.employeeId)
 		$("#editBiometrics").val(response.biometricId)
 		$("#editSelectShift").val(response.shiftId)
@@ -617,6 +634,20 @@ $(function() {
 });
 /*
 $(function() {
+	$("#uploadStatus").click(function() {
+		$.ajax({
+			type: "POST",
+			url:"../hr/uploadUserDB",
+			fileElementId: 'files',
+			DataType: "json",
+			success: function() {
+				alert(1);
+			}	
+		});
+		
+	});
+	
+});*/
 	$("#uploadStatus").click(function() {
 		$.ajax({
 			type: "POST",

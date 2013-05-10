@@ -21,6 +21,7 @@ public class EmployeeManagerDAO {
 
 	boolean hasFound = false;
 	
+	//--------search for manager's subordinates--------------
 	public List<EmployeeManager> searchSubordinates(int supervisorId){
 		List<EmployeeManager> subordinatesList = new ArrayList<EmployeeManager>();
 		Connection connection = null;
@@ -136,7 +137,7 @@ public class EmployeeManagerDAO {
 				return position;
 		}
 		
-	//-----------------------search for add subordinates-----------------
+	//-----------------------employee search to add as subordinates-----------------
 		
 		public List<EmployeeManager> searchToAddSubordinates(String employeeName){
 			List<EmployeeManager> subordinatesList = new ArrayList<EmployeeManager>();
@@ -150,10 +151,8 @@ public class EmployeeManagerDAO {
 								"lastname LIKE '%" + employeeName + "%' OR firstname LIKE '%" +
 								employeeName + "%'");
 				ResultSet resultSet = searchSubordinatesStatement.executeQuery();
-				System.out.println("[ @ search ]" + employeeName);
 				
 				while(resultSet.next()){
-					System.out.println("[ @ result set ]" + employeeName);
 					hasFound = true;
 					
 					EmployeeManager subordinate = new EmployeeManager();
@@ -201,24 +200,17 @@ public class EmployeeManagerDAO {
 			for(int id: subordinateIds){
 				Connection connection = null;
 				try {
-					
-						
-						System.out.println("DAO: [ @ Change Supervisor DAO]");
-						System.out.println(id);
-						System.out.println(supervisorId);
 						
 					connection = dataSource.getConnection();
-					System.out.println("DAO: [ @ after connection");
+		
 					PreparedStatement updateSupervisorStatement = 
 							connection.prepareStatement("UPDATE employees SET supervisorId = ? WHERE employeeId = ? ");
-					System.out.println("DAO: [ @ after preparedStatement");
+
 							updateSupervisorStatement.setInt(1, supervisorId);
 							updateSupervisorStatement.setInt(2, id);
-							System.out.println("DAO: [ @ after set");
 							updateSupervisorStatement.executeUpdate();
-							System.out.println("DAO: [ @ after execute");
+							
 							updated = true;
-							System.out.println("DAO: updated? [" + updated + "]");
 					
 					
 				} catch (SQLException e) {

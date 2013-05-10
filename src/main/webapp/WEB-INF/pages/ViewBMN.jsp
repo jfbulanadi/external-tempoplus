@@ -8,16 +8,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>BMN Manager</title>
+<link rel="stylesheet" type="text/css" href="../resources/bmn/css/theme.default.css" />
+<link rel="stylesheet" type="text/css" href="../resources/bmn/css/jquery.tablesorter.pager.css" />
 
- 
-<link rel="stylesheet" type="text/css"
-	href="../resources/bmn/css/jquery.tablesorter.pager.css"></link>
-<link rel="stylesheet" type="text/css"
-	href="../resources/bmn/css/theme.default.css"></link>
-<link rel="stylesheet" type="text/css"
-	href="../resources/account/css/jquery-ui.css"></link>
- 
- 
+
 <script src="../resources/bmn/js/jquery-1.9.1.js"></script>
 <script src="../resources/bmn/js/jquery-ui.js"></script>
 <script src="../resources/bmn/js/jquery.tablesorter.min.js"></script>
@@ -25,14 +19,6 @@
 <script
 	src="../resources/bmn/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
 <script src="../resources/bmn/js/jquery.tablesorter.pager.min.js"></script>
-<style>
-div#dialog {
-display: none;
-font-size: 68.5%;   
-font-family : Arial, Helvetica, sans-serif;
-}
-</style>
-
 <script>
 	$(document)
 			.ready(
@@ -46,7 +32,7 @@ font-family : Arial, Helvetica, sans-serif;
 							removeRows : false,
 							cssGoto : '.gotoPage',
 						};
-
+						//$("#mantistable").remove();
 						$("#tablesorter").tablesorter({
 							widgets : [ 'zebra', 'filter' ]
 						}).tablesorterPager(pagerOptions);
@@ -73,7 +59,7 @@ font-family : Arial, Helvetica, sans-serif;
 														//has timein and timeout
 													}
 													// onclick=showToForm(this)
-													htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "," + values.date + "," + ctr +"' onclick=showToForm(this) >";
+													htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "," + values.date + "," + values.mantisId + "," + values.nt3Id + "," + ctr + "' onclick=showToForm(this) >";
 													htmlstr += "<td>" + values.employeeId + "</td>";
 													htmlstr += "<td>" + values.biometricId +"</td>";
 													htmlstr += "<td>" + values.firstname + "</td>";
@@ -85,8 +71,19 @@ font-family : Arial, Helvetica, sans-serif;
 													console.log(ctr + " " +values.firstname + values.timeIn);
 													htmlstr += '<td id="tdTimeIn'+ ctr +'">' + values.timeIn + '</td>';
 													htmlstr += '<td id="tdTimeOut'+ ctr +'">' + values.timeOut + '</td>';
-													htmlstr += '<td align="center"><img src = "../resources/bmn/css/images/red.png" /></td>';
-													htmlstr += '<td align="center"><img src = "../resources/bmn/css/images/green.png" /></td>';
+													
+													if(values.mantisId!=null) {
+													htmlstr += '<td>'+values.mantisId+'</td>';
+													} else {
+														htmlstr += "<td>No tickets filed.</td>";
+													}
+													
+													if(values.nt3Id!=null){
+													htmlstr += '<td>'+values.nt3Id+'</td>';													
+													} else {
+														htmlstr += "<td>No tickets filed.</td>";
+													}
+													
 													htmlstr += "</tr>";
 														
 												});
@@ -116,54 +113,57 @@ font-family : Arial, Helvetica, sans-serif;
 											
 						
 						});
-						
-						
-						
-					
-					
-						
-						
-						
-
-						
-
+							
 					});
 	
-	
-	
 </script>
+
 <script>
 
 
+
+</script>
+
+<script>
  function showToForm(myId) {
 	
-	 
-	$("#dialog").dialog({
-		width:450,
-		height:500,
-		modal: true,
-		close: function() {
-			var trId = null;
-			var tdId = null;
-			var firstname = null;
-			var middlename = null;
-			var lastname = null;
-			var timein = null;
-			var timeout = null;
-			var date = null;
-		}
-		
-	});
+	var trId;
+	var tdId;
+	var firstname;
+	var middlename;
+	var lastname;
+	var timein;
+	var timeout;
+	var date; 
+	var htmlstr;
 	
-	
-	 $("#tabs").tabs();
-	 
-	 
-	var trId = myId.id;
-	
-	
-//	console.log(trId);
+	trId = myId.id;
 
+	
+	//initializes dialog form 
+	$("#dialog").dialog({
+	width:450,
+	height:500,
+	modal: true,
+	 close: function() {
+		trId = null;
+		tdId = null;
+		firstname = null;
+		middlename = null;
+		lastname = null;
+		timein = null;
+		timeout = null;
+		date = null;
+		htmlstr = null;
+
+		console.log("closed");
+		
+	} 
+	
+	});
+
+	
+	
 	
 	  var delimited = trId.split(",");
 	  trId = delimited[0];
@@ -174,10 +174,8 @@ font-family : Arial, Helvetica, sans-serif;
 	  timeout = delimited[5];
 	  date = delimited[6];
 	  tdId = delimited[7];
-	  	
-	console.log(tdId);
-	//console.log(trId);
-	//console.log(firstname);
+	  
+	  
 	
 	 $("#txtemployeeid").val(trId);
 	 $("#txtfirstname").val(firstname + " " + middlename + " " + lastname);
@@ -185,57 +183,66 @@ font-family : Arial, Helvetica, sans-serif;
 	 $("#txttimeout").val(timeout);
 	 $("#txtdate").val(date);
 	 
-	 
-	 $("#btnUpdate").click(function() {
-		var timeIn = null;
-		var timeOut = null;
-		var employeeId = null;
-		var date = null;
-		
-		timeIn = $("#txttimein").val();
-		timeOut = $("#txttimeout").val();
-		employeeId = $("#txtemployeeid").val();
-		date = $("#txtdate").val();
-		
-		
-			 
-		console.log(timeIn + " " + timeOut);
-		
-	 	  $.ajax({
-			 type : "POST",
-			 url : "<c:url value="/consolidation/ajaxUpdateConsolidations"/>",
-		     data: {
-		    	 timeIn: timeIn,
-		    	 timeOut: timeOut,
-		    	 employeeId : employeeId,
-		    	 date: date
-		     },
-			 success: function(data) {
-				 
-				 console.log(tdId);
-				 $('#tdTimeIn' + tdId + '').text(timeIn)
-				 $('#tdTimeOut' + tdId + '').text(timeOut)
-			 	
-			 }
-		    	 
-		 }); 
-	 
-		 
-		 	
+	 $.ajax({
+			type: "POST",
+			url: "/tempoplus/consolidation/ajaxFetchTickets",
+			data: {
+				employeeId : trId
+			},
+			success: function(data) {
+				console.log("ajax succeeded");
+				
+				$.each(data, function(keys,values) {
+					htmlstr+= "<tr>";
+					htmlstr+= "<td>" + values.category + "|" + values.ticketId + "|" + values.status + "|" +values.timeIn+ "|" + values.timeOut + "</td>";
+					//htmlstr+= "<td>adada</td>";
+					htmlstr+= "</tr>";
+				
+				});
+				
+				$("table tbody.mantis").append(htmlstr);
+				
+			}
 			
-			 
-			
-		});
-
-	 
+				
+	 });
+	
+	
 } 
 </script>
 </head>
 <body>
-	<!-- FORM IS HIDDEN BY DIALOG -->
+<h2>BMN Manager</h2>
+	<div>
+
+	<form:form method="post" action="uploadfile"
+		modelAttribute="uploadForm" enctype="multipart/form-data">
+
+		<p>Select File to Upload</p>
+
+		<input id="addFile" type="button" value="Add File" />
+		<table id="fileTable">
+		<tr>
+			<td><select name = "category">
+			<option value=1>Biometric</option>
+			<option value=2>Mantis</option>
+			<option value=3>Nt3</option>
+			<option value=4>Employees</option>
+			<option value=5>Consolidate Timesheet</option>
+			</select></td>
+		</tr>
+			<tr>
+				<td><input name="file" type="file" /></td>
+			</tr>
+		</table>
+		<br />
+		<input type="submit" value="Upload" />
+	</form:form>
+	
+	</div>
 	
 
-	
+	<!-- FORM IS HIDDEN BY DIALOG -->	
 	<div id="dialog" title="Update time">
 	<h3>Employee timelog details</h3>
 		<hr/>
@@ -269,24 +276,24 @@ font-family : Arial, Helvetica, sans-serif;
 		
 		<h3>Tickets filed</h3>
 		<hr/>
-		<div id="tabs">
-			 <ul>
-		    	<li><a href="#tab1">Mantis</a></li>
-		    	<li><a href="#tab2">NT3</a></li>
-		 	 </ul>
-		 	 <div id="tab1">
-		 	 	No records to display.
-		 	 </div>
-		 	 <div id="tab2">
-		 	 	No records to display.
-		 	 </div>
-		</div>
+		
 		
 	</div>
 	<!-- FORM IS HIDDEN BY DIALOG -->
 	<hr/>
 	<div>
 	<div class="pager" align="right">
+	Select timesheet:<select>
+	<option>010113.xls</option>
+	<option>011513.xls</option>
+	<option>020113.xls</option>
+	<option>021513.xls</option>
+	<option>030113.xls</option>
+	<option>031513.xls</option>
+	<option>040113.xls</option>
+	<option>041513.xls</option>
+	<option>050113.xls</option>
+	</select>
 		<img src="../resources/bmn/css/images/first.png" class="first" /> <img
 			src="../resources/bmn/css/images/prev.png" class="prev" /> <span
 			class="pagedisplay"></span>
@@ -320,33 +327,6 @@ font-family : Arial, Helvetica, sans-serif;
 		</tbody>
 	</table>
 	<hr/>
-	<div>
-	<form:form method="post" action="uploadfile"
-		modelAttribute="uploadForm" enctype="multipart/form-data">
-
-		<p>Select File to Upload</p>
-
-		<input id="addFile" type="button" value="Add File" />
-		<table id="fileTable">
-		<tr>
-			<td><select name = "category">
-			<option value=1>Biometric</option>
-			<option value=2>Mantis</option>
-			<option value=3>Nt3</option>
-			<option value=4>Employees</option>
-			<option value=5>Consolidate Timesheet</option>
-			</select></td>
-		</tr>
-			<tr>
-				<td><input name="file" type="file" /></td>
-			</tr>
-		</table>
-		<br />
-		<input type="submit" value="Upload" />
-	</form:form>
-	</div>
-	
-
 
 </body>
 </html>

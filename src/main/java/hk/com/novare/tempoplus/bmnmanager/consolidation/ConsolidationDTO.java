@@ -14,8 +14,23 @@ public class ConsolidationDTO {
 	private String timeIn;
 	private String timeOut;
 	private String date;
+	private String mantisId;
+	private String nt3Id;
 	
 	
+	
+	public String getMantisId() {
+		return mantisId;
+	}
+	public void setMantisId(String mantisId) {
+		this.mantisId = mantisId;
+	}
+	public String getNt3Id() {
+		return nt3Id;
+	}
+	public void setNt3Id(String nt3Id) {
+		this.nt3Id = nt3Id;
+	}
 	public String getDate() {
 		return date;
 	}

@@ -1,5 +1,6 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
+import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
@@ -14,13 +15,17 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestParam;
+
 
 public class ConsolidationDao {
 
 	@Inject
 	DataSource dataSource;
-
+	
+	final Logger logger = Logger.getLogger(ConsolidationDao.class);
+	
 	private Connection connection = null;
 
 	/**
@@ -31,14 +36,16 @@ public class ConsolidationDao {
 	public boolean isReadyForConsolidation(String name) {
 		
 		try {
+			
 			connection = dataSource.getConnection();
-
+			logger.info("isReadyForConsolidation : Created MySQL connection.");
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("SELECT flag FROM timesheets WHERE description = ?");
 
 			preparedStatement.setString(1, name);
 			
 			ResultSet resultSet = preparedStatement.executeQuery();
+			logger.info("isReadyForConsolidation : Executed MySQL query.");
 			preparedStatement.close();
 			
 			if(resultSet.getInt("flag") == 1) {
@@ -51,6 +58,7 @@ public class ConsolidationDao {
 			if (connection != null) {
 				try {
 					connection.close();
+					logger.info("isReadyForConsolidation : Closed MySQL connection.");
 				} catch (SQLException e) {
 
 				}
@@ -73,7 +81,7 @@ public class ConsolidationDao {
 
 		try {
 			connection = dataSource.getConnection();
-
+			logger.info("createCondolidatedTimesheet : Created MySQL connection.");
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("INSERT INTO consolidations (consolidationName, periodStart, periodEnd)"
 							+ "VALUES (?, ?, ?)");
@@ -83,6 +91,7 @@ public class ConsolidationDao {
 			preparedStatement.setString(3, periodEnd);
 
 			preparedStatement.executeUpdate();
+			logger.info("createCondolidatedTimesheet : Executed MySQL update query.");
 			preparedStatement.close();
 
 		} catch (SQLException e) {
@@ -92,6 +101,7 @@ public class ConsolidationDao {
 			if (connection != null) {
 				try {
 					connection.close();
+					logger.info("createCondolidatedTimesheet : Closed MySQL connection.");
 				} catch (SQLException e) {
 
 				}
@@ -106,7 +116,7 @@ public class ConsolidationDao {
 
 		try {
 			connection = dataSource.getConnection();
-
+			logger.info("updateConsolidatedTimesheetById : Created MySQL connection.");
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("UPDATE consolidations (userId, biometricId, mantisId, nt3Id, name, "
 							+ " periodStart, periodEnd) VALUES (?, ?, ?, ?, ?, ?, ?, ?) WHERE id = ?");
@@ -121,6 +131,7 @@ public class ConsolidationDao {
 			preparedStatement.setInt(8, id);
 
 			preparedStatement.executeUpdate();
+			logger.info("updateConsolidatedTimesheetById : Executing MySQL query update.");
 			preparedStatement.close();
 
 		} catch (SQLException e) {
@@ -129,6 +140,7 @@ public class ConsolidationDao {
 			if (connection != null) {
 				try {
 					connection.close();
+					logger.info("updateConsolidatedTimesheetById : Closed MySQL connection.");
 				} catch (SQLException e) {
 
 				}
@@ -183,16 +195,16 @@ public class ConsolidationDao {
 
 		try {
 			connection = dataSource.getConnection();
-
+			logger.info("consolidateTimeSheet : Created MySQL connection.");
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("INSERT INTO consolidations (employeeId, timelogId, date) SELECT employeeId, id, date FROM timelog WHERE employeeId = ?");
-
+			
 			for (int id : idList) {
-				System.out.println(id);
 				preparedStatement.setInt(1, id);
 				preparedStatement.addBatch();
 			}
 			preparedStatement.executeBatch();
+			logger.info("consolidateTimeSheet : Executing Insert query.");
 			preparedStatement.close();
 
 		} catch (SQLException e) {
@@ -202,6 +214,7 @@ public class ConsolidationDao {
 			if (connection != null) {
 				try {
 					connection.close();
+					logger.info("consolidateTimeSheet : Closed MySQL connection.");
 				} catch (SQLException e) {
 
 				}
@@ -214,16 +227,17 @@ public class ConsolidationDao {
 		ResultSet resultSet = null;
 		Connection connection = null;
 		PreparedStatement ps = null;
-
+		
 		
 		
 		final ArrayList<ConsolidationDTO> list = new ArrayList<ConsolidationDTO>();
 		
 		try {
 				connection = dataSource.getConnection();
+				logger.info("viewConsolidation: Created MySQL connection.");
 				ps = connection.prepareStatement("SELECT e.employeeId, e.id, e.biometricId, e.firstname, e.middlename, e.lastname, e.email, p.description AS position, CONCAT_WS(', ' , e.lastname, e.firstname) AS fullName, e.hiredate, e.regularizationdate, "
        + "(SELECT CONCAT_WS(', ' , lastname, firstname) AS fullName FROM employees WHERE employeeId = e.supervisorId) AS supervisor, "
-       + "t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, "
+       + "c.mantisId, c.nt3Id, t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, "
        + "m.category, m.status, n.startDate, n.endDate, n.duration, n.absenceType, n.absenceStatus, "
        + "(SELECT MIN(bIn.logTime) FROM biometrics AS bIn WHERE log = 0 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeIn, "
        + "(SELECT MAX(bOut.logTime)  FROM biometrics AS bOut WHERE log = 1 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeOut "
@@ -233,6 +247,7 @@ public class ConsolidationDao {
        + "LEFT JOIN mantises m ON m.id = c.mantisId "
        + "LEFT JOIN nt3s n ON n.id = c.nt3Id ORDER BY e.id");
 				resultSet = ps.executeQuery();
+				logger.info("viewConsolidation: Executed query for displaying consolidation.");
 				
 				while(resultSet.next()) {
 					
@@ -246,6 +261,8 @@ public class ConsolidationDao {
 					String timeIn = resultSet.getString("bioTimeIn");
 					String timeOut = resultSet.getString("bioTimeOut");
 					String date = resultSet.getString("date");
+					String mantisId = resultSet.getString("mantisId");
+					String nt3Id = resultSet.getString("nt3Id");
 					
 					final ConsolidationDTO consolidations = new ConsolidationDTO();
 					
@@ -258,8 +275,11 @@ public class ConsolidationDao {
 					consolidations.setEmail(email);
 					consolidations.setDate(date);
 					consolidations.setTimeIn(timeIn);
-					consolidations.setTimeOut(timeOut);
+					consolidations.setTimeOut(timeOut); 
+					consolidations.setMantisId(mantisId);
+					consolidations.setNt3Id(nt3Id);
 					
+
 					
 					list.add(consolidations);
 				}
@@ -267,6 +287,14 @@ public class ConsolidationDao {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.info("viewConsolidation: Closed MySQL connection.");
 			
 		return list;
 		
@@ -276,11 +304,7 @@ public class ConsolidationDao {
 	public void updateConsolidations(String employeeId,
 			String timeIn, String timeOut, String date)  {
 		
-			System.out.println("employee id :" + employeeId);
-			System.out.println("time in :" + timeIn);
-			System.out.println("time out :" + timeOut);
-			System.out.println("date :" + date);
-			
+
 			Connection connection = null;
 			PreparedStatement ps = null;
 			
@@ -289,6 +313,66 @@ public class ConsolidationDao {
 			//ps.executeUpdate();
 			
 			
+	}
+	
+	public ArrayList<Mantis> fetchMantisTickets(String employeeId) {
+		
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet resultSet = null;
+		ArrayList<Mantis> list = new ArrayList<Mantis>();
+		
+
+		try {
+			
+			connection = dataSource.getConnection();
+			logger.info("fetchMantisTickets: Created MySQL connection.");
+			ps = connection.prepareStatement("SELECT ticketId, employeeId, dateSubmitted, startDate, endDate, category, timeIn, timeOut, status FROM mantises WHERE employeeId = ?");
+			ps.setString(1, employeeId);	
+			resultSet = ps.executeQuery();
+			logger.info("fetchMantisTickets: Executed MySQL query.");
+			
+			
+			while(resultSet.next()) {
+				final int ticketId = resultSet.getInt("ticketId");
+				final String dateSubmitted = resultSet.getString("dateSubmitted");
+				final String startDate = resultSet.getString("startDate");
+				final String endDate = resultSet.getString("endDate");
+				final String category = resultSet.getString("category");
+				final String timeIn = resultSet.getString("timeIn");
+				final String timeOut = resultSet.getString("timeOut");
+				final String status = resultSet.getString("status");
+				
+				
+				
+				final Mantis mantis = new Mantis();
+				mantis.setTicketId(ticketId);
+				mantis.setDateSubmitted(dateSubmitted);
+				mantis.setStartDate(startDate);
+				mantis.setEndDate(endDate);
+				mantis.setCategory(category);
+				mantis.setStartTime(timeIn);
+				mantis.setEndTime(timeOut);
+				mantis.setStatus(status);
+				
+				
+				list.add(mantis);
+				}
+			
+		} catch (SQLException e) {
+			
+		} finally {
+			try {
+				connection.close();
+				logger.info("fetchMantisTickets: Closed MySQL connection.");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		return list;
 	}
 	
 	
@@ -306,7 +390,7 @@ public class ConsolidationDao {
 
 		} catch (SQLException e) {
 			// TODO Create Custom Exception
-			System.out.println("Error in Consolidation Phase1");
+			logger.info("consolidateTimeSheetTimeLog: Error in Consolidation Phase1");
 			e.printStackTrace();
 		} finally {
 			if (connection != null) {
@@ -324,7 +408,7 @@ public class ConsolidationDao {
 
 		try {
 			connection = dataSource.getConnection();
-			System.out.println("Phase 2");
+			logger.info("consolidateTimeSheetMantis: Created MySQL connection");
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("UPDATE consolidations SET mantisId = "
 							+ "(SELECT id FROM mantises WHERE employeeId = ? AND startDate = ?) WHERE"
@@ -339,16 +423,18 @@ public class ConsolidationDao {
 				preparedStatement.addBatch();
 			}
 			preparedStatement.executeBatch();
+			logger.info("consolidateTimeSheetMantis: Executed insert query");
 			preparedStatement.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Error in Consolidation Phase2");
+			logger.info("consolidateTimeSheetMantis: Error in Consolidation Phase2");
 
 		} finally {
 			if (connection != null) {
 				try {
 					connection.close();
+					logger.info("consolidateTimeSheetMantis: Closed MySql connection");
 				} catch (SQLException e) {
 
 				}
@@ -361,7 +447,8 @@ public class ConsolidationDao {
 
 		try {
 			connection = dataSource.getConnection();
-
+			logger.info("consolidateTimeSheetNt3: Created MySQL connection.");
+			
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("UPDATE consolidations SET nt3Id = "
 							+ "(SELECT id FROM nt3s WHERE employeeId = ? AND startDate = ?) WHERE"
@@ -375,15 +462,17 @@ public class ConsolidationDao {
 				preparedStatement.addBatch();
 			}
 			preparedStatement.executeBatch();
+			logger.info("consolidateTimeSheetNt3: Executing update query.");
 			preparedStatement.close();
 
 		} catch (SQLException e) {
-			System.out.println("Error in Consolidation Phase3");
+			logger.info("consolidateTimeSheetNt3: Error in Consolidation Phase3.");
 
 		} finally {
 			if (connection != null) {
 				try {
 					connection.close();
+					logger.info("consolidateTimeSheetNt3: Closing MySQL connection.");
 				} catch (SQLException e) {
 
 				}
