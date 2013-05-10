@@ -24,8 +24,9 @@
 <script src="../resources/timelog/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
 <script src="../resources/timelog/js/jquery.tablesorter.pager.min.js"></script> -->
 
-<link href="../resources/timelog/css/ViewTimeLogCSS.css" rel="stylesheet">
+
 <link rel="stylesheet" href="../resources/timelog/css/style1.css" type="text/css" />
+<link href="../resources/timelog/css/ViewTimeLogCSS.css" rel="stylesheet">
 
 <script type="text/javascript">var idExternal =${id}</script>
 <script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
@@ -90,7 +91,7 @@ Lastname/Firstname: <input type="text" id="empName" /> <button id="SearchButton"
 <td id ="tdTimeLogAll">
 	<table  id="tblTimeLog" class="tablesorter">
 	<thead>
-	<th>Date</th>
+	<th >Date</th>
 	<th>Time IN</th>
 	<th>Time OUT</th>
 	<th>Total Hours</th>

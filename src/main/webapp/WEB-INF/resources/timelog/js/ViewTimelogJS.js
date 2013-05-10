@@ -118,11 +118,13 @@ function fetch(d){
 }
 function mylog()
 {	
-	
-	/*$("#tblTimeLog").tablesorter('destroy');
-	$("#tblTimeLog").tablesorter();*/
-	
-	$('#tblTimeLog').trigger("update"); 
+	$("#tblTimeLog thead").find("th").addClass('sorter-false');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerAsc');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerDesc')
 	
 	$("#data").css({display: "none"});
 	$("#SearchBox").css({display: "none"});
@@ -183,6 +185,14 @@ function mylog()
 
 function others()
 {
+	$("#tblTimeLog thead").find("th").addClass('sorter-false');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerAsc');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerDesc');
+	
 	$("#data").css({display: "none"});
 	$('#from').val(""); 
 	$('#to').val(""); 
@@ -234,6 +244,8 @@ function others()
 }
 function SearchTimeLog()
 {	
+		$("#tblTimeLog thead").find("th").removeClass('sorter-false');
+		
 		$('#pagesize').selectedIndex=0;
 		var name;
 		var from = $('#from').val();
@@ -307,6 +319,7 @@ function SearchTimeLog()
 						    }).done(
 						    		
 							    	function(){
+							    		$("#tblTimeLog").trigger('destroy');
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
@@ -348,6 +361,7 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
+							    		$("#tblTimeLog").trigger('destroy');
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
@@ -387,6 +401,7 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
+							    		$("#tblTimeLog").trigger('destroy');
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
