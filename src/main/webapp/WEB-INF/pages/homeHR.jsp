@@ -161,9 +161,9 @@ font-family : Arial, Helvetica, sans-serif;
 	  			<ul>
 				    <li><a href="../hr/employeemanager">Employee Manager</a></li>
 			    <li><a href="../shift/shifting">Shift Manager</a></li>
-				  	<li><a href="#BMNManager">BMN Manager</a></li>
+				  	<li><a href="../consolidation/view">BMN Manager</a></li>
 			  	<li><a href="../downloadpage/downloadlink">Download Timesheet</a></li>
-				  	<li><a href="#EmailManager">Email Manager</a></li> 
+				  	<li><a href="../sendMail/mail">Email Manager</a></li> 
 				  	<li><a href="#HolidayView">Holiday View</a></li> 	
 	  			</ul>
 	  		<!-- <div id="ShiftManager">
