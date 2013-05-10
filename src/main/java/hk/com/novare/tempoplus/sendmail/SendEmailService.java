@@ -1,4 +1,4 @@
-package hk.com.novare.tempoplus.bmnmanager.sendmail;
+package hk.com.novare.tempoplus.sendmail;
 
 import hk.com.novare.tempoplus.useraccount.user.User;
 import hk.com.novare.tempoplus.useraccount.user.UserService;

@@ -1,4 +1,4 @@
-package hk.com.novare.tempoplus.bmnmanager.sendmail;
+package hk.com.novare.tempoplus.sendmail;
 
 import java.io.File;
 import java.sql.Connection;
