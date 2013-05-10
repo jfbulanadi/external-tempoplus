@@ -19,17 +19,21 @@ public interface SendEmailInterface {
 	void setLogQueryByDep();
 	
 	
-	ResultSet getEmail(String department);
+	ResultSet retrieveEmail(int departmentId);
 	
-	ResultSet getDateLogs();
+	ResultSet retrieveDateLogs();
 	
-	ResultSet getLogs(String date);
+	ResultSet retrieveLogs(String date);
 	
-	ResultSet getNames();
+	ResultSet retrieveNames();
 	
-	ResultSet getSingleRecipient(String email);
+	ResultSet retrieveSingleRecipient(String email);
 	
-	ResultSet getDepartments();
+	ResultSet retrieveDepartments();
 	
-	File[] getFiles(File folderName);
+	ResultSet retrieveDepartmentId(String departmentName);
+	
+	ResultSet retrievePeriods();
+	
+	File[] retrieveFiles(File folderName);
 }

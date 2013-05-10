@@ -31,9 +31,12 @@ public class SendMailController {
 
 		final ArrayList<String> departments = sendEmailService
 				.retrieveDepartments();
+		
+		final ArrayList<String> periods = sendEmailService.retrievePeriods();
 
 		modelMap.addAttribute("departments", departments);
 		modelMap.addAttribute("names", singleRecipientPojos);
+		modelMap.addAttribute("periods",periods);
 
 		return "ViewSendMail";
 	}
@@ -82,7 +85,7 @@ public class SendMailController {
 			throws Exception {
 
 		final ArrayList<String> filesList = sendEmailService
-				.getFileList(selectedEmployee);
+				.retriveFileList(selectedEmployee);
 
 		return filesList;
 	}
