@@ -1,6 +1,7 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
+import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.TimesheetPartialDTO;
 import hk.com.novare.tempoplus.employee.Employee;
@@ -67,14 +68,25 @@ public class ConsolidationController {
 		return true;
 	}
 	
-	@RequestMapping(value = "/ajaxFetchTickets", method = RequestMethod.POST)
-	public @ResponseBody ArrayList<Mantis> fetchTicketDetails(
-			@RequestParam String employeeId) {
+	@RequestMapping(value = "/ajaxFetchMantises", method = RequestMethod.POST)
+	public @ResponseBody ArrayList<Mantis> fetchMantisDetails(
+			@RequestParam String employeeId, String date) {
 		
-		logger.info("Fetching NT3/Mantis tickets for the user");
-		return consolidationService.fetchTicket(employeeId);
+		logger.info("Fetching Mantis tickets for the user");
+		return consolidationService.fetchMantises(employeeId, date);
 		
 	}
+	
+	@RequestMapping(value = "/ajaxFetchNt3s", method = RequestMethod.POST)
+	public @ResponseBody ArrayList<Nt3> fetchNt3Details(@RequestParam String employeeId, String date) {
+		
+	
+		
+		logger.info("Fetching NT3 tickets for the user");
+		return consolidationService.fetchNt3s(employeeId, date);
+		
+	}
+	
 	
 	@RequestMapping(value = "/ajaxFetchTimesheets", method = RequestMethod.POST)
 	public @ResponseBody ArrayList<TimesheetPartialDTO> fetchTimesheets() {

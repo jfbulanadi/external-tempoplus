@@ -2,6 +2,7 @@ package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
 import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDao;
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
+import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.TimesheetPartialDTO;
 import hk.com.novare.tempoplus.employee.Employee;
@@ -51,8 +52,12 @@ public class ConsolidationService {
 		 return true;
 	}
 	
-	public ArrayList<Mantis> fetchTicket(String employeeId) {		
-		return consolidationDao.fetchMantisTickets(employeeId);
+	public ArrayList<Mantis> fetchMantises(String employeeId, String date) {		
+		return consolidationDao.fetchMantises(employeeId, date);
+	}
+	
+	public ArrayList<Nt3> fetchNt3s(String employeeId, String date) {		
+		return consolidationDao.fetchNt3s(employeeId, date);
 	}
 	
 	public ArrayList<TimesheetPartialDTO> fetchTimesheets() {

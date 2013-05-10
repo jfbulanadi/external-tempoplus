@@ -1,6 +1,7 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
+import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.TimesheetPartialDTO;
 import hk.com.novare.tempoplus.employee.Employee;
@@ -355,50 +356,40 @@ public class ConsolidationDao {
 			
 	}
 	
-	public ArrayList<Mantis> fetchMantisTickets(String employeeId) {
+	public ArrayList<Mantis> fetchMantises(String employeeId, String date) {
 		
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet resultSet = null;
 		ArrayList<Mantis> list = new ArrayList<Mantis>();
-		String statuz = "new";
+		int rowCount = 0;
 
 		try {
 			
 			connection = dataSource.getConnection();
 			logger.info("fetchMantisTickets: Created MySQL connection.");
-			ps = connection.prepareStatement("SELECT ticketId, employeeId, dateSubmitted, startDate, endDate, category, timeIn, timeOut, status FROM mantises WHERE employeeId = ? and status = ?");
+			ps = connection.prepareStatement("SELECT ticketId, employeeId, dateSubmitted, startDate, endDate, category, timeIn, timeOut, status FROM mantises WHERE employeeId = ? and startDate = ?");
 			ps.setString(1, employeeId);	
-			ps.setString(2, statuz);
-			//ps.setString(3, date);
+			ps.setString(2, date);
 			resultSet = ps.executeQuery();
 			logger.info("fetchMantisTickets: Executed MySQL query.");
-			logger.info("employeeID" + employeeId);
+			
 			
 			while(resultSet.next()) {
-				final int ticketId = resultSet.getInt("ticketId");
-				final String dateSubmitted = resultSet.getString("dateSubmitted");
-				final String startDate = resultSet.getString("startDate");
-				final String endDate = resultSet.getString("endDate");
-				final String category = resultSet.getString("category");
-				final String timeIn = resultSet.getString("timeIn");
-				final String timeOut = resultSet.getString("timeOut");
-				final String status = resultSet.getString("status");
-				
-				
 				
 				final Mantis mantis = new Mantis();
-				mantis.setTicketId(ticketId);
-				mantis.setDateSubmitted(dateSubmitted);
-				mantis.setStartDate(startDate);
-				mantis.setEndDate(endDate);
-				mantis.setCategory(category);
-				mantis.setStartTime(timeIn);
-				mantis.setEndTime(timeOut);
-				mantis.setStatus(status);
+				mantis.setTicketId(resultSet.getInt("ticketId"));
+				mantis.setDateSubmitted(resultSet.getString("dateSubmitted"));
+				mantis.setStartDate(resultSet.getString("startDate"));
+				mantis.setEndDate(resultSet.getString("endDate"));
+				mantis.setCategory(resultSet.getString("category"));
+				mantis.setStartTime(resultSet.getString("timeIn"));
+				mantis.setEndTime(resultSet.getString("timeOut"));
+				mantis.setStatus(resultSet.getString("status"));
 				
 				
 				list.add(mantis);
+				rowCount++;
 				}
 			
 		} catch (SQLException e) {
@@ -408,12 +399,65 @@ public class ConsolidationDao {
 				connection.close();
 				logger.info("fetchMantisTickets: Closed MySQL connection.");
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.info(e.toString());
+					
+			}
+		}
+		
+		logger.info("rowCount is :" + rowCount);
+		return list;
+	}
+	
+	public ArrayList<Nt3> fetchNt3s(String employeeId, String date) {
+		
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet resultSet = null;
+		ArrayList<Nt3> list = new ArrayList<Nt3>();
+		int rowCount = 0;
+		
+
+		try {
+			connection = dataSource.getConnection();
+			logger.info("fetchNt3s: Created MySQL connection.");
+			ps = connection.prepareStatement("SELECT id, employeeId, startDate, endDate, duration, absenceType, description, absenceStatus, flag, timestamp FROM tempoplus.nt3s WHERE employeeId=? and startDate=?");
+			ps.setString(1, employeeId);
+			
+			ps.setString(2, date);
+			resultSet = ps.executeQuery();
+			logger.info("fetchNt3s: Executed MySQL query.");
+			
+			
+			while(resultSet.next()) {
+				final Nt3 nt3 = new Nt3();
+				
+				nt3.setEmployeeId(resultSet.getInt("employeeId"));
+				nt3.setStartDate(resultSet.getString("startDate"));
+				nt3.setEndDate(resultSet.getString("endDate"));
+				nt3.setDuration(resultSet.getFloat("duration"));
+				nt3.setAbsenceType(resultSet.getString("absenceType"));
+				nt3.setDescription(resultSet.getString("description"));
+				nt3.setAbsenceStatus(resultSet.getString("absenceStatus"));
+				
+				list.add(nt3);
+				rowCount++;
+			}
+			
+			
+		} catch (SQLException e) {
+			logger.info(e.toString());
+		} finally {
+			try {
+				connection.close();
+				logger.info("fetchNt3s: Closed MySQL connection.");
+			} catch (SQLException e) {
+				logger.info(e.toString());
+					
 			}
 		}
 		
 		
+		logger.info("rowCount is :" + rowCount);
 		return list;
 	}
 	

@@ -37,8 +37,10 @@ font-family : Arial, Helvetica, sans-serif;
 							removeRows : false,
 							cssGoto : '.gotoPage',
 						};
+						$("#tablesorter").tablesorter({
+							widgets : [ 'zebra' ]
+						}).tablesorterPager(pagerOptions);
 						
-							
 						
 						
 						$.ajax({
@@ -53,20 +55,18 @@ font-family : Arial, Helvetica, sans-serif;
 							},
 							 async:  false
 						}).done( function(){
-							$("#btnSelectTimesheet").click(function() {
-								$("#tablesorter").tablesorter({
-									widgets : [ 'zebra', 'filter']
-								}).tablesorterPager(pagerOptions);
-								
 							
+								
+							$("#btnSelectTimesheet").click(function() {
+								htmlstr='';
 								$("#tablesorter tbody").remove();
+								
 								ctr=null;
 								var selectedTimesheet = $("#selectTimesheets option:selected").text();
 								var id = $("#selectTimesheets option:selected").val();
 								console.log(id);
 								//insert populate table here
 								//clear html string
-								htmlstr=null;
 								
 								$.ajax({
 												type : "GET",
@@ -74,67 +74,58 @@ font-family : Arial, Helvetica, sans-serif;
 												data: {
 													id : id
 													
+													
 												},
 												success : function(data) {
 												
-													$.each(data, function(keys,
-															values) {
-														ctr = ctr + 1;
-														if(values.timeIn==null && values.timeOut!=null) {
-															values.timeIn = "&nbsp";
-														} else  if(values.timeOut==null && values.timeIn!=null) {
-															values.timeOut = "&nbsp";
-														} else if(values.timeIn==null && values.timeOut==null) {
-															
-															values.timeIn = "&nbsp";
-															values.timeOut = "&nbsp";
-														} else {
-															//has timein and timeout
-														}
-														// onclick=showToForm(this)
-														htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "," + values.timelogDate + "," + ctr + "' onclick=showToForm(this) >";
-														htmlstr += "<td>" + values.employeeId + "</td>";
-														htmlstr += "<td>" + values.biometricId +"</td>";
-														htmlstr += "<td>" + values.firstname + "</td>";
-														htmlstr += "<td>" + values.middlename + "</td>";
-														htmlstr += "<td>" + values.lastname + "</td>";
-														htmlstr += "<td>" + values.email + "</td>";
-														htmlstr += "<td>" + values.position + "</td>";
-														htmlstr += "<td>" + values.timelogDate + "</td>";
-														htmlstr += "<td>" + values.timeDuration + "</td>";
-														console.log(ctr + " " +values.firstname + values.timeIn);
-														htmlstr += '<td id="tdTimeIn'+ ctr +'">' + values.timeIn + '</td>';
-														htmlstr += '<td id="tdTimeOut'+ ctr +'">' + values.timeOut + '</td>';
-														
-														/* if(values.mantisId!=null) {
-														htmlstr += '<td>'+values.mantisId+'</td>';
-														} else {
-															htmlstr += "<td>No tickets filed.</td>";
-														}
-														
-														if(values.nt3Id!=null){
-														htmlstr += '<td>'+values.nt3Id+'</td>';													
-														} else {
-															htmlstr += "<td>No tickets filed.</td>";
-														} */
-														
-														htmlstr += "</tr>";
-															
-													});
-													
-													$("#tablesorter").append(htmlstr);
-													console.log("appended on tbody");
+												if(data.length==0) {
+													htmlstr += "<tr><td colspan='11' align='center'>No records to display.</td></tr>"
+												} else {
+														$.each(data, function(keys,
+																values) {
+															ctr = ctr + 1;
+															if(values.timeIn==null && values.timeOut!=null) {
+																values.timeIn = "&nbsp";
+															} else  if(values.timeOut==null && values.timeIn!=null) {
+																values.timeOut = "&nbsp";
+															} else if(values.timeIn==null && values.timeOut==null) {
+																
+																values.timeIn = "&nbsp";
+																values.timeOut = "&nbsp";
+															} else {
+																//has timein and timeout
+															}
+															// onclick=showToForm(this)
+															htmlstr += "<tr id='"+ values.employeeId + "," + values.firstname + "," + values.middlename + "," + values.lastname + "," + values.timeIn + "," + values.timeOut + "," + values.timelogDate + "," + ctr + "' onclick=showToForm(this) >";
+															htmlstr += "<td>" + values.employeeId + "</td>";
+															htmlstr += "<td>" + values.biometricId +"</td>";
+															htmlstr += "<td>" + values.firstname + "</td>";
+															htmlstr += "<td>" + values.middlename + "</td>";
+															htmlstr += "<td>" + values.lastname + "</td>";
+															htmlstr += "<td>" + values.email + "</td>";
+															htmlstr += "<td>" + values.position + "</td>";
+															htmlstr += "<td>" + values.timelogDate + "</td>";
+															htmlstr += "<td>" + values.timeDuration + "</td>";	
+															htmlstr += '<td id="tdTimeIn'+ ctr +'">' + values.timeIn + '</td>';
+															htmlstr += '<td id="tdTimeOut'+ ctr +'">' + values.timeOut + '</td>';
+															htmlstr += "</tr>";
+																
+														});
+													}
 												}
 
 											}).done(function() {
 												
-												
+
+										$("#tablesorter").append(htmlstr);
 										
 										var resort = true;
 										$("#tablesorter").trigger("update", [ resort ]);
-										var sorting = [ [ 2, 0 ], [7, 0] ];
+										var sorting = [ [ 2, 0 ], [7, 1] ];
 										$("#tablesorter").trigger("sorton", [ sorting ]);
-
+										
+										
+										
 									}); 
 
 								
@@ -181,7 +172,7 @@ font-family : Arial, Helvetica, sans-serif;
 	
 	trId = myId.id;
 
-	
+	$("#txtemployeeid").focus();
 	//initializes dialog form 
 	$("#dialog-bmn").dialog({
 	width:450,
@@ -198,7 +189,7 @@ font-family : Arial, Helvetica, sans-serif;
 			date = null;
 			htmlstr = null;
 			 $("#mantistable tbody").remove();
-			console.log("closed and removed tbody");
+			 $("#nt3table tbody").remove();
 			} 
 	
 	});
@@ -222,35 +213,71 @@ font-family : Arial, Helvetica, sans-serif;
 	
 	  $.ajax({
 			type: "POST",
-			url: "/tempoplus/consolidation/ajaxFetchTickets",
-			async: false,
+			url: "/tempoplus/consolidation/ajaxFetchMantises",
 			data: {
-				employeeId: trId
+				employeeId: trId,
+				date: date
 			},
+			async: false,
 			success: function(data) {
-				$.each(data, function(keys, values) {
-					console.log(values.employeeId);
-					console.log(values.ticketId);
-					console.log(values.category);
-					console.log(values.status);
-					
-					$("#mantistable").append("<tr><td><a href=https://sec2.novare.com.hk/mantis/view.php?id="+values.ticketId+">"+values.ticketId+"</a></td><td>"+values.category+"</td></tr>");
-				console.log("appended tbody");
 				
-				});
+				
+				if(data.length == 0) {
+					$("#mantistable").append("<tr><td>No records to display.<td></tr>");
+				} else {
+					$.each(data, function(keys, values) {
+						console.log(values.employeeId);
+						console.log(values.ticketId);
+						console.log(values.category);
+						console.log(values.status);
+						$("#mantistable").append("<tr><td><a href=https://sec2.novare.com.hk/mantis/view.php?id="+values.ticketId+">"+values.ticketId+"</a></td><td>"+values.category+"</td></tr>");
+					});
+				}
 			}
 			
-		}).done(function(){		
-		$("#tab-form").tabs();
 		});
+	  	htmlstr='';
+		$.ajax({
+			type: "POST",
+			url: "/tempoplus/consolidation/ajaxFetchNt3s",
+			data: {
+				employeeId: trId,
+				date: date
+			},
+			async: false,
+			success: function(data){
+				if(data.length == 0) {
+					$("#nt3table").append("<tr><td>No records to display.</td></tr>");
+				} else {
+					
+				
+					
+					$.each(data, function(keys, values) {
+						htmlstr += "<tr>";
+						htmlstr += "<td>"+values.absenceType+"</td>";
+						htmlstr += "<td>"+values.absenceStatus+"</td>";
+						htmlstr += "<td>"+values.startDate+"</td>";
+						htmlstr += "<td>"+values.endDate+"</td>";
+						htmlstr += "<td>"+values.duration+"</td>";
+						htmlstr += "</tr>";
+					});
+					$("#nt3table").append(htmlstr);
+					
+				}
+			}
+				
+		});
+	  
+	 
+	  $("#tab-form").tabs();
+	  
+	  
 	
 	 $("#btnUpdate").click(function() {
 			var timeIn = $("#txttimein").val();
 			var timeOut = $("#txttimeout").val();
 			employeeId = $("#txtemployeeid").val();
 			date = $("#txtdate").val();
-			
-			console.log(tdId);
 			
 			$.ajax({
 				type : "POST",
@@ -350,16 +377,16 @@ font-family : Arial, Helvetica, sans-serif;
 		 </ul>
 		 <div id="mantistab">
 				<table id="mantistable">
-					<thead>
-						<tr>
-							<td>&nbsp;</td>
-						</tr>
-					</thead>
-					<tbody id="mantistbody">
+					<tbody>
 					</tbody>
 				</table>
 			</div>
-		 <div id="nt3tab">B</div>
+		 <div id="nt3tab">
+			 <table id="nt3table">
+			 <tbody>
+			 </tbody>
+			 </table>
+		</div>
 		</div>
 		<hr/>
 		
@@ -403,8 +430,9 @@ font-family : Arial, Helvetica, sans-serif;
 			<th>Time out</th>
 		</tr>
 		</thead>
-		<tbody id="tablesorterbody">
+		<tbody>
 		</tbody>
+		
 	</table>
 	<hr/>
 
