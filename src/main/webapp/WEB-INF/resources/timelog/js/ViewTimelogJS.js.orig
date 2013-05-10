@@ -1,38 +1,42 @@
 var user = "";
 var Employee_Id = 0; //for hr
-var view =""
-var id;
+var view ="";
+var id =0;
 $(document).ready(function() {
-		
-		$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
-		$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
-		$( "#SearchTimeLog" ).click(SearchTimeLog); 
-		id = idExternal;
-		
-
-	$("#SearchButton").click(function() {
+	id = idExternal;
+	$( "#from" ).datepicker({ 
+		dateFormat: 'yy-mm-dd', 
+		showOn: "button",
+	    buttonImage: "../resources/timelog/css/images/img_calendar.png",
+	    buttonImageOnly: true,
+	    buttonText: "Calendar"
+	});
+	
+	$( "#to" ).datepicker({ 
+		dateFormat: 'yy-mm-dd',
+		showOn: "button",
+	    buttonImage: "../resources/timelog/css/images/img_calendar.png",
+	    buttonImageOnly: true,
+	    buttonText: "Calendar"
+	}); 
+	
+	$( "#SearchButton" ).click(SearchButton);
+	$( "#SearchTimeLog" ).click(SearchTimeLog);
+	mylog();
+	
+});	
+ 
+function SearchButton() {
 		var newresponse = null;
 		var empname = $('#empName').val();
-							
 				$.ajax({
 					type: "POST",
 			        url: "/tempoplus/timelog/searchEmployee",
 			    	data: {'empName': empname},
 			    	success: function(response){
-			    		newresponse = response;
+			    		newresponse = response; 
 			    		if(newresponse =="OK"){
-
-			    			$("#HrSearch").dialog({
-			    				
-								maxWidth : 550,
-								maxHeight : 600,
-								width : 550,
-								height : 600,
-								modal : true
-								
-							});
 			    			
-
 			    			$('#tblSearch tbody').remove();
 			    			$('#tblSearch thead').remove();
 			    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
@@ -46,7 +50,7 @@ $(document).ready(function() {
 			    		       		
 			    		        	$.each(response,function(keys, values){
 
-			    		        		tblList += "<tr ondblclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
+			    		        		tblList += "<tr onclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
 			    						tblList +="<td>"+values.employeeId+"</td><td>"+values.lastname+"</td>";
 			    						tblList +="<td>"+values.firstname+"</td><td>"+values.middlename+"</td>";
 			    						tblList +="</tr>";		
@@ -55,7 +59,6 @@ $(document).ready(function() {
 			    		        	});
 			    		        	tblList += "</tbody>";
 			    		        	$('#tblSearch').append(tblList);
-			    		        	
 			    		        	
 			    		        },
 			    		        error: function(e) {
@@ -66,13 +69,25 @@ $(document).ready(function() {
 			    			}).done(
 						    		
 							    	function(){
-							    		my_jQuery3("#tblSearch").tablesorter();
-							    		my_jQuery3("#tblSearch tbody td").hover(function() {
+							    		$("#tblSearch").tablesorter();
+							    		$("#tblSearch tbody td").hover(function() {
 											$(this).parents('tr').find('td').addClass('highlight');
 										}, function() {
 											$(this).parents('tr').find('td').removeClass('highlight');
 										});
 									});
+			    			$("#HrSearch").dialog({
+			    				
+								maxWidth : 550,
+								maxHeight : 600,
+								width : 550,
+								height : 600,
+								modal : true
+								
+							});
+			    			
+
+			    			
 			    			
 			    		}else{
 			    			$("#result").css({display: "none"});
@@ -82,14 +97,12 @@ $(document).ready(function() {
 			    	},
 					
 				});
-	});
 
-});
-
+}
 
 
 function fetch(d){
-	$("#HrSearch").dialog('close');
+	
 	var rowid = d.id;
 	var delimited = rowid.split(",");
 	Employee_Id = delimited[0];
@@ -100,31 +113,32 @@ function fetch(d){
 	
 	
 	$('#employee').val(lastname +", " +firstname);
+	$("#HrSearch").dialog('destroy');
 	
-	var rows = $('#tblSearch tbody tr');
-	var length = $('#tblSearch tbody tr').length;
-	for(var i= 0; i< length; i++){
-		rows[i].style.background = "";
-	}
-			
-			d.style.background="gray";
 }
 function mylog()
 {	
+	$("#tblTimeLog thead").find("th").addClass('sorter-false');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerAsc');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerDesc')
+	
 	$("#data").css({display: "none"});
 	$("#SearchBox").css({display: "none"});
 	$("#SearchSub").css({display: "none"});
 	$("#HrSearch").css({display: "none"});
 	$("#SearchRow").css({display:"none"});
-	//hr search textbox and label
-	document.getElementById('from').value = ""; 
-	document.getElementById('to').value = ""; 
-	document.getElementById('empName').value = "";
 
+	//hr search textbox and label
+	$('#from').val(""); 
+	$('#to').val(""); 
+	$('empName').val("");
+	$('#tbl').val("");
 	$('#tblTimeLog tbody').remove();
-	document.getElementById('tbl').value = ""; 
-	document.getElementById('tbl').disabled=true;
-	document.getElementById('pagesize').selectedIndex=0;
+	$('#pagesize').selectedIndex=0;
 	$('#tblSearch tbody').remove();
 	
 	$("#result").css({display: "none"});
@@ -133,7 +147,7 @@ function mylog()
 	var rponse ="";
 	
 	$.ajaxSetup({async:false});
-	 $.ajax(
+	$.ajax(
 	    		{
 	        type: "POST",
 	        url: "/tempoplus/timelog/checkUser",
@@ -147,34 +161,45 @@ function mylog()
 	        }
 	    });
 	 view ='mylog';
-
 	if(user == "hr" || user == "manager")
 		{
-		document.getElementById('others').href ="javascript:others()";
+		$('#mylog').html("MyLog");
+		$('#others').href ="javascript:others()";
 			if(user=="hr")
 				{
-					document.getElementById('others').innerHTML = "View Others";
+					$('#others').html("View Others");
 				}
 			else if(user =="manager")
 				{
-					document.getElementById('others').innerHTML = "MySubordinates";
+					$('#others').html("MySubordinates");
 				}
 		}
 	else
 		{
-		document.getElementById('others').href ="javascript:void(0)";
+		$('#others').href ="javascript:void(0)";
+		$('#others').html("");
+		$('#mylog').html("");
 		}
+	
 }
 
 function others()
 {
+	$("#tblTimeLog thead").find("th").addClass('sorter-false');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerAsc');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerDesc');
+	
 	$("#data").css({display: "none"});
-	document.getElementById('from').value = ""; 
-	document.getElementById('to').value = ""; 
+	$('#from').val(""); 
+	$('#to').val(""); 
 	$('#tblTimeLog tbody').remove();
-	document.getElementById('tbl').value = ""; 
-	document.getElementById('pagesize').selectedIndex=0;
-	document.getElementById('empName').value = "";
+	$('#tbl').val(""); 
+	$('#pagesize').selectedIndex=0;
+	$('#empName').val("");
 	$('#tblSearch tbody').remove();
 	
 	$("#result").css({display: "none"});
@@ -218,8 +243,14 @@ function others()
 		}
 }
 function SearchTimeLog()
+<<<<<<< HEAD
+{		
+=======
 {	
-		document.getElementById('pagesize').selectedIndex=0;
+		$("#tblTimeLog thead").find("th").removeClass('sorter-false');
+		
+		$('#pagesize').selectedIndex=0;
+>>>>>>> db094db33f7da59f3ebc5218a101f3fab94be0e4
 		var name;
 		var from = $('#from').val();
 		var to = $('#to').val();
@@ -228,16 +259,9 @@ function SearchTimeLog()
 		if(view == "manager")
 			{
 			idd = id;
-			var sub = document.getElementById("sub");
-			if(sub.options.length > 0)
-				{
-				name =  sub.options[sub.selectedIndex].text;
-				}
-			else
-				{
-				name = "";
-				}
+			name = $("#sub option:selected").text();
 			}
+		
 		else if(view =="mylog")
 			{
 			idd = id;
@@ -249,7 +273,7 @@ function SearchTimeLog()
 			name = id;
 			}
 		$.ajaxSetup({async:false});
-		 $.ajax(
+		$.ajax(
 		    		{
 		        type: "POST",
 		        url: "/tempoplus/timelog/validateInput",
@@ -271,18 +295,18 @@ function SearchTimeLog()
 					{
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveMylog",
 						        data: {'id': id , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										
@@ -299,28 +323,33 @@ function SearchTimeLog()
 						    }).done(
 						    		
 							    	function(){
-							    		my_jQuery3("#tblTimeLog")
-							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
-							    		.tablesorterPager({container: my_jQuery3("#pager"),positionFixed: false}); 
-									});
+							    		$("#tblTimeLog").trigger('destroy');
+							    		$("#tblTimeLog").trigger('update');
+							    		$("#tblTimeLog")
+							    		 .tablesorter({widgets: ['zebra']})
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'}); 
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
+							    		$("#tblTimeLog").trigger('update');
+							   
+							    	});
 					}
 				else if(view == "manager")
 					{
 					
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveTimelog",
 						        data: {'name': name , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										
@@ -336,28 +365,31 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
-							    		my_jQuery3("#tblTimeLog")
-							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
-							    		.tablesorterPager({container: my_jQuery3("#pager"),positionFixed: false});
-									});
+							    		$("#tblTimeLog").trigger('destroy');
+							    		$("#tblTimeLog").trigger('update');
+							    		$("#tblTimeLog")
+							    		 .tablesorter({widgets: ['zebra']})
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'});
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
+							    		$("#tblTimeLog").trigger('update');
+							    	});
 					}
 				else if(view == "hr")
 					{ 
-				
 					$('#tblTimeLog tbody').remove();
 					var tableStr = "<tbody>";
-						 $.ajax(
+					$.ajax(
 						    		{
 						        type: "POST",
 						        url: "/tempoplus/timelog/retrieveMylog",
 						        data: {'id': idd , 'from': from, 'to': to},
 						        success: function(response) {
-							 	$.each(response, function(index,item) {
+						        	$.each(response, function(index,item) {
 								 	
 								 		tableStr += "<tr>";
 										tableStr +="<td>"+item.date+"</td><td>"+item.timeIn+"</td>";
 										if(item.timeOut == null){
-											tableStr +="<td></td><td>"+item.duration+"</td>";
+											tableStr +="<td>&nbsp;</td><td>"+item.duration+"</td>";
 											tableStr +="</tr>";
 										}else{
 										
@@ -373,10 +405,14 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
-							    		my_jQuery3("#tblTimeLog")
-							    		 .tablesorter({widthFixed: false, widgets: ['zebra']})
-							    		.tablesorterPager({container: my_jQuery3("#pager"),positionFixed: false});
-									});
+							    		$("#tblTimeLog").trigger('destroy');
+							    		$("#tblTimeLog").trigger('update');
+							    		$("#tblTimeLog")
+							    		 .tablesorter({widgets: ['zebra']})
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'});
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
+							    		$("#tblTimeLog").trigger('update');
+							    	});
 					}
 			}
 		else
@@ -393,4 +429,5 @@ function SearchTimeLog()
 				}
 			
 			}
+		
 	}

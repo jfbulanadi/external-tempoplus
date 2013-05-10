@@ -6,9 +6,21 @@
 <head>
 <meta charset ="utf-8"/>
 
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="../resources/account/css/theme.default.css"></link>
+<link rel="stylesheet" type="text/css" href="../resources/account/css/viewhr.css"></link>
+<link rel="stylesheet" href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
+<link rel="stylesheet" type="text/css" href="../resources/account/css/jquery.tablesorter.pager.css"></link>
+ 
+<script src="../resources/account/js/jquery-1.9.1.js"></script>
+<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>
+<script src="../resources/account/js/jquery-ui.js"></script>
+
 <script src="../resources/account/js/changePassword.js"></script>
+
+<script src="../resources/account/js/jquery.tablesorter.min.js"></script>
+<script src="../resources/account/js/jquery.tablesorter.widgets.min.js"></script>
+<script src="../resources/account/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
+<script src="../resources/account/js/jquery.tablesorter.pager.min.js"></script>
 <title>Tempoplus HR</title>
 
 <script>
@@ -17,8 +29,7 @@ $( "#employeeAccess" ).tabs();
 $( "#adminTab" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 });
-</script>
-
+</script> 
 <style>
 div#dialog {
 display: none;
@@ -42,7 +53,7 @@ font-family : Arial, Helvetica, sans-serif;
 		</table>
 	</div>
 	<ul>
-		<li><a href = "../timelog/userLog">View Time Log</a></li>
+		<li><a href = <c:url value='../timelog/userLog'/>/>View Time Log</a></li>
 		<li><a href = "#MyProfile" >My Profile</a></li>
 		<li><a href = "#AccountSettings">Account Settings</a></li>
 		<li><a href = "#Administration">Administration</a></li>

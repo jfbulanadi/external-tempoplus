@@ -85,7 +85,7 @@ public class TimeLoggingController {
 			}
 			//Hr Retrieve result
 			@RequestMapping(value = "/retrieveEmployee", method= RequestMethod.POST)
-			public @ResponseBody List<Employee> retriveEmployee(@RequestParam(value = "empName") String empName) throws DataAccessException{
+			public @ResponseBody List<Employee> retriveEmployee(@RequestParam(value = "empName") String empName){
 				logger.info("Retrieve employee info");
 				return timelogServiceInt.searchEmployees(empName);	
 

@@ -25,9 +25,9 @@ public interface TimelogServiceInt {
 		List<Employee> searchEmployees(String name);
 		
 	//TimeLogs
-		void logTimeIn(TimeLogging timelogs);
+		void logTimeIn();
 		int getEmployeeId();
-		void logTimeOut(TimeLogging timeLogging);
+		void logTimeOut();
 		String getCurrentTime();
 		String getCurrentDate();
 

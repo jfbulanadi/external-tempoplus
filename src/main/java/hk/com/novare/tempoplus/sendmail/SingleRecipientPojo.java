@@ -1,4 +1,4 @@
-package hk.com.novare.tempoplus.bmnmanager.sendmail;
+package hk.com.novare.tempoplus.sendmail;
 
 public class SingleRecipientPojo {
 	private String firstName;

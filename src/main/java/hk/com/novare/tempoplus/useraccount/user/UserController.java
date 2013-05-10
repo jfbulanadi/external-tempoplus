@@ -4,7 +4,6 @@ import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.timelogging.DataAccessException;
 import java.sql.SQLException;
 
-import hk.com.novare.tempoplus.timelogging.TimeLogging;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingService;
 
 import java.util.List;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,7 +42,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/login	",  method = RequestMethod.POST)
-	public String loginValidation(@ModelAttribute(value="timelogs") TimeLogging timelogs,HttpServletRequest httpServletRequest,
+	public String loginValidation(HttpServletRequest httpServletRequest,
 			HttpSession session,
 			ModelMap modelMap,
 			@RequestParam(value = "userName")String userEmail,
@@ -60,7 +58,7 @@ public class UserController {
 			
 			if(isValid){
 				
-				timelogService.logTimeIn(timelogs);
+				timelogService.logTimeIn();
 				
 				redirect = "redirect:identifyHome";
 	
@@ -124,16 +122,16 @@ public class UserController {
 	}
 	
 	@RequestMapping("/logout")
-	 public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest,@ModelAttribute(value="timelogs") TimeLogging timelogs) throws SQLException{
+	public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest) throws SQLException{
 	  
 	  httpServletRequest.getSession().invalidate();
 	  modelMap.clear();
-	  timelogService.logTimeOut(timelogs);
+		timelogService.logTimeOut();
 
 	  //clear all objects in memory
 	  List<User> userList = userService.clearUserInformation(user.getEmail());
 	  List<Employee> supervisorList = userService.clearSupervisorInformation(user.getSupervisorId());
-	  
+		
 	  userList.clear();
 	  supervisorList.clear();
 	  

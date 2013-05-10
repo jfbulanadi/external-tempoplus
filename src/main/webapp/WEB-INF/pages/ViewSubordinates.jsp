@@ -5,7 +5,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link rel="stylesheet" type="text/css"
+
+<!-- <link rel="stylesheet" type="text/css"
 	href="../resources/account/css/jquery.tablesorter.pager.css"></link>
 <link rel="stylesheet" type="text/css"
 	href="../resources/account/css/theme.default.css"></link>
@@ -25,7 +26,10 @@
 <script src="../resources/account/js/jquery.tablesorter.pager.min.js"></script>
 <script src="../resources/account/js/viewhr.js"></script>
 <script src="../resources/account/js/addManagerSubordinate.js"></script>
-<!-- <script src="../resources/account/js/deleteManagerSubordinate.js"></script> -->
+<script src="../resources/account/js/deleteManagerSubordinate.js"></script> -->
+
+<script src="../resources/account/js/viewhr.js"></script>
+<script src="../resources/account/js/addManagerSubordinate.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Subordinate's List</title>
 

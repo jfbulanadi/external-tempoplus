@@ -4,13 +4,28 @@ var view ="";
 var id =0;
 $(document).ready(function() {
 	id = idExternal;
-	$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });
-	$( "#to" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
+	$( "#from" ).datepicker({ 
+		dateFormat: 'yy-mm-dd', 
+		showOn: "button",
+	    buttonImage: "../resources/timelog/css/images/img_calendar.png",
+	    buttonImageOnly: true,
+	    buttonText: "Calendar"
+	});
+	
+	$( "#to" ).datepicker({ 
+		dateFormat: 'yy-mm-dd',
+		showOn: "button",
+	    buttonImage: "../resources/timelog/css/images/img_calendar.png",
+	    buttonImageOnly: true,
+	    buttonText: "Calendar"
+	}); 
+	
 	$( "#SearchButton" ).click(SearchButton);
 	$( "#SearchTimeLog" ).click(SearchTimeLog);
 	mylog();
+	
 });	
-
+ 
 function SearchButton() {
 		var newresponse = null;
 		var empname = $('#empName').val();
@@ -21,17 +36,7 @@ function SearchButton() {
 			    	success: function(response){
 			    		newresponse = response; 
 			    		if(newresponse =="OK"){
-			    			$("#HrSearch").dialog({
-			    				
-								maxWidth : 550,
-								maxHeight : 600,
-								width : 550,
-								height : 600,
-								modal : true
-								
-							});
 			    			
-
 			    			$('#tblSearch tbody').remove();
 			    			$('#tblSearch thead').remove();
 			    			var tblList = "<tbody><thead><th>Employee ID</th><th>Lastname</th><th>Firstname</th><th>Middlename</th></thead>";
@@ -45,7 +50,7 @@ function SearchButton() {
 			    		       		
 			    		        	$.each(response,function(keys, values){
 
-			    		        		tblList += "<tr ondblclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
+			    		        		tblList += "<tr onclick='fetch(this)'  id =" + values.employeeId + ","+ values.lastname+ ","+values.firstname+ "," + values.middlename + ">";
 			    						tblList +="<td>"+values.employeeId+"</td><td>"+values.lastname+"</td>";
 			    						tblList +="<td>"+values.firstname+"</td><td>"+values.middlename+"</td>";
 			    						tblList +="</tr>";		
@@ -54,7 +59,6 @@ function SearchButton() {
 			    		        	});
 			    		        	tblList += "</tbody>";
 			    		        	$('#tblSearch').append(tblList);
-			    		        	
 			    		        	
 			    		        },
 			    		        error: function(e) {
@@ -72,6 +76,18 @@ function SearchButton() {
 											$(this).parents('tr').find('td').removeClass('highlight');
 										});
 									});
+			    			$("#HrSearch").dialog({
+			    				
+								maxWidth : 550,
+								maxHeight : 600,
+								width : 550,
+								height : 600,
+								modal : true
+								
+							});
+			    			
+
+			    			
 			    			
 			    		}else{
 			    			$("#result").css({display: "none"});
@@ -86,7 +102,7 @@ function SearchButton() {
 
 
 function fetch(d){
-	$("#HrSearch").dialog('close');
+	
 	var rowid = d.id;
 	var delimited = rowid.split(",");
 	Employee_Id = delimited[0];
@@ -97,17 +113,19 @@ function fetch(d){
 	
 	
 	$('#employee').val(lastname +", " +firstname);
+	$("#HrSearch").dialog('destroy');
 	
-	var rows = $('#tblSearch tbody tr');
-	var length = $('#tblSearch tbody tr').length;
-	for(var i= 0; i< length; i++){
-		rows[i].style.background = "";
-	}
-			
-			d.style.background="gray";
 }
 function mylog()
 {	
+	$("#tblTimeLog thead").find("th").addClass('sorter-false');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerAsc');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerDesc')
+	
 	$("#data").css({display: "none"});
 	$("#SearchBox").css({display: "none"});
 	$("#SearchSub").css({display: "none"});
@@ -115,16 +133,12 @@ function mylog()
 	$("#SearchRow").css({display:"none"});
 
 	//hr search textbox and label
-	document.getElementById('from').value = ""; 
-	document.getElementById('to').value = ""; 
-	document.getElementById('empName').value = "";
-
+	$('#from').val(""); 
+	$('#to').val(""); 
+	$('empName').val("");
+	$('#tbl').val("");
 	$('#tblTimeLog tbody').remove();
-	document.getElementById('tbl').disabled=true;
-	
-	document.getElementById('tbl').value = "";  
-	
-	document.getElementById('pagesize').selectedIndex=0;
+	$('#pagesize').selectedIndex=0;
 	$('#tblSearch tbody').remove();
 	
 	$("#result").css({display: "none"});
@@ -149,35 +163,43 @@ function mylog()
 	 view ='mylog';
 	if(user == "hr" || user == "manager")
 		{
-		document.getElementById('mylog').innerHTML = "MyLog";
-		document.getElementById('others').href ="javascript:others()";
+		$('#mylog').html("MyLog");
+		$('#others').href ="javascript:others()";
 			if(user=="hr")
 				{
-					document.getElementById('others').innerHTML = "View Others";
+					$('#others').html("View Others");
 				}
 			else if(user =="manager")
 				{
-					document.getElementById('others').innerHTML = "MySubordinates";
+					$('#others').html("MySubordinates");
 				}
 		}
 	else
 		{
-		document.getElementById('others').href ="javascript:void(0)";
-		document.getElementById('others').innerHTML = "";
-		document.getElementById('mylog').innerHTML = "";
+		$('#others').href ="javascript:void(0)";
+		$('#others').html("");
+		$('#mylog').html("");
 		}
 	
 }
 
 function others()
 {
+	$("#tblTimeLog thead").find("th").addClass('sorter-false');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortUp');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerAsc');
+	$("#tblTimeLog thead").find("th").removeClass('headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerSortDown');
+	$("#tblTimeLog thead").find("th").removeClass('tablesorter-headerDesc');
+	
 	$("#data").css({display: "none"});
-	document.getElementById('from').value = ""; 
-	document.getElementById('to').value = ""; 
+	$('#from').val(""); 
+	$('#to').val(""); 
 	$('#tblTimeLog tbody').remove();
-	document.getElementById('tbl').value = ""; 
-	document.getElementById('pagesize').selectedIndex=0;
-	document.getElementById('empName').value = "";
+	$('#tbl').val(""); 
+	$('#pagesize').selectedIndex=0;
+	$('#empName').val("");
 	$('#tblSearch tbody').remove();
 	
 	$("#result").css({display: "none"});
@@ -221,8 +243,9 @@ function others()
 		}
 }
 function SearchTimeLog()
-{	
-		document.getElementById('pagesize').selectedIndex=0;
+{		
+		$("#tblTimeLog thead").find("th").removeClass('sorter-false');
+		
 		var name;
 		var from = $('#from').val();
 		var to = $('#to').val();
@@ -231,16 +254,9 @@ function SearchTimeLog()
 		if(view == "manager")
 			{
 			idd = id;
-			var sub = document.getElementById("sub");
-			if(sub.options.length > 0)
-				{
-				name =  sub.options[sub.selectedIndex].text;
-				}
-			else
-				{
-				name = "";
-				}
+			name = $("#sub option:selected").text();
 			}
+		
 		else if(view =="mylog")
 			{
 			idd = id;
@@ -302,10 +318,12 @@ function SearchTimeLog()
 						    }).done(
 						    		
 							    	function(){
+							    		$("#tblTimeLog").trigger('destroy');
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
 							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'}); 
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
 							    		$("#tblTimeLog").trigger('update');
 							   
 							    	});
@@ -342,10 +360,12 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
+							    		$("#tblTimeLog").trigger('destroy');
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
-							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'});
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
 							    		$("#tblTimeLog").trigger('update');
 							    	});
 					}
@@ -380,10 +400,12 @@ function SearchTimeLog()
 						        }
 						    }).done(
 							    	function(){
+							    		$("#tblTimeLog").trigger('destroy');
 							    		$("#tblTimeLog").trigger('update');
 							    		$("#tblTimeLog")
 							    		 .tablesorter({widgets: ['zebra']})
-							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,output : '{page} / {totalPages}'});
+							    		.tablesorterPager({container: $(".pagers"),positionFixed: false,fixedHeight: true,page:0,output : '{page} / {totalPages}'});
+							    		$("#tblTimeLog tbody tr").find("td").addClass('row');
 							    		$("#tblTimeLog").trigger('update');
 							    	});
 					}
@@ -395,11 +417,12 @@ function SearchTimeLog()
 				$('#tblTimeLog tbody').remove();
 				$("#data").css({display: "block"});
 				}
-			elses
+			else
 				{
 				$('#tblTimeLog tbody').remove();
 				alert(rponse);
 				}
 			
 			}
+		
 	}

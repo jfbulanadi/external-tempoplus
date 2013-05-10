@@ -18,20 +18,17 @@ body {
 #tblTimeLog
 {
 border: 1px solid #e3e3e3;
-background-color: #f2f2f2;
 width:250%;
 border-radius: 6px;
 -webkit-border-radius: 6px;
 -moz-border-radius: 6px;
 }
+
 #tblAll
 {
 	margin-left:10%;
 }
-#tdTimeLogAll
-{
-	padding-top:7%;
-}
+
 #tblID
 {
 width:250%;
@@ -42,4 +39,11 @@ background-color:transparent;
 height:20px;
 width:300px;
 }
+.row{
+		background-color:white !important;
+}
 
+.highlight{
+		color:white !important;
+		background-color:black !important;
+}

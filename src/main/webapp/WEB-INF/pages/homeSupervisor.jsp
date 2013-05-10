@@ -5,10 +5,22 @@
 <html lang = "en">
 <head>
 <meta charset ="utf-8"/>
-<!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" /> -->
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../resources/account/css/theme.default.css"></link>
+<link rel="stylesheet" href="../resources/timelog/css/jquery-ui-1.10.2.custom.css" />
+<link rel="stylesheet" type="text/css" href="../resources/account/css/jquery.tablesorter.pager.css"></link>
+
+<script src="../resources/account/js/jquery-1.9.1.js"></script>
+<script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script>
+<script src="../resources/account/js/jquery-ui.js"></script>
+
 <script src="../resources/account/js/changePassword.js"></script>
+
+<script src="../resources/account/js/jquery.tablesorter.min.js"></script>
+<script src="../resources/account/js/jquery.tablesorter.widgets.min.js"></script>
+<script src="../resources/account/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
+<script src="../resources/account/js/jquery.tablesorter.pager.min.js"></script>
+
 
 <title>Tempoplus Supervisor</title>
 

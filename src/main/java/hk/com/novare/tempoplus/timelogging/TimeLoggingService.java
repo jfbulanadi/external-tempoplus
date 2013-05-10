@@ -421,7 +421,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 
 		@Override
 		public String checkUser(int id){
-	
+			
 			String user,position;
 			user = "";
 			int levelID;
@@ -455,7 +455,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 		
 		@Override
 		public String checkName(String name) {
-
+			
 			int validate = 0;
 		
 			timelogDAOInt.searchEmployees(name);
@@ -481,7 +481,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 		}
 		
 		@Override
-		public void logTimeIn(TimeLogging timelogs){
+		public void logTimeIn(){
 			
 			employeeid = user.getEmployeeId();
 						
@@ -490,7 +490,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 			
 			if(count == 0){
 				
-				timelogDAOInt.insertTimeIn(getCurrentDate(),getCurrentTime(), employeeid, timelogs);
+				timelogDAOInt.insertTimeIn(getCurrentDate(),getCurrentTime(), employeeid);
 			}
 			
 		}
@@ -505,11 +505,11 @@ public class TimeLoggingService implements TimelogServiceInt{
 		}
 		
 		@Override
-		public void logTimeOut(TimeLogging timeLogging){
+		public void logTimeOut(){
 
 			String duration =hoursCompute(getTime(), getCurrentTime());
 						
-			timelogDAOInt.validateout(duration,getCurrentDate(),getCurrentTime(),employeeid, timeLogging);
+			timelogDAOInt.validateout(duration,getCurrentDate(),getCurrentTime(),employeeid);
 		}
 		
 		public String getCurrentTime(){
