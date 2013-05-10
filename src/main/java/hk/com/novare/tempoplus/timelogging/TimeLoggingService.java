@@ -421,7 +421,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 
 		@Override
 		public String checkUser(int id){
-	
+			
 			String user,position;
 			user = "";
 			int levelID;
@@ -455,7 +455,7 @@ public class TimeLoggingService implements TimelogServiceInt{
 		
 		@Override
 		public String checkName(String name) {
-
+			
 			int validate = 0;
 		
 			timelogDAOInt.searchEmployees(name);

@@ -243,9 +243,14 @@ function others()
 		}
 }
 function SearchTimeLog()
+<<<<<<< HEAD
 {		
+=======
+{	
 		$("#tblTimeLog thead").find("th").removeClass('sorter-false');
 		
+		$('#pagesize').selectedIndex=0;
+>>>>>>> db094db33f7da59f3ebc5218a101f3fab94be0e4
 		var name;
 		var from = $('#from').val();
 		var to = $('#to').val();

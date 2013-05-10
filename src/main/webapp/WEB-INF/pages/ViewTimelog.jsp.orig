@@ -26,7 +26,11 @@
 
 
 <link rel="stylesheet" href="../resources/timelog/css/style1.css" type="text/css" />
+<<<<<<< HEAD
+=======
 <link href="../resources/timelog/css/ViewTimeLogCSS.css" rel="stylesheet">
+
+>>>>>>> db094db33f7da59f3ebc5218a101f3fab94be0e4
 <script type="text/javascript">var idExternal =${id}</script>
 <script type="text/javascript" src= "../resources/timelog/js/ViewTimelogJS.js"></script>
 
