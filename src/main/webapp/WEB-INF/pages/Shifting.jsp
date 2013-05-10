@@ -6,47 +6,56 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Manage Shifting</title>
-<link rel="stylesheet"
-	href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
-<link rel="stylesheet" href="../css/style.css" />
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 <script>
 	function doAjaxPost() {
 
 		var shiftname = $('#shiftname').val();
 		var timein = $('#timein').val();
 		var timeout = $('#timeout').val();
-     if(($('#shiftname').val())==''){
-    	 $('#addwarning').text("shifting name shoud not be empty");
-    	 $('#addwarning').css('color', 'red');
-    	 $('#shiftname').css('background-color', '#ff0000');
-    	 
-     }
-     else{
-    	 
-     
-		$.ajax({
-			type : "POST",
-			url : "<c:url value= '/shift/addshift' />",
-			data : {
-				shiftname : shiftname,
-				timein : timein,
-				timeout : timeout
-			},
-			success : function(response) {
-			 
-				$('#shiftname').val("");
-				$('#addshift').dialog("close");
-				location.reload(true);
-			 
-			},
-			error : function(e) {
-				alert("Error: " + e);
-				$('#addshift').dialog("close");
-			}
-		});
-     }
+		
+		$('#shifts tbody').remove();
+		$('#shifts thead').remove();
+		var tblList = "<tbody><thead><th>Shift Description</th><th>Start Time</th><th>End Time</th></thead>";
+		
+		if (($('#shiftname').val()) == '') {
+			$('#addwarning').text("shifting name shoud not be empty");
+			$('#addwarning').css('color', 'red');
+			$('#shiftname').css('background-color', '#ff0000');
+
+		}
+		
+		
+		else {
+
+			$.ajax({
+				type : "POST",
+				url : "<c:url value= '/shift/addshift' />",
+				data : {
+					shiftname : shiftname,
+					timein : timein,
+					timeout : timeout
+				},
+				success : function(response) {
+				$.each(response, function(keys, values){
+					tblList += "<tr id = "+ values.shiftid +">";
+					tblList += "<td>" + values.shiftname +"</td>";
+					tblList += "<td>" + values.timein +"</td>";
+					tblList += "<td>" + values.timeout +"</td>";
+					tblList += "</tr>";
+				});
+				tblList += "</tbody>";
+				$('#shifts').append(tblList);
+				
+					$('#shiftname').val("");
+					$('#addshift').dialog("close");
+
+				},
+				error : function(e) {
+					alert("Error: " + e);
+					$('#addshift').dialog("close");
+				}
+			});
+		}
 	}
 	$(document).ready(function() {
 		var dialogOpts = {
@@ -60,93 +69,98 @@
 			$('#addshift').dialog('open');
 			return false;
 		});
-		
+
 		var dialogEdit = {
-				bgiframe : true,
-				autoOpen : false,
-				modal : true,
-				width : "260px"
-			};
-			$('#edit').dialog(dialogEdit);
-			$('#shifts tbody tr').on('click', function() {
-				 bid = (this.id) ; // button ID 
-		         trid = $(this).closest('tr').attr('id'); 
-				 var shiftid = trid;
-				 
-				 $.ajax({
-					 type : "POST",
-					  url : "<c:url value= '/shift/editshift' />",
-					  data : {
-							shiftid : shiftid,
+			bgiframe : true,
+			autoOpen : false,
+			modal : true,
+			width : "260px"
+		};
+		$('#edit').dialog(dialogEdit);
+		$('#shifts tbody tr').on('click', function() {
+			bid = (this.id); // button ID 
+			trid = $(this).closest('tr').attr('id');
+			var shiftid = trid;
+
+			$.ajax({
+				type : "POST",
+				url : "<c:url value= '/shift/editshift' />",
+				data : {
+					shiftid : shiftid,
+				},
+				success : function(response) {
+					$.each(response, function(index, item) {
+						$('#shiftid').val(shiftid);
+						$('#editshiftname').val(item.shiftname);
+						$('#edittimein').val(item.timein);
+						$('#edittimeout').val(item.timeout);
+					});
+
+					$("#editshiftname").attr('disabled', true);
+					$("#edittimein").attr('disabled', true);
+					$("#edittimeout").attr('disabled', true);
+
+				},
+			});
+			$('#edit').dialog('open');
+			return false;
+		});
+
+		$("#editbutton").click(function() {
+
+			if (($('#editbutton').val() == "Save")) {
+				var newshiftname = $('#editshiftname').val();
+				var newtimein = $('#edittimein').val();
+				var newtimeout = $('#edittimeout').val();
+				var shiftid = $('#shiftid').val();
+				
+				
+				
+				
+				$('#shifts tbody').remove();
+				$('#shifts thead').remove();
+				var tblList = "<tbody><thead><th>Shift Description</th><th>Start Time</th><th>End Time</th></thead>";
+
+				if (($('#editshiftname').val()) == '') {
+					$('#warning').text("shifting name shoud not be empty.");
+					$('#warning').css('color', 'red');
+					$('#editshiftname').css('background-color', '#ff0000');
+				} 
+                				
+				else {
+					$.ajax({
+						type : "POST",
+						url : "<c:url value= '/shift/editshifting' />",
+						data : {
+							newshiftname : newshiftname,
+							newtimein : newtimein,
+							newtimeout : newtimeout,
+							shiftid : shiftid
 						},
 						success : function(response) {
-							$.each(response, function(index, item) {
-								$('#shiftid').val(shiftid);
-								$('#editshiftname').val(item.shiftname);
-								$('#edittimein').val(item.timein);
-								$('#edittimeout').val(item.timeout);
-							});
-							
-							$("#editshiftname").attr('disabled', true);
-							$("#edittimein").attr('disabled', true);
-							$("#edittimeout").attr('disabled', true);
-							
-						},	 
-				 });
-				$('#edit').dialog('open');
-				return false;
-			});
-			
-		$("#editbutton").click(function(){
-			 
-		   if(($('#editbutton').val()=="Save")){
-			   var newshiftname = $('#editshiftname').val();
-			   var newtimein = $('#edittimein').val();
-			   var newtimeout = $('#edittimeout').val();
-			   var shiftid = $('#shiftid').val();
-			 
-			   if (($('#editshiftname').val())=='') {
-				   $('#warning').text("shifting name shoud not be empty.");
-				  $('#warning').css('color', 'red');
-				  $('#editshiftname').css('background-color', '#ff0000');
-				  }
-			   else {
-				$.ajax({
-					type : "POST",
-					url : "<c:url value= '/shift/editshifting' />",
-					data : {
-						newshiftname : newshiftname,
-						newtimein : newtimein,
-						newtimeout : newtimeout,
-						shiftid : shiftid
-					},
-					success : function(response) {
-					 
-						$('#edit').dialog("close");
-						location.reload(true);		 
-					},
-					error : function(e) {
-						alert("Error: " + e);
-						location.reload(true);
-						$('#edit').dialog("close");
-					}
-				});			     
-			   }
-		   
-		   }
-		   
-		   else{
-			   $("#editshiftname").removeAttr('disabled');
+							$('#edit').dialog("close");
+							//append here...
+						},
+						error : function(e) {
+							alert("Error: " + e);
+							location.reload(true);
+							$('#edit').dialog("close");
+						}
+					});
+				}
+
+			}
+
+			else {
+				$("#editshiftname").removeAttr('disabled');
 				$("#edittimein").removeAttr('disabled');
 				$("#edittimeout").removeAttr('disabled');
-			   $("#editbutton").attr('value', 'Save');
-		   }
-				
-			});
-		
+				$("#editbutton").attr('value', 'Save');
+			}
+
+		});
 
 	});
-	
 </script>
 </head>
 <body>
@@ -173,7 +187,10 @@
 			<option>02:00:00</option>
 			<option>03:00:00</option>
 			<option>04:00:00</option>
-			<option>05:00:00</option></select> <label>Time Out:</label>&nbsp;<select
+			<option>05:00:00</option>
+			<option>06:00:00</option>
+			<option>07:00:00</option>
+		    </select> <label>Time Out:</label>&nbsp;<select
 			id="timeout"><option>08:00:00</option>
 			<option>09:00:00</option>
 			<option>10:00:00</option>
@@ -194,7 +211,9 @@
 			<option>02:00:00</option>
 			<option>03:00:00</option>
 			<option>04:00:00</option>
-			<option>05:00:00</option></select> <input type="button" onClick=doAjaxPost()
+			<option>05:00:00</option>
+			<option>06:00:00</option>
+			<option>07:00:00</option></select> <input type="button" onClick=doAjaxPost()
 			value="Add Shift">
 	</div>
 
@@ -222,7 +241,10 @@
 			<option>02:00:00</option>
 			<option>03:00:00</option>
 			<option>04:00:00</option>
-			<option>05:00:00</option></select> <label>Time Out:</label>&nbsp;<select
+			<option>05:00:00</option>
+			<option>06:00:00</option>
+			<option>07:00:00</option>
+			</select> <label>Time Out:</label>&nbsp;<select
 			id="edittimeout" disabled><option>08:00:00</option>
 			<option>09:00:00</option>
 			<option>10:00:00</option>
@@ -243,7 +265,9 @@
 			<option>02:00:00</option>
 			<option>03:00:00</option>
 			<option>04:00:00</option>
-			<option>05:00:00</option></select> <input type="button" id="editbutton"
+			<option>05:00:00</option>
+			<option>06:00:00</option>
+			<option>07:00:00</option></select> <input type="button" id="editbutton"
 			value="Edit Shift" />
 	</div>
 

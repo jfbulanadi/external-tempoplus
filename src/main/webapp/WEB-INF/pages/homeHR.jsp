@@ -160,26 +160,26 @@ font-family : Arial, Helvetica, sans-serif;
 		<div id="adminTab">
 	  			<ul>
 				    <li><a href="../hr/employeemanager">Employee Manager</a></li>
-				    <li><a href="#ShiftManager">Shift Manager</a></li>
+			    <li><a href="../shift/shifting">Shift Manager</a></li>
 				  	<li><a href="#BMNManager">BMN Manager</a></li>
-				  	<li><a href="#DownloadTimesheet">Download Timesheet</a></li>
+			  	<li><a href="../downloadpage/downloadlink">Download Timesheet</a></li>
 				  	<li><a href="#EmailManager">Email Manager</a></li> 
 				  	<li><a href="#HolidayView">Holiday View</a></li> 	
 	  			</ul>
-		  		<div id="ShiftManager">
-		  			<!-- Shift Manager for HR -->
+	  		<!-- <div id="ShiftManager">
+	  			Shift Manager for HR
 	    			<h2>Shift Manager</h2>
-	    		</div>
+    		</div> -->
 	  			
 	  			<div id="BMNManager">
 	    			<h2>BMN Manager</h2>
 	    			
 	  			</div>
 	  			
-	  			<div id="DownloadTimesheet">
+  			<!-- <div id="DownloadTimesheet">
 	    			<h2>Download Timesheet</h2>
 	    			
-	  			</div>
+  			</div> -->
 	  			
 	  			<div id="EmailManager">
 	    			<h2>Shift Manager</h2>

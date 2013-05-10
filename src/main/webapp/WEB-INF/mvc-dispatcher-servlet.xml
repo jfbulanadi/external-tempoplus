@@ -13,6 +13,7 @@
 	<context:component-scan base-package="hk.com.novare.tempoplus" />
 	<context:annotation-config />
 	<mvc:resources mapping="/resources/**" location="/WEB-INF/resources/" />
+	<mvc:resources mapping="/resources/**" location="/resources/"/> 
 	<!-- Required for body marshalling -->
 	<mvc:annotation-driven />
 	<mvc:view-controller path="/" view-name="ViewLogin" />
@@ -96,5 +97,13 @@
 	<!-- View Time Logging Beans -->
 	<bean id="timelogService" class="hk.com.novare.tempoplus.timelogging.TimeLoggingService" />
 	<bean id="timelogDAO" class="hk.com.novare.tempoplus.timelogging.TimeLoggingDao" />
+	
+	<!-- Shifting Beans -->
+	<bean id = "shiftingdaosource" class="hk.com.novare.tempoplus.bmnmanager.shiftmanager.ShiftingDao"/>    
+	<bean id="shiftingservice" class="hk.com.novare.tempoplus.bmnmanager.shiftmanager.ShiftingService"/>
+	
+	<!-- Download File -->
+	<bean id="downloadfileservice" class="hk.com.novare.tempoplus.filedownload.DownloadfileService" />	
+	 
 
 </beans>
