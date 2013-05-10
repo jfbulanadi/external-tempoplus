@@ -1,7 +1,7 @@
 var user = "";
 var Employee_Id = 0; //for hr
 var view ="";
-var id = 123;
+var id =0;
 $(document).ready(function() {
 	id = idExternal;
 	$( "#from" ).datepicker({ dateFormat: 'yy-mm-dd' });

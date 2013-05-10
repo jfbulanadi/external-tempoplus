@@ -18,12 +18,6 @@
 <!-- <script src="../resources/account/js/jquery-1.9.1.js"></script>
 <script src="../resources/timelog/js/jquery-ui-1.10.2.custom.js"></script> -->
 
-<script src="../resources/account/js/jquery.tablesorter.min.js"></script>
-<script src="../resources/account/js/jquery.tablesorter.widgets.min.js"></script>
-<script src="../resources/account/js/jquery-ui.js"></script>
-<script
-	src="../resources/account/js/jquery.tablesorter.widgets-filter-formatter.min.js"></script>
-<script src="../resources/account/js/jquery.tablesorter.pager.min.js"></script>
 <script src="../resources/account/js/viewhr.js"></script>
 
 <script
