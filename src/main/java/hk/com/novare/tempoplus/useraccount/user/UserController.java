@@ -4,8 +4,6 @@ import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.timelogging.DataAccessException;
 import java.sql.SQLException;
 
-import java.sql.SQLException;
-
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingService;
 
@@ -123,18 +121,19 @@ public class UserController {
 	}
 	
 	@RequestMapping("/logout")
-	public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest) throws SQLException{
-		
-		httpServletRequest.getSession().invalidate();
-		modelMap.clear();
-		
-		//clear all objects in memory
-		List<User> userList = userService.clearUserInformation(user.getEmail());
-		List<Employee> supervisorList = userService.clearSupervisorInformation(user.getSupervisorId());
+	 public String logout(ModelMap modelMap, HttpServletRequest httpServletRequest,@ModelAttribute(value="timelogs") TimeLogging timelogs) throws SQLException{
+	  
+	  httpServletRequest.getSession().invalidate();
+	  modelMap.clear();
+	  timelogService.logTimeOut(timelogs);
 
-		userList.clear();
-		supervisorList.clear();
-		
-		return "redirect:index";
-	}
+	  //clear all objects in memory
+	  List<User> userList = userService.clearUserInformation(user.getEmail());
+	  List<Employee> supervisorList = userService.clearSupervisorInformation(user.getSupervisorId());
+	  
+	  userList.clear();
+	  supervisorList.clear();
+	  
+	  return "redirect:index";
+	 }
 }

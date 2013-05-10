@@ -1,5 +1,6 @@
 package hk.com.novare.tempoplus.accountsystem.employeemanager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,12 +14,17 @@ public class EmployeeManagerService {
 	}
 	
 	public List<EmployeeManager> retrieveAddSubordinatesDetails(String employeeName){
-		System.out.println("[ @ retrieve service ");
+
 		return employeeManagerDao.searchToAddSubordinates(employeeName);
 	}
 	
 	public boolean hasEmployeeRecord(){
-		System.out.println("[ @ found service ");
+
 		return employeeManagerDao.employeeIsFound();
+	}
+	
+	public boolean updateSupervisor(int supervisorId, ArrayList<Integer> subordinateIds){
+
+		return employeeManagerDao.changeEmployeeSupervisor(supervisorId, subordinateIds);
 	}
 }

@@ -1,5 +1,6 @@
 package hk.com.novare.tempoplus.bmnmanager.nt3;
 
+import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.utilities.ExcelWorkbookUtility;
 
 import java.text.SimpleDateFormat;
@@ -20,7 +21,7 @@ public class Nt3Service {
 	@Inject
 	ExcelWorkbookUtility excelWorkbookUtility;
 
-	public void readData(CommonsMultipartFile[] file) {
+	public ArrayList<Nt3> readData(CommonsMultipartFile[] file) {
 
 		ArrayList<Nt3> list = new ArrayList<Nt3>();
 		Nt3 nt3 = null;
@@ -35,10 +36,11 @@ public class Nt3Service {
 				Cell cell = row.getCell(col, Row.CREATE_NULL_AS_BLANK);
 
 				switch (col) {
-				case 0: {			
+				case 0: {
 					try {
 						cell.setCellType(Cell.CELL_TYPE_STRING);
-						nt3.setEmployeeId(Integer.parseInt(cell.getStringCellValue()));
+						nt3.setEmployeeId(Integer.parseInt(cell
+								.getStringCellValue()));
 					} catch (Exception e) {
 						continue outerLoop;
 					}
@@ -57,28 +59,29 @@ public class Nt3Service {
 					}
 				}
 				case 3: {
-					if(DateUtil.isValidExcelDate(cell.getNumericCellValue())) {
-					String dateFormat = null;
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					dateFormat = sdf.format(cell.getDateCellValue());
-					nt3.setEndDate(dateFormat);
-					break;
+					if (DateUtil.isValidExcelDate(cell.getNumericCellValue())) {
+						String dateFormat = null;
+						SimpleDateFormat sdf = new SimpleDateFormat(
+								"yyyy-MM-dd");
+						dateFormat = sdf.format(cell.getDateCellValue());
+						nt3.setEndDate(dateFormat);
+						break;
 					} else {
 						continue outerLoop;
 					}
 				}
 				case 4: {
 					if (cell.getCellType() == 0) {
-					nt3.setDuration((float) cell.getNumericCellValue());
-					break;
+						nt3.setDuration((float) cell.getNumericCellValue());
+						break;
 					} else {
 						continue outerLoop;
 					}
 				}
 				case 5: {
-					if(cell.getCellType() == 1) {
-					nt3.setAbsenceType(cell.getStringCellValue());
-					break;
+					if (cell.getCellType() == 1) {
+						nt3.setAbsenceType(cell.getStringCellValue());
+						break;
 					} else {
 						continue outerLoop;
 					}
@@ -93,9 +96,9 @@ public class Nt3Service {
 					break;
 				}
 				case 7: {
-					if(cell.getCellType() == 1 || cell.getCellType() == 3) {
-					nt3.setAbsenceStatus(cell.getStringCellValue());
-					break;
+					if (cell.getCellType() == 1 || cell.getCellType() == 3) {
+						nt3.setAbsenceStatus(cell.getStringCellValue());
+						break;
 					} else {
 						continue outerLoop;
 					}
@@ -105,8 +108,12 @@ public class Nt3Service {
 			list.add(nt3);
 
 		}
-		nt3Dao.addNt3Data(list);
-		
+
+		return list;
 	}
 
+	public int insertNt3Data(ArrayList<Nt3> list) {
+
+		return nt3Dao.insertNt3Data(list).length;
+	}
 }

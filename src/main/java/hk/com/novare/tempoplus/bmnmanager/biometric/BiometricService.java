@@ -14,18 +14,21 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 public class BiometricService {
-	
-	@Inject	BiometricDao biometricDao;
-	@Inject TimeLoggingDao timelogDAO;
-	@Inject	ExcelWorkbookUtility excelWorkbookUtility;
 
-	public void readData(CommonsMultipartFile[] file) {
+	@Inject
+	BiometricDao biometricDao;
+	@Inject
+	TimeLoggingDao timelogDAO;
+	@Inject
+	ExcelWorkbookUtility excelWorkbookUtility;
+
+	public ArrayList<Biometric> readData(CommonsMultipartFile[] file) {
 
 		ArrayList<Biometric> list = new ArrayList<Biometric>();
 		Biometric bio = null;
-		
+
 		Sheet sheet = excelWorkbookUtility.getExcelWorkbook(file);
-		
+
 		for (Row row : sheet) {
 
 			bio = new Biometric();
@@ -66,23 +69,23 @@ public class BiometricService {
 
 		}
 
-		biometricDao.addBiometricData(list);
+		return list;
 
 	}
-	
-	public ArrayList<BiometricDetails> retrieveBiometricRecordsPerDay() {
+
+	public int insertBiometricData(ArrayList<Biometric> list) {
 		
-		ArrayList<BiometricDetails> list = new ArrayList<BiometricDetails>();
-		
-		
-		
-		return list;
+			return biometricDao.insertBiometricData(list).length;
 	}
-	
-	public void updateTimelog() {		
-//		timelogDAO.updateTimeLoggingDataPhase1(biometricDao.retrieveTimeInData());
-//		timelogDAO.updateTimeLoggingDataPhase2(biometricDao.retrieveTimeOutData());		
+
+	public boolean updateTimelog() {
 		
+		if (timelogDAO.updateTimeLoggingDataPhase1(biometricDao.retrieveTimeInData()).length > 0
+				&& timelogDAO.updateTimeLoggingDataPhase2(biometricDao.retrieveTimeOutData()).length > 0) {
+			return true;
+		}
+
+		return false;
 	}
 
 }

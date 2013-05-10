@@ -21,9 +21,10 @@ import org.springframework.stereotype.Repository;
 public class TimesheetDao {
 
 	@Inject
-	DataSource dataSource;
+	private DataSource dataSource;
 
 	private Connection connection = null;
+	private ResultSet resultSet = null;
 
 	public ArrayList<Timesheet> retrieveTimesheetData() {
 		ArrayList<Timesheet> list = new ArrayList<Timesheet>();
@@ -50,7 +51,7 @@ public class TimesheetDao {
 							+ "LEFT JOIN mantises m ON m.id = c.mantisId "
 							+ "LEFT JOIN nt3s n ON n.id = c.nt3Id ORDER BY e.id");
 
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
 				timesheet = new Timesheet();
@@ -60,19 +61,20 @@ public class TimesheetDao {
 				mantis = new Mantis();
 				biometricDetails = new BiometricDetails();
 
-
-//				employeeDetails.setId(resultSet.getInt("e.id"));
+				// employeeDetails.setId(resultSet.getInt("e.id"));
 				employeeDetails.setEmployeeId(resultSet.getInt("e.employeeId"));
-				employeeDetails.setBiometricId(resultSet.getInt("e.biometricId"));
+				employeeDetails.setBiometricId(resultSet
+						.getInt("e.biometricId"));
 				employeeDetails.setFullName(resultSet.getString("fullName"));
 				employeeDetails.setHireDate(resultSet.getString("e.hiredate"));
 				employeeDetails.setRegularizationDate(resultSet
 						.getString("e.regularizationdate"));
-				employeeDetails.setSupervisor(resultSet.getString("supervisor"));
-	
+				employeeDetails
+						.setSupervisor(resultSet.getString("supervisor"));
+
 				biometricDetails.setTimeIn(resultSet.getString("bioTimeIn"));
 				biometricDetails.setTimeOut(resultSet.getString("bioTimeOut"));
-				
+
 				timelog.setDate(resultSet.getString("t.date"));
 				timelog.setTimeIn(resultSet.getString("t.timeIn"));
 				timelog.setTimeOut(resultSet.getString("t.timeout"));
@@ -94,16 +96,121 @@ public class TimesheetDao {
 				timesheet.setTimelog(timelog);
 				timesheet.setMantis(mantis);
 				timesheet.setNt3(nt3);
-				timesheet.setDailyBiometric(biometricDetails);
+				timesheet.setBiometricDetails(biometricDetails);
 				list.add(timesheet);
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				resultSet.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			// TODO CLOSE
 		}
 
 		return list;
 
+	}
+
+	public int createTimesheet(String name) {
+		int rows = 0;
+		try {
+			connection = dataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("INSERT INTO timesheets (description) VALUES(?)");
+
+			preparedStatement.setString(1, name);
+
+			rows = preparedStatement.executeUpdate();
+
+		} catch (SQLException e) {
+
+		}
+
+		return rows;
+	}
+
+	public ArrayList<TimesheetList> retrieveTimesheetList() {
+
+		ArrayList<TimesheetList> list = new ArrayList<TimesheetList>();
+		TimesheetList timesheetList = null;
+		try {
+			connection = dataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("SELECT name FROM timesheets");
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				timesheetList = new TimesheetList();
+
+				timesheetList.setName(resultSet.getString("name"));
+
+				list.add(timesheetList);
+			}
+			preparedStatement.close();
+			resultSet.close();
+		} catch (SQLException e) {
+
+		}
+
+		return list;
+	}
+
+	public void updateTimeLogTimesheetRecord(String description) {
+
+		try {
+			connection = dataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("UPDATE timesheets SET timelogId = 1 WHERE description = ?");
+
+			preparedStatement.setString(1, description);
+			preparedStatement.executeUpdate();
+			preparedStatement.close();
+
+		} catch (SQLException e) {
+
+		}
+	}
+
+	public void updateMantisTimesheetRecord(String description) {
+
+		try {
+			connection = dataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("UPDATE timesheets SET mantisId = 1 WHERE description = ?");
+
+			preparedStatement.setString(1, description);
+			preparedStatement.executeUpdate();
+			preparedStatement.close();
+
+		} catch (SQLException e) {
+
+		}
+	}
+
+	public void updateNt3TimesheetRecord(String description) {
+
+		try {
+			connection = dataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection
+					.prepareStatement("UPDATE timesheets SET nt3Id = 1 WHERE description = ?");
+
+			preparedStatement.setString(1, description);
+			preparedStatement.executeUpdate();
+			preparedStatement.close();
+
+		} catch (SQLException e) {
+
+		}
 	}
 
 }

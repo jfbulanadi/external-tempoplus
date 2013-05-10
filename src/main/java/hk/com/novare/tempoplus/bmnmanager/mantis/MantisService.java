@@ -15,14 +15,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 public class MantisService {
 	
 	@Inject	MantisDao mantisDao;
-//	@Inject OvertimeDao overtimeDao;
-//	@Inject TimelogAdjustmentDao timelogAdjustmentDao;
-//	@Inject ChangeScheduleDao changeScheduleDao;
-//	@Inject UndertimeDao undertimeDao;
-//	@Inject OfficialBusinessDao officialBusinessDao;
 	@Inject ExcelWorkbookUtility excelWorkbookUtility;
 	
-	public void readData(CommonsMultipartFile[] file) {
+	public ArrayList<Mantis> readData(CommonsMultipartFile[] file) {
 
 		ArrayList<Mantis> list = new ArrayList<Mantis>();
 		Mantis mantis = null;
@@ -95,34 +90,11 @@ public class MantisService {
 
 		}
 
-		mantisDao.addMantisData(list);
-
+		return list;
 	}
 	
-//	public void splitMantisData() {
-//		
-//		ArrayList<Mantis> list = mantisDao.retriveMantisData();
-//		
-//		for(Mantis mantis:list) {
-//			if("Change Schedule".equals(mantis.getCategory())) {
-//				changeScheduleDao.addChangeScheduleData(mantis);
-//			} else if ("Extra Hours".equals(mantis.getCategory())) {
-//				extraHoursDao.addExtraHoursData(mantis);
-//			} else if ("Time Log Adjustments".equals(mantis.getCategory())) {
-//				timelogAdjustmentDao.addTimelogAdjustmentData(mantis);
-//			} else if ("Official Business".equals(mantis.getCategory())) {
-//				officialBusinessDao.addOfficialBusinessData(mantis);
-//			} else if ("Undertime".equals(mantis.getCategory())) {
-//				undertimeDao.addUndertimeData(mantis);
-//			} else if ("Overtime".equals(mantis.getCategory())) {
-//				overtimeDao.addOvertimeData(mantis);
-//			} else if ("Offset".equals(mantis.getCategory())) {
-//				offsetDao.addOffsetData(mantis);
-//			} else if ("Night Shift Schedule".equals(mantis.getCategory())) {
-//				nightShiftScheduleDao.addNightShiftScheduleData(mantis);
-//			}
-//			
-//		}
-//
-//	}
+	public int insertMantisData(ArrayList<Mantis> list) {
+	
+			return mantisDao.insertMantisData(list).length;
+	}
 }

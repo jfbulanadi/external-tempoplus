@@ -35,7 +35,7 @@
 		<input type="submit" value="Upload" />
 	</form:form>
 	
-	<form:form method="POST" action="/consolidation/create">
+	<form:form method="POST" action="/timesheet/create">
 		Timesheet Description<input type="text" name="name"/>
 		Period Start(yyyy-mm-dd)<input type="text" name="periodStart"/>
 		Period End<input type="text" name="periodEnd"/>

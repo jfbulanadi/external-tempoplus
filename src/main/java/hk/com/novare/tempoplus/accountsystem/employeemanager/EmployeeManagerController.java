@@ -35,11 +35,8 @@ public class EmployeeManagerController {
 	
 	@RequestMapping(value = "/searchEmployeeSubordinates", method = RequestMethod.POST)
 	public @ResponseBody boolean searchEmployee(@RequestParam(value = "employeeName") String employeeName){
-		System.out.println("[ @ controller 1");
 		searchEmployeeList = employeeManagerService.retrieveAddSubordinatesDetails(employeeName);
-		System.out.println("[ @ controller 2");
 		
-		System.out.println(employeeManagerService.hasEmployeeRecord());
 		return employeeManagerService.hasEmployeeRecord();
 	}
 	
@@ -51,7 +48,7 @@ public class EmployeeManagerController {
 	@RequestMapping(value = "/saveNewSubordinates", method = RequestMethod.POST) 
 	public @ResponseBody String saveNewSubordinates(@RequestParam(value = "employeeIdsJSON") String newSubordinates,
 			ModelMap modelMap) throws JSONException{
-		
+		String message = "";
 		JSONObject newSubordinatesJSON = new JSONObject(newSubordinates);
 		JSONArray idArray = newSubordinatesJSON.getJSONArray("ids");	
 		ArrayList<Integer> subordinateIds = new ArrayList<Integer>();	
@@ -64,8 +61,17 @@ public class EmployeeManagerController {
 				System.out.println(id);
 			}
 		int managerEmployeeId = Integer.parseInt(modelMap.get("userEmployeeId").toString());
+		boolean isSupervisorUpdated = 
+				employeeManagerService.updateSupervisor(managerEmployeeId, subordinateIds);
+
+			if(isSupervisorUpdated){
+				message = "Successfully updated.";
+			}else{
+				message = "Failed to add new subordinates.";
+			}
 		
-		return subordinateIds.get(0).toString();
+		
+		return message;
 	}
 	
 	

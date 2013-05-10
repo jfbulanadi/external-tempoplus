@@ -15,40 +15,40 @@ public interface TimelogDAOInt {
 	 * @return
 	 * @throws DataAccessException
 	 */
-	int countUser() throws DataAccessException;
-	int getUserID(int i) throws DataAccessException;
-	String getShiftDesc(int id) throws DataAccessException;
-	String getShiftInReal(String desc) throws DataAccessException;
-	String getShiftOut(int id) throws DataAccessException;
-	int checkTime(String d, int userId) throws DataAccessException;
-	void insertRec(String d, int userId) throws DataAccessException;
-	void updateFlag(String d, int userId, int flagId) throws DataAccessException;
-	int getFlagId(String desc) throws DataAccessException;
-	String checkTimeIn(String d, int userId) throws DataAccessException;
-	String getTimeIn(String d, int userId) throws DataAccessException;
-	String checkTimeOut(String d, int userId) throws DataAccessException;
-	String getTimeOut(String d, int userId) throws DataAccessException;
+	int countUser() ;
+	int getUserID(int i);
+	String getShiftDesc(int id);
+	String getShiftInReal(String desc);
+	String getShiftOut(int id);
+	int checkTime(String d, int userId);
+	void insertRec(String d, int userId);
+	void updateFlag(String d, int userId, int flagId);
+	int getFlagId(String desc);
+	String checkTimeIn(String d, int userId);
+	String getTimeIn(String d, int userId);
+	String checkTimeOut(String d, int userId);
+	String getTimeOut(String d, int userId);
 	
-	List retrieveSubordinates(int id) throws DataAccessException;
-	List<TimeLogging> retrieveTimelog(int id, String from, String to) throws DataAccessException;
-	List<TimeLogging> retrieveMylog(int id, String from, String to) throws DataAccessException;
-	Map retrieveSubordinatesMap(int id) throws DataAccessException;
+	List retrieveSubordinates(int id);
+	List<TimeLogging> retrieveTimelog(int id, String from, String to);
+	List<TimeLogging> retrieveMylog(int id, String from, String to);
+	Map retrieveSubordinatesMap(int id);
 	
-	int checkData(int id, String from, String to) throws ParseException, DataAccessException;
+	int checkData(int id, String from, String to);
 	
 	/*int getLevelId(int id) throws DataAccessException;*/
-	boolean isSupervisor(int id) throws DataAccessException;
+	boolean isSupervisor(int id);
 	/*String getPosition(int id) throws DataAccessException;*/
-	String isHR(int id) throws DataAccessException;
+	String isHR(int id);
 	
 	//Hr view
-		List<Employee> searchEmployees(String name) throws DataAccessException;
+		List<Employee> searchEmployees(String name);
 		int getValidationOfEmployeeSearch();
 		
 	//Timein TimeOut
-		void insertTimeIn(String datestring, String timestring, int id, TimeLogging time)throws DataAccessException;
-		void validateout(String totalHours, String datestring, String timestring,int id, TimeLogging time)throws DataAccessException ;
-		int validatetimeIn(String datestring,int id) throws DataAccessException;	
-		String getTimeIn(String dateString, String timeString, int id) throws DataAccessException;
+		void insertTimeIn(String datestring, String timestring, int id, TimeLogging time);
+		void validateout(String totalHours, String datestring, String timestring,int id, TimeLogging time);
+		int validatetimeIn(String datestring,int id);	
+		String getTimeIn(String dateString, String timeString, int id);
 
 }

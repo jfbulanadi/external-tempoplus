@@ -3,6 +3,8 @@ package hk.com.novare.tempoplus.accountsystem;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.Consumes;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("hr")
@@ -24,8 +27,7 @@ public class HrController {
 	@Autowired
 	SingleFileUploadForm singleFileUploadForm;
 	
-	
-	
+
 	@RequestMapping(value = "/employeemanager")
 	public String subPage(ModelMap modelMap) {		
 		modelMap.addAttribute("employeeList", hrService.retrieveAllEmployee());
@@ -156,7 +158,7 @@ public class HrController {
 		return hrService.retrieveShifts();
 	}
 
-	@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
+/*	@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
 	public String getFileUpload(
 			@ModelAttribute("uploadForm") SingleFileUploadForm uploadForm,
 			ModelMap modelMap) {
@@ -164,12 +166,51 @@ public class HrController {
 		// upload file
 		hrService.userDBFileUpload(uploadForm.getFile());
 		
-		return "redirect:employeemanager";
+		return "redirect: ../../../mainpage/admin#loadAdmin";
+
+	}*/
+	
+	/*@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
+	@Consumes("multipart/form-data")
+	public String getFileUpload(
+			@RequestParam("file") MultipartFile file,
+			ModelMap modelMap) {
+
+		// upload file
+		System.out.println(file.toString());
+		hrService.userDBFileUpload(file);
+		
+		return "redirect: ../../../mainpage/admin#loadAdmin";
+
+	}*/
+	
+	@RequestMapping(value = "/uploadUserDB", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Integer> getFileUpload(
+			@RequestParam("file") MultipartFile file,
+			ModelMap modelMap) {
+
+		// upload file
+		System.out.println(file.toString());
+		return hrService.userDBFileUpload(file);
 
 	}
 	
+	@RequestMapping(value = "/uploadPage")
+	public String uploadPage() {
 
+		// upload file
+		//hrService.userDBFileUpload(uploadForm.getFile());
+		//System.out.println("files" + uploadForm.toString());
+		return "upload";
+	}
 	
 	
-	
+	@RequestMapping(value = "/uploadUserDBFromTest")
+	public String getFileUpload() {
+
+		// upload file
+		//hrService.userDBFileUpload(uploadForm.getFile());
+		//System.out.println("files" + uploadForm.toString());
+		return "upload";
+	}
 }

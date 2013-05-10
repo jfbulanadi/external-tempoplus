@@ -1,4 +1,34 @@
 $(function(){
+	
+
+/*	var tableViewSub = "<tbody><thead><th>Employee ID</th><th>Last Name</th>" +
+						"<th>First Name</th><th>Department</th><th>Position</th></thead>";
+				
+	$.ajax({
+		$('#retrieveSubordinates tbody').remove();
+		$('#retrieveSubordinates thead').remove();
+			type:"POST",
+		url: "/tempoplus/manager/viewSubordinates",
+		success:function(response){
+			
+			$.each(response, 
+				function(keys, values){
+				
+				tableViewSub += "<tr><td><input type='checkbox' name='add'  ";
+				tableViewSub += "id='" + values.employeeId + "'/>";
+				tableViewSub +=  values.employeeId + "</td>";
+				tableViewSub += "<td>" + values.lastName + "</td>";
+				tableViewSub += "<td>" + values.firstName + "</td>";
+				tableViewSub += "<td>" + values.department + "</td>";
+				tableViewSubt += "<td>" + values.position + "</td>";
+				tableViewSub += "</tr>";
+				}	
+				
+			);
+			tableViewSub += "</tbody>";	
+			$('#retrieveSubordinates').append(tableViewSub);
+		});*/
+	
 	$("#addSubordinates").button().click(function(){
 		 $( "#AddSubordinateForm" ).dialog({
 				maxWidth : 700,
@@ -9,7 +39,8 @@ $(function(){
 			});
 	});
 			 
-			$("#searchEmployee").button().click(function(){
+	
+	$("#searchEmployee").button().click(function(){
 				var employeeName= $('#employeeName').val();
 				var tableList = "<tbody><thead><th>Employee ID</th><th>Last Name</th>" +
 						"<th>First Name</th><th>Department</th><th>Position</th></thead>";
@@ -22,7 +53,7 @@ $(function(){
 						success: function(response){
 
 							if(response == true){
-								alert(response);
+					
 								/*retrieve employees found*/
 								$('#foundEmployeeTable tbody').remove();
 				    			$('#foundEmployeeTable thead').remove();
@@ -50,7 +81,7 @@ $(function(){
 										tableList += "</tbody>";	
 										$('#foundEmployeeTable').append(tableList);
 										
-										  
+			
 										/*Add employees as manager's subordinates
 */										 $("#addNewSubordinates").button().click(function(){
 												/* Get employee ids to add as subordinates*/
@@ -62,14 +93,30 @@ $(function(){
 										
 												 var employeeIdsJSON = {'ids':checkedEmployeeIds};
 												 var jsonString = JSON.stringify(employeeIdsJSON);
-													alert(jsonString);
+									
 												 /* Update employees' supervisor*/
 												   $.ajax({
 														type:"POST",
 														url: "/tempoplus/manager/saveNewSubordinates",
 														data: {'employeeIdsJSON':jsonString},
 														success:function(response){
-															alert(response);
+															if(response == "Successfully updated."){
+																alert(response);
+																window.location = '/tempoplus/user/identifyHome';
+																/* $.ajax({
+																		type:"POST",
+																		url: "/tempoplus/manager/viewSubordinates",
+																		success:function(response){
+																			window.location.href =response.redirect;
+																			}
+																		});*/
+																		
+																		/*$( "#AddSubordinateForm" ).dialog("close");*/
+															}
+															else{
+																
+															}
+															
 														}
 												   });
 												  
@@ -91,7 +138,7 @@ $(function(){
 								
 							}
 							else{
-								alert(response);
+								alert("Name not found");
 							}
 						}
 					});

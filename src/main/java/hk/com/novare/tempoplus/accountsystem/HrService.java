@@ -1,6 +1,7 @@
 package hk.com.novare.tempoplus.accountsystem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -194,7 +195,7 @@ public class HrService {
 	
 	
 	
-	public void userDBFileUpload(MultipartFile multipartfile) {
+	/*public int userDBFileUpload(MultipartFile multipartfile) {
 		//convert excel file to array of humanresource2
 		TransformFile transformFile = new UserDb();
 		// Obj from file upload
@@ -231,7 +232,7 @@ public class HrService {
 		}
 		
 		
-		//PHASE I.I
+		//PHASE I.I give every uploaded employee an account
 		for(HumanResourceDTO humanResourceDTO: newhumanResourcesListToBeAddedToDatabase) {
 			int employeeId = humanResourceDTO.getEmployeeId();
 			hrDAO.createAccount(employeeId);
@@ -245,6 +246,69 @@ public class HrService {
 			//update supervisorId
 			hrDAO.updateSupervisorId(humanResourceDTO);
 		}
+		return newhumanResourcesListToBeAddedToDatabase.size();
+		
+	}*/
+	
+	public Map<String, Integer> userDBFileUpload(MultipartFile multipartfile) {
+		
+		Map<String, Integer> employeesize = new HashMap<String, Integer>();
+		
+		//convert excel file to array of humanresource2
+		TransformFile transformFile = new UserDb();
+		// Obj from file upload
+		List<HumanResourceDTO> uploadHumanResources = transformFile.toExcel(multipartfile);
+		
+		//retrieve all employeeId from Database
+		List<Integer> employeeIdList = hrDAO.retrieveAllEmployeeId();
+
+		//put the new employeeId
+		List<HumanResourceDTO> newhumanResourcesListToBeAddedToDatabase = new ArrayList<HumanResourceDTO>();
+		
+		//check employeeId for duplicate
+		for(int in = 0; in < uploadHumanResources.size(); in++) {
+			if(!employeeIdList.contains(uploadHumanResources.get(in).getEmployeeId())) {
+				newhumanResourcesListToBeAddedToDatabase.add(uploadHumanResources.get(in));
+			}
+		}
+		
+		//PHASE I - save humanresource that has no duplicate in database 
+		for(HumanResourceDTO humanResource2: newhumanResourcesListToBeAddedToDatabase) {
+			int departmentId = hrDAO.retrieveDepartmentId(humanResource2.getDepartment());
+			int positionId = hrDAO.retrievePositionId(humanResource2.getPosition());
+			int shiftId = hrDAO.retrieveShiftId(humanResource2.getShift());
+			
+			humanResource2.setDepartmentId(departmentId);
+			humanResource2.setPositionId(positionId);
+			humanResource2.setShiftId(shiftId);
+			
+			if(humanResource2.getLevel() >= 3) {
+				humanResource2.setIsSupervisor("true");
+			}
+			hrDAO.createEmployeeFromUpload(humanResource2);
+			
+		}
+		
+		
+		//PHASE I.I give every uploaded employee an account
+		for(HumanResourceDTO humanResourceDTO: newhumanResourcesListToBeAddedToDatabase) {
+			int employeeId = humanResourceDTO.getEmployeeId();
+			hrDAO.createAccount(employeeId);
+		}
+		
+		//PHASE II - assigned designated supervisor using supervisor email
+		for(HumanResourceDTO humanResourceDTO: newhumanResourcesListToBeAddedToDatabase) {
+			int supervisorId = hrDAO.retrieveSupervisorEmployeeId(humanResourceDTO.getSupervisorEmail());
+			humanResourceDTO.setSupervisorId(supervisorId);
+			
+			//update supervisorId
+			hrDAO.updateSupervisorId(humanResourceDTO);
+		}
+		
+		employeesize.put("number", newhumanResourcesListToBeAddedToDatabase.size());
+		
+		return employeesize;
+		
 		
 	}
 	

@@ -13,7 +13,7 @@ public class Timesheet {
 	private TimeLogging timelog;
 	private Mantis mantis;
 	private Nt3 nt3;
-	private BiometricDetails dailyBiometric;
+	private BiometricDetails biometricDetails;
 	
 	public TimeLogging getTimelog() {
 		return timelog;
@@ -59,12 +59,12 @@ public class Timesheet {
 		this.nt3 = nt3;
 	}
 
-	public BiometricDetails getDailyBiometric() {
-		return dailyBiometric;
+	public BiometricDetails getBiometricDetails() {
+		return biometricDetails;
 	}
 
-	public void setDailyBiometric(BiometricDetails dailyBiometric) {
-		this.dailyBiometric = dailyBiometric;
+	public void setBiometricDetails(BiometricDetails biometricDetails) {
+		this.biometricDetails = biometricDetails;
 	}
 
 	

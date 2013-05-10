@@ -20,44 +20,64 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 @RequestMapping("/fileupload")
 public class FileUploadController {
 
-	@Inject	FileUploadService fileUploadService;
-	@Inject	BiometricService biometricService;
-	@Inject MantisService mantisService;
-	@Inject EmployeeService employeeService;
-	@Inject Nt3Service nt3Service;
-	@Inject TimesheetService timesheetService;
+	@Inject
+	FileUploadService fileUploadService;
+	@Inject
+	BiometricService biometricService;
+	@Inject
+	MantisService mantisService;
+	@Inject
+	EmployeeService employeeService;
+	@Inject
+	Nt3Service nt3Service;
+	@Inject
+	TimesheetService timesheetService;
 
-	@Inject ConsolidationService consolidationService;
-	
+	@Inject
+	ConsolidationService consolidationService;
+
 	static final Logger logger = Logger.getLogger(FileUploadController.class);
-	
+
 	@RequestMapping(value = "/uploadform", method = RequestMethod.GET)
 	public String displayForm() {
 		return "ViewUpload";
 	}
 
 	@RequestMapping(value = "/uploadfile", method = RequestMethod.POST)
-	public String handleFileUpload(@RequestParam CommonsMultipartFile[] file, @RequestParam(value="category") int category) throws Exception {
-		//TODO Add Parameter Category
-		//This is not yet finished
-			
-			
-			switch (category) {
-			case 1: biometricService.readData(file);
-			biometricService.updateTimelog();
-				break;
-			case 2: mantisService.readData(file);	
-//				mantisService.splitMantisData();
-				break;
-			case 3: nt3Service.readData(file);
-				break;
-			case 4: employeeService.readData(file);
-				break;
-			case 5: consolidationService.consolidateTimesheet();
-				timesheetService.createTimesheetSummary();
+	public String handleFileUpload(@RequestParam CommonsMultipartFile[] file,
+			@RequestParam(value = "category") int category) throws Exception {
+		// TODO Add Parameter Category
+		// This is not yet finished
+		String description = "Timesheet 1";
+
+		switch (category) {
+		case 1:
+//			if (biometricService.insertBiometricData(biometricService
+//					.readData(file)) > 0) {
+				if (biometricService.updateTimelog()) {
+					timesheetService.updateTimeLogTimesheetRecord(description);
+				}
+//			}
 			break;
+		case 2:
+			if (mantisService.insertMantisData(mantisService.readData(file)) > 0) {
+				timesheetService.updateMantisTimesheetRecord(description);
 			}
-			
+			break;
+		case 3:
+			if (nt3Service.insertNt3Data(nt3Service.readData(file)) > 0) {
+				timesheetService.updateNt3TimesheetRecord(description);
+			}
+			break;
+		case 4:
+			employeeService.readData(file);
+			break;
+		case 5:
+			consolidationService.consolidateTimesheet();
+			timesheetService.createTimesheetSummary();
+			break;
+		}
+
 		return "ViewUpload";
 	}
 }

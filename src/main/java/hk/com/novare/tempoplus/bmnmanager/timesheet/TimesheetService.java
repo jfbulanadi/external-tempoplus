@@ -2,6 +2,7 @@ package hk.com.novare.tempoplus.bmnmanager.timesheet;
 
 import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDao;
 import hk.com.novare.tempoplus.bmnmanager.biometric.BiometricDetails;
+import hk.com.novare.tempoplus.bmnmanager.consolidation.ConsolidationDao;
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
 import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
 import hk.com.novare.tempoplus.employee.EmployeeDetails;
@@ -13,8 +14,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,20 +29,21 @@ import org.springframework.stereotype.Service;
 public class TimesheetService {
 
 	@Inject
-	TimesheetDao timesheetDao;
+	private TimesheetDao timesheetDao;
 	@Inject
-	BiometricDao biometricDao;
+	private BiometricDao biometricDao;
+	@Inject
+	private ConsolidationDao consolidationDao;
 
 	public void createTimesheetSummary() {
 
-		ArrayList<Timesheet> timesheetList = timesheetDao
-				.retrieveTimesheetData();
+		List<Timesheet> timesheetList = timesheetDao.retrieveTimesheetData();
 
 		TimeLogging timelog;
 		EmployeeDetails employeeDetails;
 		Nt3 nt3;
 		Mantis mantis;
-		BiometricDetails dailyBiometric;
+		BiometricDetails biometricDetails;
 
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet("Sample sheet");
@@ -52,13 +54,13 @@ public class TimesheetService {
 			timelog = timesheet.getTimelog();
 			nt3 = timesheet.getNt3();
 			mantis = timesheet.getMantis();
-			dailyBiometric = timesheet.getDailyBiometric();
+			biometricDetails = timesheet.getBiometricDetails();
 
 			Row row = sheet.createRow(rowCounter);
 
 			Cell cell;
 			if (rowCounter == 0) {
-				
+
 				for (int counter = 0; counter < 61; counter++) {
 					cell = row.createCell(counter);
 					switch (counter) {
@@ -277,7 +279,8 @@ public class TimesheetService {
 						cell.setCellValue(employeeDetails.getHireDate());
 						break;
 					case 7:
-						cell.setCellValue(employeeDetails.getRegularizationDate());
+						cell.setCellValue(employeeDetails
+								.getRegularizationDate());
 						break;
 					case 8:
 						cell.setCellValue(employeeDetails.getShift());
@@ -293,8 +296,9 @@ public class TimesheetService {
 						break;
 					case 12:
 						String dateFormat = null;
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-						
+						SimpleDateFormat sdf = new SimpleDateFormat(
+								"yyyy-MM-dd");
+
 						Date date = null;
 						try {
 							date = sdf.parse(timelog.getDate());
@@ -305,7 +309,7 @@ public class TimesheetService {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						
+
 						break;
 					case 13:
 						cell.setCellValue("Holiday");
@@ -555,11 +559,11 @@ public class TimesheetService {
 						break;
 					case 51:
 						// TODO
-						cell.setCellValue(dailyBiometric.getTimeIn());
+						cell.setCellValue(biometricDetails.getTimeIn());
 						break;
 					case 52:
 						// TODO
-						cell.setCellValue(dailyBiometric.getTimeOut());
+						cell.setCellValue(biometricDetails.getTimeOut());
 						break;
 					case 53:
 						if (null != mantis.getCategory()
@@ -635,4 +639,36 @@ public class TimesheetService {
 		}
 
 	}
+
+	public Boolean createTimesheet(String name) {
+	
+		if(timesheetDao.createTimesheet(name) == 0) {
+			return false;
+		} 
+		
+		return true;
+	}
+
+	public List<TimesheetList> retrieveTimesheets() {
+		
+		List<TimesheetList> list = timesheetDao.retrieveTimesheetList(); 
+		
+		return list;
+	}
+	
+	public void updateTimeLogTimesheetRecord(String description) {
+		timesheetDao.updateTimeLogTimesheetRecord(description);
+	}
+	
+	public void updateMantisTimesheetRecord(String description) {
+		timesheetDao.updateMantisTimesheetRecord(description);
+	}
+	
+	public void updateNt3TimesheetRecord(String description) {
+		timesheetDao.updateNt3TimesheetRecord(description);
+	}
+	public void checkTimesheet(String name) {
+		consolidationDao.isReadyForConsolidation(name);
+	}
+	
 }
