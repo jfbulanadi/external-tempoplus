@@ -30,13 +30,7 @@ $( "#adminTab" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 $( "#adminTab li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 });
 </script> 
-<style>
-div#dialog {
-display: none;
-font-size: 68.5%;   
-font-family : Arial, Helvetica, sans-serif;
-}
-</style>
+
 </head>
 
 
@@ -57,6 +51,8 @@ font-family : Arial, Helvetica, sans-serif;
 		<li><a href = "#MyProfile" >My Profile</a></li>
 		<li><a href = "#AccountSettings">Account Settings</a></li>
 		<li><a href = "#Administration">Administration</a></li>
+	</ul>
+
 		
 	</ul>
 	<div id = "MyProfile">
@@ -172,9 +168,9 @@ font-family : Arial, Helvetica, sans-serif;
 	  			<ul>
 				    <li><a href="../hr/employeemanager">Employee Manager</a></li>
 			    <li><a href="../shift/shifting">Shift Manager</a></li>
-				  	<li><a href="../consolidation/view">BMN Manager</a></li>
+			  	<li><a href="../consolidation/view">BMN Manager</a></li>
 			  	<li><a href="../downloadpage/downloadlink">Download Timesheet</a></li>
-				  	<li><a href="../sendMail/mail">Email Manager</a></li> 
+			  	<li><a href="../sendMail/mail">Email Manager</a></li> 
 				  	<li><a href="#HolidayView">Holiday View</a></li> 	
 	  			</ul>
 	  		<!-- <div id="ShiftManager">
@@ -182,20 +178,16 @@ font-family : Arial, Helvetica, sans-serif;
 	    			<h2>Shift Manager</h2>
     		</div> -->
 	  			
-	  			<div id="BMNManager">
-	    			<h2>BMN Manager</h2>
-	    			
-	  			</div>
+  			<div></div>
+  			
+  		
 	  			
   			<!-- <div id="DownloadTimesheet">
 	    			<h2>Download Timesheet</h2>
 	    			
   			</div> -->
 	  			
-	  			<div id="EmailManager">
-	    			<h2>Shift Manager</h2>
-	    			
-	  			</div>
+  			
 	  			
 	  			<div id="HolidayView">
 	    			<h2>Shift Manager</h2>

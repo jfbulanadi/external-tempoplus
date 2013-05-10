@@ -31,24 +31,24 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.SessionAttributes;
+
 @SessionAttributes({ "userEmployeeId", "userEmail" })
 @Repository("sendEmailService")
 public class SendEmailService {
-	
+
 	private String username;
 	private String password;
 	private String department;
 	private String email;
 	private Session session;
-	
 
-	private final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private final DateFormat DATE_FORMAT = new SimpleDateFormat(
+			"yyyy/MM/dd HH:mm:ss");
 	private final String MAIL_SERVER = "mails.novare.com.hk";
 	private final String MAIL_EXTENSION = "@novare.com.hk";
-	private final String FILE_DIRECTORY = System.getProperty( "user.home" ) + "/";
+	private final String FILE_DIRECTORY = System.getProperty("user.home") + "/";
 	private final Logger logger = Logger.getLogger(SendEmailService.class);
 
-	
 	@Autowired
 	SendEmailInterface sendEmailDao;
 
@@ -108,10 +108,10 @@ public class SendEmailService {
 	public ArrayList<SingleRecipientPojo> getNames() throws SQLException {
 
 		this.initConnection();
-		
+
 		logger.info("Getting Names");
 
-		final ResultSet resultSet = sendEmailDao.getNames();
+		final ResultSet resultSet = sendEmailDao.retrieveNames();
 
 		final ArrayList<SingleRecipientPojo> singleRecipientPojos = new ArrayList<SingleRecipientPojo>();
 
@@ -135,9 +135,15 @@ public class SendEmailService {
 			String msgBody, String period, String msgTitle)
 			throws SQLException, ClassNotFoundException {
 
+		logger.info("Retrieving Department Id");
+		final int departmentId = retrieveDepartmentId(department);
+
 		this.initConnection();
-		
-		final ResultSet resultSet = sendEmailDao.getEmail(department);
+
+		logger.info("Getting Emails By Department Id: " + departmentId);
+		final ResultSet resultSet = sendEmailDao.retrieveEmail(departmentId);
+
+		logger.info("Converting Emails ResultSet to Mail Pojo");
 		final ArrayList<MailPojo> mailPojo = new ArrayList<MailPojo>();
 
 		this.department = department;
@@ -166,8 +172,8 @@ public class SendEmailService {
 	public ArrayList<String> retrieveDateLogs() throws SQLException {
 
 		this.initConnection();
-		
-		final ResultSet resultSet = sendEmailDao.getDateLogs();
+
+		final ResultSet resultSet = sendEmailDao.retrieveDateLogs();
 		final ArrayList<String> dateLogs = new ArrayList<String>();
 
 		while (resultSet.next()) {
@@ -181,10 +187,10 @@ public class SendEmailService {
 	public ArrayList<String> retrieveDepartments() throws SQLException {
 
 		this.initConnection();
-		
+
 		logger.info("Getting Departments");
 
-		final ResultSet resultSet = sendEmailDao.getDepartments();
+		final ResultSet resultSet = sendEmailDao.retrieveDepartments();
 		final ArrayList<String> departments = new ArrayList<String>();
 
 		while (resultSet.next()) {
@@ -196,13 +202,33 @@ public class SendEmailService {
 		return departments;
 	}
 
+	public ArrayList<String> retrievePeriods() throws SQLException {
+
+		this.initConnection();
+
+		logger.info("Getting Timesheet Periods");
+
+		final ResultSet resultSet = sendEmailDao.retrievePeriods();
+		final ArrayList<String> periods = new ArrayList<String>();
+
+		while (resultSet.next()) {
+			
+			final String strPeriod = resultSet.getString(1) + "_To_"
+					+ resultSet.getString(2);
+
+			periods.add(strPeriod);
+		}
+
+		sendEmailDao.closeConnection();
+		return periods;
+	}
+
 	public ArrayList<SendMailLogsPojo> retrieveLogs(String date)
 			throws SQLException {
 
 		this.initConnection();
-		
-		
-		final ResultSet resultSet = sendEmailDao.getLogs(date);
+
+		final ResultSet resultSet = sendEmailDao.retrieveLogs(date);
 
 		final ArrayList<SendMailLogsPojo> sendMailLogsPojos = new ArrayList<SendMailLogsPojo>();
 
@@ -225,7 +251,7 @@ public class SendEmailService {
 			throws ClassNotFoundException, SQLException {
 
 		this.initConnection();
-		
+
 		final Date date = new Date();
 
 		final String logsRow = department + " " + DATE_FORMAT.format(date);
@@ -249,21 +275,22 @@ public class SendEmailService {
 
 		}
 		// Save the logs to database
-		
+
 		sendEmailDao.executeLog();
 		sendEmailDao.closeConnection();
 	}
 
 	public String sendByIndividual(String msgBody, String period,
 			String msgTitle) throws SQLException, MessagingException {
-		
+
 		this.initConnection();
-		
+
 		final String fixedPeriod = FILE_DIRECTORY + this.email + "/" + period;
 
 		final String logsRow = null;
 
-		final ResultSet resultSet = sendEmailDao.getSingleRecipient(this.email);
+		final ResultSet resultSet = sendEmailDao
+				.retrieveSingleRecipient(this.email);
 
 		String status = null;
 
@@ -347,8 +374,7 @@ public class SendEmailService {
 
 		MailPojo tempMailPojo = new MailPojo();
 
-		tempMailPojo.setEmailRecipient(resultSet.getString(8)
-				+ MAIL_EXTENSION);
+		tempMailPojo.setEmailRecipient(resultSet.getString(8) + MAIL_EXTENSION);
 
 		if (!isByDepartment) {
 			tempMailPojo.setFileName(period.replace(
@@ -379,10 +405,10 @@ public class SendEmailService {
 		return tempMailPojo;
 	}
 
-	public ArrayList<String> getFileList(String employee) {
+	public ArrayList<String> retriveFileList(String employee) {
 
 		final ArrayList<String> fileList = new ArrayList<String>();
-		
+
 		final String fixedString = employee.replace(".com.hk ", ".com.hk")
 				.replace("	", "").replace("\n", " ");
 
@@ -401,9 +427,8 @@ public class SendEmailService {
 
 		try {
 
-			final File[] files = sendEmailDao.getFiles(directory);
+			final File[] files = sendEmailDao.retrieveFiles(directory);
 
-		
 			this.email = folderName;
 
 			for (int x = 0; x < files.length; x++) {
@@ -418,6 +443,41 @@ public class SendEmailService {
 		}
 
 		return fileList;
+	}
+
+	private int retrieveDepartmentId(String department) {
+		this.initConnection();
+		final ResultSet departmentResultSet = sendEmailDao
+				.retrieveDepartmentId(department);
+
+		int departmentId = 0;
+
+		try {
+
+			while (departmentResultSet.next()) {
+
+				logger.info("Getting Department Id using: " + department);
+
+				final String strDepartmentId = departmentResultSet.getString(1)
+						.toString();
+
+				logger.info("Department Id (Str) : " + strDepartmentId);
+
+				logger.info("Converting department from String to int");
+
+				departmentId = Integer.parseInt(strDepartmentId);
+
+				logger.info("Department Id (int) : " + departmentId);
+
+			}
+		} catch (SQLException e) {
+
+			logger.info("Can't Get Department Id, Error: " + e.toString());
+
+		} finally {
+			sendEmailDao.closeConnection();
+		}
+		return departmentId;
 	}
 
 	private Connection initConnection() {

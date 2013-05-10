@@ -1,7 +1,9 @@
 package hk.com.novare.tempoplus.bmnmanager.consolidation;
 
 import hk.com.novare.tempoplus.bmnmanager.mantis.Mantis;
+import hk.com.novare.tempoplus.bmnmanager.nt3.Nt3;
 import hk.com.novare.tempoplus.bmnmanager.timesheet.Timesheet;
+import hk.com.novare.tempoplus.bmnmanager.timesheet.TimesheetPartialDTO;
 import hk.com.novare.tempoplus.employee.Employee;
 import hk.com.novare.tempoplus.timelogging.TimeLogging;
 import hk.com.novare.tempoplus.timelogging.TimeLoggingDao;
@@ -223,7 +225,7 @@ public class ConsolidationDao {
 
 	}
 	
-	public ArrayList<ConsolidationDTO> viewConsolidation() {
+	public ArrayList<ConsolidationDTO> viewConsolidation(String id) {
 		ResultSet resultSet = null;
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -235,51 +237,53 @@ public class ConsolidationDao {
 		try {
 				connection = dataSource.getConnection();
 				logger.info("viewConsolidation: Created MySQL connection.");
-				ps = connection.prepareStatement("SELECT e.employeeId, e.id, e.biometricId, e.firstname, e.middlename, e.lastname, e.email, p.description AS position, CONCAT_WS(', ' , e.lastname, e.firstname) AS fullName, e.hiredate, e.regularizationdate, "
-       + "(SELECT CONCAT_WS(', ' , lastname, firstname) AS fullName FROM employees WHERE employeeId = e.supervisorId) AS supervisor, "
-       + "c.mantisId, c.nt3Id, t.date, t.timeIn, t.timeOut, t.duration, m.ticketId, m.startDate, m.endDate, m.hours, m.minutes, "
-       + "m.category, m.status, n.startDate, n.endDate, n.duration, n.absenceType, n.absenceStatus, "
-       + "(SELECT MIN(bIn.logTime) FROM biometrics AS bIn WHERE log = 0 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeIn, "
-       + "(SELECT MAX(bOut.logTime)  FROM biometrics AS bOut WHERE log = 1 AND logDate = t.date AND biometricId = e.biometricId) AS bioTimeOut "
-       + "FROM timelogs AS t JOIN employees AS e ON t.employeeId = e.employeeId "
-       + "LEFT JOIN positions p ON p.id = e.positionId "
-       + "LEFT JOIN consolidations c ON t.id = c.timelogId "
-       + "LEFT JOIN mantises m ON m.id = c.mantisId "
-       + "LEFT JOIN nt3s n ON n.id = c.nt3Id ORDER BY e.id");
+				ps = connection.prepareStatement("SELECT consolidations.id, employees.employeeId, employees.biometricId, employees.firstname, employees.middlename, employees.lastname, employees.email, shifts.description AS shift, departments.name AS department, positions.description AS position, timelogs.timeIn, timelogs.timeOut, timelogs.duration AS timeDuration, timelogs.date AS timelogDate, consolidations.mantisId, mantises.ticketId, mantises.startDate AS mantisStartDate, mantises.endDate AS mantisEndDate, mantises.hours AS mantisHours, mantises.minutes AS mantisMinutes, mantises.category as mantisCategory, mantises.dateSubmitted AS mantisDateSubmitted, mantises.timeIn AS mantisTimeIn, mantises.timeOut AS mantisTimeOut, mantises.status AS mantisStatus, nt3s.id AS nt3Id, nt3s.startDate AS nt3StartDate, nt3s.endDate AS nt3EndDate, nt3s.duration AS nt3Duration, nt3s.absenceType AS nt3AbsenceType, nt3s.description AS nt3Description, nt3s.absenceStatus AS nt3AbsenceStatus, consolidations.timesheetId, timesheets.description AS timesheetName FROM consolidations INNER JOIN employees ON consolidations.employeeId = employees.employeeId INNER JOIN shifts ON employees.shiftId = shifts.id INNER JOIN departments ON employees.departmentId = departments.id INNER JOIN positions ON employees.positionId = positions.id LEFT JOIN biometrics ON employees.biometricId = biometrics.id LEFT JOIN mantises ON consolidations.mantisId = mantises.id LEFT JOIN nt3s ON consolidations.nt3Id = nt3s.id LEFT JOIN timesheets ON consolidations.timesheetId = timesheets.id LEFT JOIN timelogs ON consolidations.timelogId = timelogs.id WHERE consolidations.timesheetId = ?");
+				ps.setString(1, id);
 				resultSet = ps.executeQuery();
 				logger.info("viewConsolidation: Executed query for displaying consolidation.");
 				
 				while(resultSet.next()) {
 					
-					String biometricId = resultSet.getString("biometricId");
-					String employeeId = resultSet.getString("employeeId");
-					String firstname = resultSet.getString("firstname");
-					String middlename = resultSet.getString("middlename");
-					String lastname = resultSet.getString("lastname");
-					String position = resultSet.getString("position");
-					String email = resultSet.getString("email");
-					String timeIn = resultSet.getString("bioTimeIn");
-					String timeOut = resultSet.getString("bioTimeOut");
-					String date = resultSet.getString("date");
-					String mantisId = resultSet.getString("mantisId");
-					String nt3Id = resultSet.getString("nt3Id");
-					
 					final ConsolidationDTO consolidations = new ConsolidationDTO();
-					
-					consolidations.setEmployeeId(employeeId);
-					consolidations.setBiometricId(biometricId);
-					consolidations.setFirstname(firstname);
-					consolidations.setMiddlename(middlename);
-					consolidations.setLastname(lastname);
-					consolidations.setPosition(position);
-					consolidations.setEmail(email);
-					consolidations.setDate(date);
-					consolidations.setTimeIn(timeIn);
-					consolidations.setTimeOut(timeOut); 
-					consolidations.setMantisId(mantisId);
-					consolidations.setNt3Id(nt3Id);
-					
-
+					//EMPLOYEE
+					consolidations.setEmployeeId(resultSet.getString("employeeId"));
+					consolidations.setBiometricId(resultSet.getString("biometricId"));
+					consolidations.setFirstname(resultSet.getString("firstname"));
+					consolidations.setMiddlename(resultSet.getString("middlename"));
+					consolidations.setLastname(resultSet.getString("lastname"));
+					consolidations.setEmail(resultSet.getString("email"));
+					consolidations.setShift(resultSet.getString("shift"));
+					consolidations.setDepartment(resultSet.getString("department"));
+					consolidations.setPosition(resultSet.getString("position"));
+					//TIMELOG
+					consolidations.setTimeIn(resultSet.getString("timeIn"));
+					consolidations.setTimeOut(resultSet.getString("timeOut"));
+					consolidations.setTimeDuration(resultSet.getString("timeDuration"));
+					consolidations.setTimelogDate(resultSet.getString("timelogDate"));
+					//MANTIS
+					consolidations.setMantisId(resultSet.getString("mantisId"));
+					consolidations.setTicketId(resultSet.getString("ticketId"));
+					consolidations.setMantisStartDate(resultSet.getString("mantisStartDate"));
+					consolidations.setMantisEndDate(resultSet.getString("mantisEndDate"));
+					consolidations.setMantisHours(resultSet.getString("mantisHours"));
+					consolidations.setMantisMinutes(resultSet.getString("mantisMinutes"));
+					consolidations.setMantisCategory(resultSet.getString("mantisCategory"));
+					consolidations.setMantisDateSubmitted(resultSet.getString("mantisDateSubmitted"));
+					consolidations.setMantisTimeIn(resultSet.getString("mantisTimeIn"));
+					consolidations.setMantisTimeOut(resultSet.getString("mantisTimeOut"));
+					consolidations.setMantisStatus(resultSet.getString("mantisStatus"));
+					//NT3
+					consolidations.setNt3Id(resultSet.getString("nt3Id"));
+					consolidations.setNt3StartDate(resultSet.getString("nt3StartDate"));
+					consolidations.setNt3EndDate(resultSet.getString("nt3EndDate"));
+					consolidations.setNt3Duration(resultSet.getString("nt3Duration"));
+					consolidations.setNt3AbsenceType(resultSet.getString("nt3AbsenceType"));
+					consolidations.setNt3Description(resultSet.getString("nt3Description"));
+					consolidations.setNt3AbsenceStatus(resultSet.getString("nt3AbsenceStatus"));
+					//TIME SHEET
+					consolidations.setTimesheetId(resultSet.getString("timesheetId"));
+					consolidations.setTimesheetId(resultSet.getString("timesheetName"));
+				
 					
 					list.add(consolidations);
 				}
@@ -300,6 +304,37 @@ public class ConsolidationDao {
 		
 		
 	}
+	
+	public ArrayList<TimesheetPartialDTO> fetchTimesheets() {
+		
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet resultSet = null;
+		ArrayList<TimesheetPartialDTO> list = new ArrayList<TimesheetPartialDTO>();
+		
+		try {
+			connection = dataSource.getConnection();
+			ps = connection
+					.prepareStatement("SELECT id, description, periodEnd, periodStart FROM timesheets");
+			resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				
+				final TimesheetPartialDTO timesheet = new TimesheetPartialDTO();
+				timesheet.setId(resultSet.getString("id"));
+				timesheet.setDescription(resultSet.getString("description"));
+				timesheet.setPeriodEnd(resultSet.getString("periodEnd"));
+				timesheet.setPeriodStart(resultSet.getString("periodStart"));
+				
+				list.add(timesheet);
+			
+			}
+
+		} catch (SQLException e) {
+
+		}
+		return list;
+	}
 
 	public void updateConsolidations(String employeeId,
 			String timeIn, String timeOut, String date)  {
@@ -308,55 +343,53 @@ public class ConsolidationDao {
 			Connection connection = null;
 			PreparedStatement ps = null;
 			
-			//connection = dataSource.getConnection();
-			//ps = connection.prepareStatement("UPDATE");
-			//ps.executeUpdate();
+//			try {
+//				connection = dataSource.getConnection();
+//				ps = connection.prepareStatement("UPDATE SET ");
+//				ps.executeUpdate();
+//				connection.close();
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			
 			
 	}
 	
-	public ArrayList<Mantis> fetchMantisTickets(String employeeId) {
+	public ArrayList<Mantis> fetchMantises(String employeeId, String date) {
 		
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet resultSet = null;
 		ArrayList<Mantis> list = new ArrayList<Mantis>();
-		
+		int rowCount = 0;
 
 		try {
 			
 			connection = dataSource.getConnection();
 			logger.info("fetchMantisTickets: Created MySQL connection.");
-			ps = connection.prepareStatement("SELECT ticketId, employeeId, dateSubmitted, startDate, endDate, category, timeIn, timeOut, status FROM mantises WHERE employeeId = ?");
+			ps = connection.prepareStatement("SELECT ticketId, employeeId, dateSubmitted, startDate, endDate, category, timeIn, timeOut, status FROM mantises WHERE employeeId = ? and startDate = ?");
 			ps.setString(1, employeeId);	
+			ps.setString(2, date);
 			resultSet = ps.executeQuery();
 			logger.info("fetchMantisTickets: Executed MySQL query.");
 			
 			
 			while(resultSet.next()) {
-				final int ticketId = resultSet.getInt("ticketId");
-				final String dateSubmitted = resultSet.getString("dateSubmitted");
-				final String startDate = resultSet.getString("startDate");
-				final String endDate = resultSet.getString("endDate");
-				final String category = resultSet.getString("category");
-				final String timeIn = resultSet.getString("timeIn");
-				final String timeOut = resultSet.getString("timeOut");
-				final String status = resultSet.getString("status");
-				
-				
 				
 				final Mantis mantis = new Mantis();
-				mantis.setTicketId(ticketId);
-				mantis.setDateSubmitted(dateSubmitted);
-				mantis.setStartDate(startDate);
-				mantis.setEndDate(endDate);
-				mantis.setCategory(category);
-				mantis.setStartTime(timeIn);
-				mantis.setEndTime(timeOut);
-				mantis.setStatus(status);
+				mantis.setTicketId(resultSet.getInt("ticketId"));
+				mantis.setDateSubmitted(resultSet.getString("dateSubmitted"));
+				mantis.setStartDate(resultSet.getString("startDate"));
+				mantis.setEndDate(resultSet.getString("endDate"));
+				mantis.setCategory(resultSet.getString("category"));
+				mantis.setStartTime(resultSet.getString("timeIn"));
+				mantis.setEndTime(resultSet.getString("timeOut"));
+				mantis.setStatus(resultSet.getString("status"));
 				
 				
 				list.add(mantis);
+				rowCount++;
 				}
 			
 		} catch (SQLException e) {
@@ -366,12 +399,65 @@ public class ConsolidationDao {
 				connection.close();
 				logger.info("fetchMantisTickets: Closed MySQL connection.");
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.info(e.toString());
+					
+			}
+		}
+		
+		logger.info("rowCount is :" + rowCount);
+		return list;
+	}
+	
+	public ArrayList<Nt3> fetchNt3s(String employeeId, String date) {
+		
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet resultSet = null;
+		ArrayList<Nt3> list = new ArrayList<Nt3>();
+		int rowCount = 0;
+		
+
+		try {
+			connection = dataSource.getConnection();
+			logger.info("fetchNt3s: Created MySQL connection.");
+			ps = connection.prepareStatement("SELECT id, employeeId, startDate, endDate, duration, absenceType, description, absenceStatus, flag, timestamp FROM tempoplus.nt3s WHERE employeeId=? and startDate=?");
+			ps.setString(1, employeeId);
+			
+			ps.setString(2, date);
+			resultSet = ps.executeQuery();
+			logger.info("fetchNt3s: Executed MySQL query.");
+			
+			
+			while(resultSet.next()) {
+				final Nt3 nt3 = new Nt3();
+				
+				nt3.setEmployeeId(resultSet.getInt("employeeId"));
+				nt3.setStartDate(resultSet.getString("startDate"));
+				nt3.setEndDate(resultSet.getString("endDate"));
+				nt3.setDuration(resultSet.getFloat("duration"));
+				nt3.setAbsenceType(resultSet.getString("absenceType"));
+				nt3.setDescription(resultSet.getString("description"));
+				nt3.setAbsenceStatus(resultSet.getString("absenceStatus"));
+				
+				list.add(nt3);
+				rowCount++;
+			}
+			
+			
+		} catch (SQLException e) {
+			logger.info(e.toString());
+		} finally {
+			try {
+				connection.close();
+				logger.info("fetchNt3s: Closed MySQL connection.");
+			} catch (SQLException e) {
+				logger.info(e.toString());
+					
 			}
 		}
 		
 		
+		logger.info("rowCount is :" + rowCount);
 		return list;
 	}
 	

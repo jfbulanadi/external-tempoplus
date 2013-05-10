@@ -202,7 +202,6 @@
 	</select>
 	
 	<select id="DEPARTMENTS">
-	<option>ALL</option>
 		<c:forEach items="${departments}" var="content">
 			<option>${content}</option>
 		</c:forEach>
@@ -215,9 +214,9 @@
 	</select>
 	</br>
 	<select id="DEPPERIOD">
-		<option selected="selected">Select TimeSheet Period</option>
-		<option>2</option>
-		<option>3</option>
+			<c:forEach items="${periods}" var="content">
+			<option>${content}</option>
+		</c:forEach>
 	</select>
 	<select id="INDPERIOD">
 		<option selected="selected">Select TimeSheet Period</option>
